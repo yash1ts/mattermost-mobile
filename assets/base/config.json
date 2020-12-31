@@ -1,7 +1,7 @@
 {
-    "DefaultServerUrl": "",
+    "DefaultServerUrl": "http://ec2-34-228-170-93.compute-1.amazonaws.com:8065/",
     "TestServerUrl": "http://localhost:8065",
-    "DefaultTheme": "default",
+    "DefaultTheme": "solarized-dark",
     "ShowErrorsList": false,
     "MinServerVersion": "4.0.0",
     "EELearnURL": "about.mattermost.com",
@@ -31,7 +31,7 @@
 
     "ExperimentalNormalizeMarkdownLinks": false,
 
-    "AutoSelectServerUrl": false,
+    "AutoSelectServerUrl": true,
 
     "EnableMobileClientUpgrade": false,
     "EnableMobileClientUpgradeUserSetting": false,

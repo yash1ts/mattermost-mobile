@@ -516,15 +516,15 @@ export default class SelectServer extends PureComponent {
                         <View style={[GlobalStyles.container, GlobalStyles.signupContainer]}>
                             <Image
                                 source={require('@assets/images/logo.png')}
-                                style={{height: 72, resizeMode: 'contain'}}
+                                style={{height: 72, resizeMode: 'contain', marginBottom: 40}}
                             />
 
-                            <View testID='select_server.header.text'>
+                            {/* <View testID='select_server.header.text'>
                                 <FormattedText
                                     style={[GlobalStyles.header, GlobalStyles.label]}
                                     id='mobile.components.select_server_view.enterServerUrl'
                                     defaultMessage='Enter Server URL'
-                                />
+                                />RECeived_App_
                             </View>
                             <TextInput
                                 testID='select_server.server_url.input'
@@ -545,7 +545,7 @@ export default class SelectServer extends PureComponent {
                                 returnKeyType='go'
                                 underlineColorAndroid='transparent'
                                 disableFullscreenUI={true}
-                            />
+                            /> */}
                             <Button
                                 testID='select_server.connect.button'
                                 onPress={this.handleConnect}

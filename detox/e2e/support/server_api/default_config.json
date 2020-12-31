@@ -1,6 +1,6 @@
 {
     "ServiceSettings": {
-        "SiteURL": "http://localhost:8065",
+        "SiteURL": "http://ec2-34-228-170-93.compute-1.amazonaws.com:8065/",
         "WebsocketURL": "",
         "LicenseFileLocation": "",
         "ListenAddress": ":8065",
@@ -96,13 +96,13 @@
         "CustomDescriptionText": "",
         "RestrictDirectMessage": "any",
         "RestrictTeamInvite": "all",
-        "RestrictPublicChannelManagement": "all",
-        "RestrictPrivateChannelManagement": "all",
+        "RestrictPublicChannelManagement": "channel_admin",
+        "RestrictPrivateChannelManagement": "channel_admin",
         "RestrictPublicChannelCreation": "all",
         "RestrictPrivateChannelCreation": "all",
-        "RestrictPublicChannelDeletion": "all",
-        "RestrictPrivateChannelDeletion": "all",
-        "RestrictPrivateChannelManageMembers": "all",
+        "RestrictPublicChannelDeletion": "channel_admin",
+        "RestrictPrivateChannelDeletion": "channel_admin",
+        "RestrictPrivateChannelManageMembers": "channel_admin",
         "EnableXToLeaveChannelsFromLHS": false,
         "UserStatusAwayTimeout": 300,
         "MaxChannelsPerTeam": 2000,
@@ -114,7 +114,7 @@
         "ExperimentalHideTownSquareinLHS": false,
         "ExperimentalTownSquareIsReadOnly": false,
         "LockTeammateNameDisplay": false,
-        "ExperimentalPrimaryTeam": "",
+        "ExperimentalPrimaryTeam": "p5f5pjdugt84uynqj61gm9ixsc",
         "ExperimentalDefaultChannels": []
     },
     "ClientRequirements": {
@@ -184,7 +184,7 @@
         "Enable": false
     },
     "PrivacySettings": {
-        "ShowEmailAddress": true,
+        "ShowEmailAddress": false,
         "ShowFullName": true
     },
     "SupportSettings": {
@@ -202,9 +202,9 @@
         "EnableBanner": false
     },
     "ThemeSettings": {
-        "EnableThemeSelection": true,
-        "DefaultTheme": "default",
-        "AllowCustomThemes": true,
+        "EnableThemeSelection": false,
+        "DefaultTheme": "solarized-dark",
+        "AllowCustomThemes": false,
         "AllowedThemes": []
     },
     "GitLabSettings": {
