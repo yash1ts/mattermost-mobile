@@ -40,7 +40,6 @@ export default class ChannelListRow extends React.PureComponent {
                 </Text>
             );
         }
-
         return (
             <CustomListRow
                 id={this.props.id}
@@ -59,6 +58,16 @@ export default class ChannelListRow extends React.PureComponent {
                             {this.props.channel.display_name}
                         </Text>
                     </View>
+                    <View style={style.detailContainer}>
+                        <Text style={style.displayStats}>
+                            {this.props.channelStats ? this.props.channelStats.member_count : 1}
+                        </Text>
+                        <CompassIcon
+                            name={'account-multiple-outline'}
+                            style={style.icon}
+                        />
+
+                    </View>
                     {purpose}
                 </View>
             </CustomListRow>
@@ -72,13 +81,24 @@ const getStyleFromTheme = makeStyleSheetFromTheme((theme) => {
             alignItems: 'center',
             flexDirection: 'row',
         },
+        detailContainer: {
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginLeft: 16,
+            marginTop: 2,
+        },
         displayName: {
             fontSize: 16,
             color: theme.centerChannelColor,
             marginLeft: 5,
         },
+        displayStats: {
+            marginHorizontal: 10,
+            color: changeOpacity(theme.centerChannelColor, 0.5),
+            fontSize: 15,
+        },
         icon: {
-            fontSize: 16,
+            fontSize: 14,
             color: theme.centerChannelColor,
         },
         container: {

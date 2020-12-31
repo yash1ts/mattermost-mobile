@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 
 import {getTheme} from '@mm-redux/selectors/entities/preferences';
 
-import {makeGetChannel} from '@mm-redux/selectors/entities/channels';
+import {makeGetChannel, getChannelStats} from '@mm-redux/selectors/entities/channels';
 import ChannelListRow from './channel_list_row';
 
 function makeMapStateToProps() {
@@ -15,6 +15,7 @@ function makeMapStateToProps() {
         return {
             theme: getTheme(state),
             channel: getChannel(state, ownProps),
+            channelStats: getChannelStats(state, ownProps.id),
         };
     };
 }
