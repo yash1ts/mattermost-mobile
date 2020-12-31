@@ -30,6 +30,8 @@ import ManageMembers from './manage_members';
 import Mute from './mute';
 import Pinned from './pinned';
 import Separator from './separator';
+import ChannelLinkShare from './channel_link_share';
+import ChannelLinkCopy from './channel_link_copy';
 
 export default class ChannelInfo extends PureComponent {
     static propTypes = {
@@ -155,6 +157,14 @@ export default class ChannelInfo extends PureComponent {
                     theme={theme}
                 />
                 <EditChannel
+                    testID='channel_info.edit_channel.action'
+                    theme={theme}
+                />
+                <ChannelLinkShare
+                    testID='channel_info.edit_channel.action'
+                    theme={theme}
+                />
+                <ChannelLinkCopy
                     testID='channel_info.edit_channel.action'
                     theme={theme}
                 />
