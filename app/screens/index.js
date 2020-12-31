@@ -203,6 +203,9 @@ Navigation.setLazyComponentRegistrator((screenName) => {
     case 'UserProfile':
         screen = require('@screens/user_profile').default;
         break;
+    case 'SignUp':
+        screen = require('@screens/signup').default;
+        break;
     }
 
     if (screen) {

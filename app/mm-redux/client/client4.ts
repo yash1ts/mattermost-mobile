@@ -589,6 +589,26 @@ export default class Client4 {
         return response;
     };
 
+    signup = async (first_name:string, last_name:string, email: string, username:string, password: string) => {
+        analytics.trackAPI('api_users_signup');
+
+        const body: any = {
+            email,
+            username,
+            first_name,
+            last_name,
+            auth_service: 'email',
+            password,
+        };
+
+        const {data} = await this.doFetchWithResponse(
+            `${this.getUsersRoute()}`,
+            {method: 'post', body: JSON.stringify(body)},
+        );
+
+        return data;
+    }
+
     getProfiles = async (page = 0, perPage = PER_PAGE_DEFAULT, options = {}) => {
         analytics.trackAPI('api_profiles_get');
 

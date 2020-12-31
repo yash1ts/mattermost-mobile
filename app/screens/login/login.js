@@ -311,6 +311,14 @@ export default class Login extends PureComponent {
         }
     };
 
+    signUp = () => {
+        const {intl} = this.context;
+        const screen = 'SignUp';
+        const title = intl.formatMessage({id: 'signup.title', defaultMessage: 'Sign Up'});
+
+        goToScreen(screen, title);
+    }
+
     render() {
         const {isLoading} = this.state;
 
@@ -362,6 +370,22 @@ export default class Login extends PureComponent {
                         id='login.forgot'
                         defaultMessage='I forgot my password'
                         style={style.forgotPasswordTxt}
+                    />
+                </Button>
+            );
+        }
+
+        let signup;
+        if (this.props.config.EnableSignInWithEmail === 'true' || this.props.config.EnableSignInWithUsername === 'true') {
+            signup = (
+                <Button
+                    onPress={this.signUp}
+                    containerStyle={[style.signUpBtn]}
+                >
+                    <FormattedText
+                        id='signup.text'
+                        defaultMessage='Register'
+                        style={style.signUpTxt}
                     />
                 </Button>
             );
@@ -432,6 +456,7 @@ export default class Login extends PureComponent {
                         />
                         {proceed}
                         {forgotPassword}
+                        {signup}
                     </KeyboardAwareScrollView>
                 </TouchableWithoutFeedback>
             </SafeAreaView>
@@ -454,7 +479,14 @@ const style = StyleSheet.create({
         borderColor: 'transparent',
         marginTop: 15,
     },
+    signUpBtn: {
+        borderColor: 'transparent',
+        marginTop: 15,
+    },
     forgotPasswordTxt: {
+        color: '#2389D7',
+    },
+    signUpTxt: {
         color: '#2389D7',
     },
 });
