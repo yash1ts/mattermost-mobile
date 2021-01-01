@@ -20,6 +20,7 @@ import {PreferenceType} from './preferences';
 import {Bot} from './bots';
 import {ChannelCategoriesState} from './channel_categories';
 import {Dictionary} from './utilities';
+import {ReplyPopup} from './reply_popup';
 
 export type GlobalState = {
     entities: {
@@ -52,6 +53,7 @@ export type GlobalState = {
         gifs: any;
         groups: GroupsState;
         channelCategories: ChannelCategoriesState;
+        replyPopUp: ReplyPopup;
     };
     errors: Array<any>;
     requests: {

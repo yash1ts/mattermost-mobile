@@ -90,4 +90,5 @@ export default keyMirror({
 
     INCREMENT_PINNED_POST_COUNT: null,
     DECREMENT_PINNED_POST_COUNT: null,
+    POPUP_REPLY: null,
 });

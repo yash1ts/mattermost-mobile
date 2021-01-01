@@ -18,6 +18,7 @@ import {getCurrentChannelId} from '@mm-redux/selectors/entities/channels';
 import {getCurrentUserId} from '@mm-redux/selectors/entities/users';
 import {getTheme} from '@mm-redux/selectors/entities/preferences';
 import {isLandscape} from '@selectors/device';
+import {setReplyPopup} from '@mm-redux/actions/reply_popup';
 
 import ChannelPostList from './channel_post_list';
 
@@ -48,6 +49,7 @@ function mapDispatchToProps(dispatch) {
             selectPost,
             recordLoadTime,
             refreshChannelWithRetry,
+            setReplyPopup,
         }, dispatch),
     };
 }

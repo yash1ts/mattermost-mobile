@@ -219,6 +219,6 @@ export function registerScreens(reduxStore) {
     const channelScreen = require('@screens/channel').default;
     const serverScreen = require('@screens/select_server').default;
 
-    Navigation.registerComponent('Channel', () => withReduxProvider(channelScreen, false), () => channelScreen);
+    Navigation.registerComponent('Channel', () => withGestures(withReduxProvider(channelScreen, false), () => channelScreen));
     Navigation.registerComponent('SelectServer', () => withReduxProvider(serverScreen, false), () => serverScreen);
 }

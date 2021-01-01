@@ -42,10 +42,6 @@ export default class PostHeader extends PureComponent {
         isBot: PropTypes.bool,
         isGuest: PropTypes.bool,
         userTimezone: PropTypes.string,
-        enableTimezone: PropTypes.bool,
-        previousPostExists: PropTypes.bool,
-        post: PropTypes.object,
-        beforePrevPostUserId: PropTypes.string,
         isLandscape: PropTypes.bool.isRequired,
     };
 
@@ -59,55 +55,6 @@ export default class PostHeader extends PureComponent {
         if (this.props.username) {
             this.props.onUsernamePress(this.props.username);
         }
-    };
-
-    renderCommentedOnMessage = () => {
-        const {
-            beforePrevPostUserId,
-            commentedOnDisplayName,
-            post,
-            previousPostExists,
-            renderReplies,
-            theme,
-        } = this.props;
-
-        if (!renderReplies || !commentedOnDisplayName || (!previousPostExists && post.user_id === beforePrevPostUserId)) {
-            return null;
-        }
-
-        const style = getStyleSheet(theme);
-        const displayName = commentedOnDisplayName;
-
-        let name;
-        if (displayName) {
-            name = displayName;
-        } else {
-            name = (
-                <FormattedText
-                    id='channel_loader.someone'
-                    defaultMessage='Someone'
-                />
-            );
-        }
-
-        let apostrophe;
-        if (displayName && displayName.slice(-1) === 's') {
-            apostrophe = '\'';
-        } else {
-            apostrophe = '\'s';
-        }
-
-        return (
-            <FormattedText
-                id='post_body.commentedOn'
-                defaultMessage='Commented on {name}{apostrophe} message: '
-                values={{
-                    name,
-                    apostrophe,
-                }}
-                style={style.commentedOn}
-            />
-        );
     };
 
     calcNameWidth = () => {
@@ -325,7 +272,6 @@ export default class PostHeader extends PureComponent {
                         {this.renderReply()}
                     </View>
                 </View>
-                {this.renderCommentedOnMessage(style)}
             </React.Fragment>
         );
     }
@@ -336,6 +282,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         container: {
             flex: 1,
             marginTop: 10,
+            marginRight: 12,
         },
         pendingPost: {
             opacity: 0.5,
@@ -357,7 +304,8 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         displayName: {
             color: theme.centerChannelColor,
             fontSize: 15,
-            fontWeight: '600',
+            fontWeight: 'bold',
+            opacity: 0.8,
             flexGrow: 1,
             paddingVertical: 2,
         },

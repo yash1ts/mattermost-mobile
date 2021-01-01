@@ -3,18 +3,18 @@
 
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {Platform, ScrollView, View} from 'react-native';
+import {Platform, ScrollView, Text, View} from 'react-native';
 import {intlShape} from 'react-intl';
 import HWKeyboardEvent from 'react-native-hw-keyboard-event';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import Autocomplete from '@components/autocomplete';
+import CompassIcon from '@components/compass_icon';
 import PostInput from '@components/post_draft/post_input';
 import QuickActions from '@components/post_draft/quick_actions';
 import SendAction from '@components/post_draft/send_action';
 import Typing from '@components/post_draft/typing';
 import Uploads from '@components/post_draft/uploads';
-import DEVICE from '@constants/device';
 import {CHANNEL_POST_TEXTBOX_CURSOR_CHANGE, CHANNEL_POST_TEXTBOX_VALUE_CHANGE, IS_REACTION_REGEX} from '@constants/post_draft';
 import {NOTIFY_ALL_MEMBERS} from '@constants/view';
 import EventEmitter from '@mm-redux/utils/event_emitter';
@@ -22,8 +22,9 @@ import EphemeralStore from '@store/ephemeral_store';
 import * as DraftUtils from '@utils/draft';
 import {confirmOutOfOfficeDisabled} from '@utils/status';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
-
+import {TouchableOpacity} from 'react-native-gesture-handler';
 const AUTOCOMPLETE_MARGIN = 20;
+const AUTOCOMPLETE_MAX_HEIGHT = 200;
 const HW_SHIFT_ENTER_TEXT = Platform.OS === 'ios' ? '\n' : '';
 const HW_EVENT_IN_SCREEN = ['Channel', 'Thread'];
 
@@ -60,6 +61,8 @@ export default class DraftInput extends PureComponent {
         channelMemberCountsByGroup: PropTypes.object,
         groupsWithAllowReference: PropTypes.object,
         addRecentUsedEmojisInMessage: PropTypes.func.isRequired,
+        replyPopup: PropTypes.object,
+        setReplyPopup: PropTypes.func.isRequired,
     };
 
     static defaultProps = {
@@ -87,6 +90,10 @@ export default class DraftInput extends PureComponent {
         };
     }
 
+    closeReplyPopup = () => {
+        this.props.setReplyPopup();
+    }
+
     componentDidMount() {
         const {getChannelMemberCountsByGroup, channelId, isTimezoneEnabled, useGroupMentions, value} = this.props;
 
@@ -102,16 +109,19 @@ export default class DraftInput extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        const {channelId, rootId, value, files, useGroupMentions, getChannelMemberCountsByGroup, isTimezoneEnabled} = this.props;
+        const {channelId, rootId, value, files, useGroupMentions, getChannelMemberCountsByGroup, isTimezoneEnabled, replyPopup} = this.props;
         const diffChannel = channelId !== prevProps?.channelId;
         const diffTimezoneEnabled = isTimezoneEnabled !== prevProps?.isTimezoneEnabled;
-
         if (this.input.current) {
             const diffThread = rootId !== prevProps.rootId;
             if (diffChannel || diffThread) {
                 const trimmed = value.trim();
                 this.setInputValue(trimmed);
                 this.updateQuickActionValue(trimmed);
+            }
+
+            if (replyPopup?.message && !prevProps.replyPopup?.message) {
+                this.input.current.focus();
             }
         }
 
@@ -148,8 +158,8 @@ export default class DraftInput extends PureComponent {
         return messageLength > 0;
     };
 
-    doSubmitMessage = (message = null) => {
-        const {createPost, currentUserId, channelId, files, handleClearFiles, rootId} = this.props;
+    doSubmitMessage = (message = null, rootId) => {
+        const {createPost, currentUserId, channelId, files, handleClearFiles} = this.props;
         let value = message;
         if (!value) {
             value = this.input.current?.getValue() || '';
@@ -160,6 +170,7 @@ export default class DraftInput extends PureComponent {
             channel_id: channelId,
             root_id: rootId,
             parent_id: rootId,
+            props: {reply_message: this.props.replyPopup?.message},
             message: value,
         };
 
@@ -234,7 +245,7 @@ export default class DraftInput extends PureComponent {
 
         const value = this.input.current.getValue();
         this.input.current.resetTextInput();
-
+        const rootId = this.props.replyPopup ? this.props.replyPopup.root_id : this.props.rootId;
         requestAnimationFrame(() => {
             if (!this.isSendButtonEnabled()) {
                 this.input.current.setValue(value);
@@ -243,12 +254,12 @@ export default class DraftInput extends PureComponent {
 
             this.setState({sendingMessage: true});
 
-            const {channelId, files, handleClearFailedFiles, rootId} = this.props;
+            const {channelId, files, handleClearFailedFiles} = this.props;
 
             const isReactionMatch = value.match(IS_REACTION_REGEX);
             if (isReactionMatch) {
                 const emoji = isReactionMatch[2];
-                this.sendReaction(emoji);
+                this.sendReaction(emoji, rootId);
                 return;
             }
 
@@ -262,12 +273,12 @@ export default class DraftInput extends PureComponent {
                 const accept = () => {
                     // Remove only failed files
                     handleClearFailedFiles(channelId, rootId);
-                    this.sendMessage(value);
+                    this.sendMessage(value, rootId);
                 };
 
                 DraftUtils.alertAttachmentFail(formatMessage, accept, cancel);
             } else {
-                this.sendMessage(value);
+                this.sendMessage(value, rootId);
             }
         });
     }
@@ -288,9 +299,9 @@ export default class DraftInput extends PureComponent {
         this.setState({channelTimezoneCount: data?.length || 0});
     };
 
-    sendCommand = async (msg) => {
+    sendCommand = async (msg, rootId) => {
         const {intl} = this.context;
-        const {channelId, executeCommand, rootId, userIsOutOfOffice} = this.props;
+        const {channelId, executeCommand, userIsOutOfOffice} = this.props;
 
         const status = DraftUtils.getStatusFromSlashCommand(msg);
         if (userIsOutOfOffice && DraftUtils.isStatusSlashCommand(status)) {
@@ -312,7 +323,7 @@ export default class DraftInput extends PureComponent {
         this.input.current.changeDraft('');
     };
 
-    sendMessage = (value = '') => {
+    sendMessage = (value = '', rootId) => {
         const {channelMemberCountsByGroup, enableConfirmNotificationsToChannel, groupsWithAllowReference, membersCount, useGroupMentions, useChannelMentions} = this.props;
         const notificationsToChannel = enableConfirmNotificationsToChannel && useChannelMentions;
         const notificationsToGroups = enableConfirmNotificationsToChannel && useGroupMentions;
@@ -328,15 +339,15 @@ export default class DraftInput extends PureComponent {
             if (memberNotifyCount > 0) {
                 this.showSendToGroupsAlert(Array.from(groupMentionsSet), memberNotifyCount, channelTimezoneCount, value);
             } else {
-                this.doSubmitMessage(value);
+                this.doSubmitMessage(value, rootId);
             }
         } else {
-            this.doSubmitMessage(value);
+            this.doSubmitMessage(value, rootId);
         }
     };
 
-    sendReaction = (emoji) => {
-        const {addReactionToLatestPost, rootId} = this.props;
+    sendReaction = (emoji, rootId) => {
+        const {addReactionToLatestPost} = this.props;
         addReactionToLatestPost(emoji, rootId);
 
         this.setInputValue('');
@@ -399,6 +410,22 @@ export default class DraftInput extends PureComponent {
         setStatus({user_id: currentUserId, status});
     };
 
+    renderReplyPopup = (style, replyPopup) => (
+        <View style={style.replyContainer}>
+            <View style={style.replyHeader}>
+                <Text>{replyPopup.user_name + ':'} </Text>
+                <TouchableOpacity
+                    onPress={this.closeReplyPopup}
+                >
+                    <CompassIcon
+                        name='close'
+                        style={style.closeButton}
+                    />
+                </TouchableOpacity>
+            </View>
+            <Text >{replyPopup.message}</Text>
+        </View>)
+
     render() {
         const {
             testID,
@@ -413,29 +440,21 @@ export default class DraftInput extends PureComponent {
             registerTypingAnimation,
             rootId,
             theme,
+            replyPopup,
         } = this.props;
         const postInputTestID = `${testID}.post.input`;
         const quickActionsTestID = `${testID}.quick_actions`;
         const sendActionTestID = `${testID}.send_action`;
         const style = getStyleSheet(theme);
-
         return (
             <>
                 <Typing
                     theme={theme}
                     registerTypingAnimation={registerTypingAnimation}
                 />
-                {Platform.OS === 'android' &&
-                <Autocomplete
-                    cursorPositionEvent={cursorPositionEvent}
-                    maxHeight={Math.min(this.state.top - AUTOCOMPLETE_MARGIN, DEVICE.AUTOCOMPLETE_MAX_HEIGHT)}
-                    onChangeText={this.handleInputQuickAction}
-                    valueEvent={valueEvent}
-                    rootId={rootId}
-                    channelId={channelId}
-                    offsetY={0}
-                />
-                }
+
+                {replyPopup?.message && this.renderReplyPopup(style, replyPopup)}
+
                 <SafeAreaView
                     edges={['left', 'right']}
                     onLayout={this.handleLayout}
@@ -491,6 +510,16 @@ export default class DraftInput extends PureComponent {
                         </View>
                     </ScrollView>
                 </SafeAreaView>
+                {Platform.OS === 'android' &&
+                <Autocomplete
+                    cursorPositionEvent={cursorPositionEvent}
+                    maxHeight={Math.min(this.state.top - AUTOCOMPLETE_MARGIN, AUTOCOMPLETE_MAX_HEIGHT)}
+                    onChangeText={this.handleInputQuickAction}
+                    valueEvent={valueEvent}
+                    rootId={rootId}
+                    channelId={channelId}
+                />
+                }
             </>
         );
     }
@@ -508,9 +537,27 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
                 android: 2,
             }),
         },
+        replyHeader: {
+            flexDirection: 'row', justifyContent: 'space-between',
+        },
+        replyContainer: {
+            backgroundColor: '#abd',
+            borderTopRightRadius: 5,
+            borderTopLeftRadius: 5,
+            position: 'absolute',
+            left: 8,
+            right: 8,
+            bottom: 86,
+            zIndex: 1,
+            paddingHorizontal: 10,
+            paddingVertical: 8,
+        },
         inputContainer: {
             flex: 1,
             flexDirection: 'column',
+        },
+        closeButton: {
+            alignSelf: 'flex-end', fontSize: 16,
         },
         inputContentContainer: {
             alignItems: 'stretch',

@@ -4,6 +4,7 @@
 import {connect} from 'react-redux';
 
 import {executeCommand} from '@actions/views/command';
+import {setReplyPopup} from '@mm-redux/actions/reply_popup';
 import {addReactionToLatestPost, addRecentUsedEmojisInMessage} from '@actions/views/emoji';
 import {handleClearFiles, handleClearFailedFiles} from '@actions/views/file_upload';
 import {MAX_MESSAGE_LENGTH_FALLBACK} from '@constants/post_draft';
@@ -24,6 +25,7 @@ import {getCurrentChannelDraft, getThreadDraft} from '@selectors/views';
 import PostDraft from './draft_input';
 
 export function mapStateToProps(state, ownProps) {
+    const replyPopup = state.entities?.replyPopup;
     const channelId = ownProps.channelId;
     const currentDraft = ownProps.rootId ? getThreadDraft(state, ownProps.rootId) : getCurrentChannelDraft(state);
     const config = getConfig(state);
@@ -89,6 +91,7 @@ export function mapStateToProps(state, ownProps) {
         groupsWithAllowReference,
         useGroupMentions,
         channelMemberCountsByGroup,
+        replyPopup,
     };
 }
 
@@ -102,6 +105,7 @@ const mapDispatchToProps = {
     setStatus,
     getChannelMemberCountsByGroup,
     addRecentUsedEmojisInMessage,
+    setReplyPopup,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {forwardRef: true})(PostDraft);

@@ -21,6 +21,7 @@ import schemes from './schemes';
 import groups from './groups';
 import bots from './bots';
 import channelCategories from './channel_categories';
+import replyPopup from './reply_popup';
 
 export default combineReducers({
     general,
@@ -41,4 +42,5 @@ export default combineReducers({
     groups,
     bots,
     channelCategories,
+    replyPopup,
 });

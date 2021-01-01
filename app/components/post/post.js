@@ -30,6 +30,9 @@ import {t} from '@utils/i18n';
 import {preventDoubleTap} from '@utils/tap';
 import {fromAutoResponder} from '@utils/general';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
+import FormattedText from '@components/formatted_text';
+import {Text} from 'react-native-elements';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 export default class Post extends PureComponent {
     static propTypes = {
@@ -38,6 +41,7 @@ export default class Post extends PureComponent {
             createPost: PropTypes.func.isRequired,
             insertToDraft: PropTypes.func.isRequired,
             removePost: PropTypes.func.isRequired,
+            setReplyPopup: PropTypes.func.isRequired,
         }).isRequired,
         channelIsReadOnly: PropTypes.bool,
         currentUserId: PropTypes.string.isRequired,
@@ -71,6 +75,8 @@ export default class Post extends PureComponent {
         isBot: PropTypes.bool,
         previousPostExists: PropTypes.bool,
         beforePrevPostUserId: PropTypes.string,
+        commentedOnDisplayName: PropTypes.string,
+        displayName: PropTypes.string,
     };
 
     static defaultProps = {
@@ -237,6 +243,58 @@ export default class Post extends PureComponent {
         }
     };
 
+    renderCommentedOnMessage = () => {
+        const {
+            beforePrevPostUserId,
+            commentedOnDisplayName,
+            post,
+            previousPostExists,
+            renderReplies,
+            theme,
+        } = this.props;
+
+        if (!renderReplies || !commentedOnDisplayName || (!previousPostExists && post.user_id === beforePrevPostUserId)) {
+            return null;
+        }
+
+        const style = getStyleSheet(theme);
+        const displayName = commentedOnDisplayName;
+
+        let name;
+        if (displayName) {
+            name = displayName;
+        } else {
+            name = (
+                <FormattedText
+                    id='channel_loader.someone'
+                    defaultMessage='Someone'
+                />
+            );
+        }
+
+        let apostrophe;
+        if (displayName && displayName.slice(-1) === 's') {
+            apostrophe = '\'';
+        } else {
+            apostrophe = '\'s';
+        }
+
+        return (
+            <View style={style.commentedOnContainer}>
+                <FormattedText
+                    id='post_body.commentedOn'
+                    defaultMessage='Commented on {name}{apostrophe} message: '
+                    values={{
+                        name,
+                        apostrophe,
+                    }}
+                    style={style.commentedOn}
+                />
+                <Text>{post.props?.reply_message}</Text>
+            </View>
+        );
+    };
+
     render() {
         const {
             testID,
@@ -266,6 +324,9 @@ export default class Post extends PureComponent {
             location,
             previousPostExists,
             beforePrevPostUserId,
+            currentUserId,
+            commentedOnDisplayName,
+            displayName,
         } = this.props;
 
         if (!post) {
@@ -274,7 +335,7 @@ export default class Post extends PureComponent {
 
         const style = getStyleSheet(theme);
         const isReplyPost = this.isReplyPost();
-        const mergeMessage = consecutivePost && !hasComments && !isBot;
+        const mergeMessage = (consecutivePost && !hasComments && !isBot) || (post.props.reply_message && !commentedOnDisplayName);
         const highlightFlagged = isFlagged && !skipFlaggedHeader;
         const hightlightPinned = post.is_pinned && !skipPinnedHeader;
 
@@ -322,6 +383,34 @@ export default class Post extends PureComponent {
         const rightColumnStyle = [style.rightColumn, (commentedOnPost && isLastReply && style.rightColumnPadding)];
         const itemTestID = `${testID}.${post.id}`;
 
+        const postContainerStyle = {...style.postContainerStyle};
+        if (currentUserId === post.user_id) {
+            postContainerStyle.backgroundColor = '#0f0';
+        } else {
+            postContainerStyle.backgroundColor = '#00f';
+        }
+        if (mergeMessage) {
+            postContainerStyle.borderTopStartRadius = 5;
+            postContainerStyle.marginTop = 4;
+        }
+        const LeftActions = () => {
+            return (
+                <View
+                    style={{margin: 0.1}}
+                />
+            );
+        };
+
+        const openReply = () => {
+            const trimmed = post.message.length > 500 ? post.message.slice(0, 500) + '...' : post.message;
+            const passProp = {
+                root_id: (post.root_id || post.id),
+                user_name: displayName,
+                message: trimmed,
+            };
+            this.props.actions.setReplyPopup(passProp);
+        };
+
         return (
             <View
                 testID={testID}
@@ -332,7 +421,8 @@ export default class Post extends PureComponent {
                     onPress={this.handlePress}
                     onLongPress={this.showPostOptions}
                     delayLongPress={200}
-                    underlayColor={changeOpacity(theme.centerChannelColor, 0.1)}
+
+                    // underlayColor={changeOpacity(theme.centerChannelColor, 0.1)}
                     cancelTouchOnPanning={true}
                 >
                     <>
@@ -349,25 +439,34 @@ export default class Post extends PureComponent {
                             {userProfile}
                             <View style={rightColumnStyle}>
                                 {postHeader}
-                                <PostBody
-                                    ref={this.postBodyRef}
-                                    highlight={highlight}
-                                    channelIsReadOnly={channelIsReadOnly}
-                                    isLastPost={isLastPost}
-                                    isSearchResult={isSearchResult}
-                                    onFailedPostPress={this.handleFailedPostPress}
-                                    onHashtagPress={onHashtagPress}
-                                    onPermalinkPress={onPermalinkPress}
-                                    onPress={this.handlePress}
-                                    post={post}
-                                    replyBarStyle={replyBarStyle}
-                                    managedConfig={managedConfig}
-                                    isFlagged={isFlagged}
-                                    isReplyPost={isReplyPost}
-                                    showAddReaction={showAddReaction}
-                                    showLongPost={showLongPost}
-                                    location={location}
-                                />
+                                <Swipeable
+                                    renderLeftActions={LeftActions}
+                                    onSwipeableOpen={openReply}
+                                    friction={1.5}
+                                >
+                                    <View style={postContainerStyle}>
+                                        {this.renderCommentedOnMessage()}
+                                        <PostBody
+                                            ref={this.postBodyRef}
+                                            highlight={highlight}
+                                            channelIsReadOnly={channelIsReadOnly}
+                                            isLastPost={isLastPost}
+                                            isSearchResult={isSearchResult}
+                                            onFailedPostPress={this.handleFailedPostPress}
+                                            onHashtagPress={onHashtagPress}
+                                            onPermalinkPress={onPermalinkPress}
+                                            onPress={this.handlePress}
+                                            post={post}
+                                            replyBarStyle={replyBarStyle}
+                                            managedConfig={managedConfig}
+                                            isFlagged={isFlagged}
+                                            isReplyPost={isReplyPost}
+                                            showAddReaction={showAddReaction}
+                                            showLongPost={showLongPost}
+                                            location={location}
+                                        />
+                                    </View>
+                                </Swipeable>
                             </View>
                         </View>
                     </>
@@ -383,6 +482,18 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             overflow: 'hidden',
             flex: 1,
         },
+        postContainerStyle: {
+            borderBottomStartRadius: 5,
+            borderBottomEndRadius: 5,
+            borderTopEndRadius: 5,
+            padding: 5,
+            marginRight: 12,
+        },
+        commentedOnContainer: {
+            borderRadius: 5,
+            backgroundColor: '#abd',
+            padding: 5,
+        },
         container: {
             flexDirection: 'row',
         },
@@ -397,7 +508,8 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         rightColumn: {
             flex: 1,
             flexDirection: 'column',
-            marginRight: 12,
+
+            // marginRight: 12,
         },
         rightColumnPadding: {
             paddingBottom: 3,
@@ -424,12 +536,13 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             }),
         },
         replyBar: {
-            backgroundColor: theme.centerChannelColor,
-            opacity: 0.1,
-            marginLeft: 1,
-            marginRight: 7,
-            width: 3,
-            flexBasis: 3,
+
+            // backgroundColor: theme.centerChannelColor,
+            // opacity: 0.1,
+            // marginLeft: 1,
+            // marginRight: 7,
+            // width: 3,
+            // flexBasis: 3,
         },
         replyBarFirst: {
             paddingTop: 10,
