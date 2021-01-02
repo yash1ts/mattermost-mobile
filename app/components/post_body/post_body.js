@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import {
     Keyboard,
     ScrollView,
+    Text,
     View,
 } from 'react-native';
 import {intlShape} from 'react-intl';
@@ -28,6 +29,7 @@ import {showModalOverCurrentContext} from '@actions/navigation';
 import telemetry from '@telemetry';
 
 import {renderSystemMessage} from './system_message_helpers';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 let FileAttachmentList;
 let PostAddChannelMember;
@@ -38,6 +40,9 @@ const SHOW_MORE_HEIGHT = 60;
 
 export default class PostBody extends PureComponent {
     static propTypes = {
+        actions: PropTypes.shape({
+            setReplyPopup: PropTypes.func.isRequired,
+        }).isRequired,
         canDelete: PropTypes.bool,
         channelIsReadOnly: PropTypes.bool.isRequired,
         deviceHeight: PropTypes.number.isRequired,
@@ -73,6 +78,10 @@ export default class PostBody extends PureComponent {
         theme: PropTypes.object,
         location: PropTypes.string,
         mentionKeys: PropTypes.array,
+        displayName: PropTypes.string,
+        commentedOnDisplayName: PropTypes.string,
+        mergeMessage: PropTypes.bool,
+        currentUserId: PropTypes.string,
     };
 
     static defaultProps = {
@@ -324,6 +333,55 @@ export default class PostBody extends PureComponent {
         );
     };
 
+    renderCommentedOnMessage = () => {
+        const {
+            commentedOnDisplayName,
+            post,
+            theme,
+        } = this.props;
+
+        if (!commentedOnDisplayName) {
+            return null;
+        }
+
+        const style = getStyleSheet(theme);
+        const displayName = commentedOnDisplayName;
+
+        let name;
+        if (displayName) {
+            name = displayName;
+        } else {
+            name = (
+                <FormattedText
+                    id='channel_loader.someone'
+                    defaultMessage='Someone'
+                />
+            );
+        }
+
+        let apostrophe;
+        if (displayName && displayName.slice(-1) === 's') {
+            apostrophe = '\'';
+        } else {
+            apostrophe = '\'s';
+        }
+
+        return (
+            <View style={style.commentedOnContainer}>
+                <FormattedText
+                    id='post_body.commentedOn'
+                    defaultMessage='Commented on {name}{apostrophe} message: '
+                    values={{
+                        name,
+                        apostrophe,
+                    }}
+                    style={style.commentedOn}
+                />
+                <Text>{post.props?.reply_message}</Text>
+            </View>
+        );
+    };
+
     render() {
         const {
             hasBeenDeleted,
@@ -350,6 +408,9 @@ export default class PostBody extends PureComponent {
             showLongPost,
             theme,
             mentionKeys,
+            displayName,
+            currentUserId,
+            mergeMessage,
         } = this.props;
         const {isLongPost, maxHeight} = this.state;
         const style = getStyleSheet(theme);
@@ -357,6 +418,24 @@ export default class PostBody extends PureComponent {
         const textStyles = getMarkdownTextStyles(theme);
         const messageStyle = isSystemMessage ? [style.message, style.systemMessage] : style.message;
         const isPendingOrFailedPost = isPending || isFailed;
+
+        const LeftActions = () => {
+            return (
+                <View
+                    style={{margin: 0.1}}
+                />
+            );
+        };
+
+        const openReply = () => {
+            const trimmed = post.message.length > 500 ? post.message.slice(0, 500) + '...' : post.message;
+            const passProp = {
+                root_id: (post.root_id || post.id),
+                user_name: displayName,
+                message: trimmed,
+            };
+            this.props.actions.setReplyPopup(passProp);
+        };
 
         const messageStyles = {messageStyle, textStyles};
         const intl = this.context.intl;
@@ -425,25 +504,46 @@ export default class PostBody extends PureComponent {
             );
         }
 
+        const postContainerStyle = {...style.postContainerStyle};
+        if (currentUserId === post.user_id) {
+            postContainerStyle.backgroundColor = '#2F2C4A';
+        } else {
+            postContainerStyle.backgroundColor = '#6699ff';
+            postContainerStyle.opacity = 0.5;
+        }
+        if (mergeMessage) {
+            postContainerStyle.borderTopStartRadius = 5;
+            postContainerStyle.marginTop = 4;
+        }
+
         if (!hasBeenDeleted) {
             body = (
                 <View style={style.messageBody}>
-                    <ScrollView
-                        style={{maxHeight: (showLongPost ? null : maxHeight), overflow: 'hidden'}}
-                        scrollEnabled={false}
-                        showsVerticalScrollIndicator={false}
-                        showsHorizontalScrollIndicator={false}
-                        keyboardShouldPersistTaps={'always'}
+                    <Swipeable
+                        renderLeftActions={LeftActions}
+                        onSwipeableOpen={openReply}
+                        friction={2}
                     >
-                        {messageComponent}
-                    </ScrollView>
-                    {isLongPost &&
-                    <ShowMoreButton
-                        highlight={highlight}
-                        onPress={this.openLongPost}
-                        theme={theme}
-                    />
-                    }
+                        <View style={postContainerStyle}>
+                            {this.renderCommentedOnMessage()}
+                            <ScrollView
+                                style={{maxHeight: (showLongPost ? null : maxHeight), overflow: 'hidden'}}
+                                scrollEnabled={false}
+                                showsVerticalScrollIndicator={false}
+                                showsHorizontalScrollIndicator={false}
+                                keyboardShouldPersistTaps={'always'}
+                            >
+                                {messageComponent}
+                            </ScrollView>
+                            {isLongPost &&
+                            <ShowMoreButton
+                                highlight={highlight}
+                                onPress={this.openLongPost}
+                                theme={theme}
+                            />
+                            }
+                        </View>
+                    </Swipeable>
                     {this.renderPostAdditionalContent(blockStyles, messageStyle, textStyles)}
                     {this.renderFileAttachments()}
                     {this.renderReactions()}
@@ -479,6 +579,19 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             paddingBottom: 2,
             paddingTop: 2,
             flex: 1,
+        },
+        commentedOnContainer: {
+            borderRadius: 5,
+            backgroundColor: '#07f567',
+            opacity: 0.8,
+            padding: 5,
+        },
+        postContainerStyle: {
+            borderBottomStartRadius: 5,
+            borderBottomEndRadius: 5,
+            borderTopEndRadius: 5,
+            padding: 5,
+            marginRight: 12,
         },
         messageContainer: {
             width: '100%',

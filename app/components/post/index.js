@@ -9,13 +9,11 @@ import {Posts} from '@mm-redux/constants';
 import {isChannelReadOnlyById} from '@mm-redux/selectors/entities/channels';
 import {getPost, makeGetCommentCountForPost, makeIsPostCommentMention} from '@mm-redux/selectors/entities/posts';
 import {getUser, getCurrentUserId} from '@mm-redux/selectors/entities/users';
-import {getMyPreferences, getTheme, getTeammateNameDisplaySetting} from '@mm-redux/selectors/entities/preferences';
+import {getMyPreferences, getTheme} from '@mm-redux/selectors/entities/preferences';
 import {isDateLine, isStartOfNewMessages} from '@mm-redux/utils/post_list';
-import {isPostFlagged, isSystemMessage, isFromWebhook} from '@mm-redux/utils/post_utils';
-import {displayUsername} from '@mm-redux/utils/user_utils';
+import {isPostFlagged, isSystemMessage} from '@mm-redux/utils/post_utils';
 
 import {insertToDraft, setPostTooltipVisible} from 'app/actions/views/channel';
-import {setReplyPopup} from '@mm-redux/actions/reply_popup';
 
 import Post from './post';
 import {getChannel} from '@mm-redux/actions/channels';
@@ -53,20 +51,14 @@ function makeMapStateToProps() {
         const isCommentMention = isPostCommentMention(state, post.id);
         let isFirstReply = true;
         let isLastReply = true;
-        let commentedOnPost = null;
         const channel = getChannel(state, {id: post.channel_id});
-
         if (ownProps.renderReplies && post && post.root_id) {
             if (previousPostId) {
                 if (previousPost && (previousPost.id === post.root_id || previousPost.root_id === post.root_id)) {
                     // Previous post is root post or previous post is in same thread
                     isFirstReply = false;
-                } else {
-                    // Last post is not a comment on the same message
-                    commentedOnPost = getPost(state, post.root_id);
                 }
             }
-
             if (ownProps.nextPostId) {
                 const nextPost = getPost(state, ownProps.nextPostId);
 
@@ -75,21 +67,7 @@ function makeMapStateToProps() {
                 }
             }
         }
-        const commentedOnUserId = commentedOnPost?.user_id; // eslint-disable-line camelcase
-        const commentedOnUser = commentedOnUserId ? getUser(state, commentedOnUserId) : null;
-        const teammateNameDisplay = getTeammateNameDisplaySetting(state);
-
-        let commentedOnDisplayName = '';
-        if (commentedOnUserId) {
-            if (isFromWebhook(commentedOnPost) && commentedOnPost.props.override_username) {
-                commentedOnDisplayName = commentedOnPost.props.override_username;
-            } else {
-                commentedOnDisplayName = displayUsername(commentedOnUser, teammateNameDisplay);
-            }
-        }
-
         return {
-            commentedOnDisplayName,
             channelIsReadOnly: isChannelReadOnlyById(state, post.channel_id),
             channelIsArchived: channel ? channel.delete_at !== 0 : false,
             currentUserId,
@@ -99,13 +77,11 @@ function makeMapStateToProps() {
             isLastReply,
             consecutivePost: isConsecutivePost(post, previousPost),
             hasComments: getCommentCountForPost(state, {post}) > 0,
-            commentedOnPost,
             theme: getTheme(state),
             isFlagged: isPostFlagged(post.id, myPreferences),
             isCommentMention,
             previousPostExists: Boolean(previousPost),
             beforePrevPostUserId: (beforePrevPost ? beforePrevPost.user_id : null),
-            displayName: displayUsername(user, teammateNameDisplay),
         };
     };
 }
@@ -115,7 +91,6 @@ function mapDispatchToProps(dispatch) {
         actions: bindActionCreators({
             createPost,
             removePost,
-            setReplyPopup,
             setPostTooltipVisible,
             insertToDraft,
         }, dispatch),

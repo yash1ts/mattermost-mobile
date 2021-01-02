@@ -245,7 +245,7 @@ export default class DraftInput extends PureComponent {
 
         const value = this.input.current.getValue();
         this.input.current.resetTextInput();
-        const rootId = this.props.replyPopup ? this.props.replyPopup.root_id : this.props.rootId;
+        const rootId = (this.props.replyPopup.root_id || this.props.rootId);
         requestAnimationFrame(() => {
             if (!this.isSendButtonEnabled()) {
                 this.input.current.setValue(value);

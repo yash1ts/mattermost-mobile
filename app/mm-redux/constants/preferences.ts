@@ -127,7 +127,7 @@ const Preferences: Dictionary<any> = {
         } as Theme,
         windows10: {
             type: 'Windows Dark',
-            sidebarBg: '#171717',
+            sidebarBg: '#000000',
             sidebarText: '#ffffff',
             sidebarUnreadText: '#ffffff',
             sidebarTextHoverBg: '#302e30',
@@ -141,7 +141,7 @@ const Preferences: Dictionary<any> = {
             mentionBg: '#0177e7',
             mentionBj: '#0177e7',
             mentionColor: '#ffffff',
-            centerChannelBg: '#1f1f1f',
+            centerChannelBg: '#000000',
             centerChannelColor: '#dddddd',
             newMessageSeparator: '#cc992d',
             linkColor: '#0d93ff',
