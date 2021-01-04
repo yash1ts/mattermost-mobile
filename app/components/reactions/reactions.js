@@ -102,7 +102,13 @@ export default class Reactions extends PureComponent {
 
             return acc;
         }, new Map());
-
+        const views = reactionsByName.get('mattermost')?.map((r) => {
+            return r.user_id;
+        });
+        reactionsByName.delete('mattermost');
+        if (!views?.includes(currentUserId)) {
+            this.props.actions.addReaction(postId, 'mattermost');
+        }
         return Array.from(reactionsByName.keys()).map((r) => {
             return (
                 <Reaction
@@ -144,26 +150,27 @@ export default class Reactions extends PureComponent {
                 </TouchableWithFeedback>
             );
         }
+        const reactionComponents = this.renderReactions();
 
         const reactionElements = [];
         switch (position) {
         case 'right':
             reactionElements.push(
-                this.renderReactions(),
+                reactionComponents,
                 addMoreReactions,
             );
             break;
         case 'left':
             reactionElements.push(
                 addMoreReactions,
-                this.renderReactions(),
+                reactionComponents,
             );
             break;
         }
 
         return (
             <View style={styles.reactionsContainer}>
-                {reactionElements}
+                {reactionComponents.length !== 0 && reactionElements}
             </View>
         );
     }

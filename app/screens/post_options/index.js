@@ -25,7 +25,6 @@ import {canEditPost} from '@mm-redux/utils/post_utils';
 import {isMinimumServerVersion} from '@mm-redux/utils/helpers';
 
 import {MAX_ALLOWED_REACTIONS} from 'app/constants/emoji';
-import {THREAD} from 'app/constants/screen';
 import {addReaction} from 'app/actions/views/emoji';
 import {getDimensions} from 'app/selectors/device';
 
@@ -48,7 +47,7 @@ export function makeMapStateToProps() {
 
         let canMarkAsUnread = true;
         let canAddReaction = true;
-        let canReply = true;
+        const canReply = false;
         let canCopyPermalink = true;
         let canCopyText = false;
         let canEdit = false;
@@ -57,18 +56,18 @@ export function makeMapStateToProps() {
         let canFlag = true;
         let canPin = true;
 
-        let canPost = true;
-        if (isMinimumServerVersion(serverVersion, 5, 22)) {
-            canPost = haveIChannelPermission(
-                state,
-                {
-                    channel: post.channel_id,
-                    team: channel.team_id,
-                    permission: Permissions.CREATE_POST,
-                    default: true,
-                },
-            );
-        }
+        // let canPost = true;
+        // if (isMinimumServerVersion(serverVersion, 5, 22)) {
+        //     canPost = haveIChannelPermission(
+        //         state,
+        //         {
+        //             channel: post.channel_id,
+        //             team: channel.team_id,
+        //             permission: Permissions.CREATE_POST,
+        //             default: true,
+        //         },
+        //     );
+        // }
 
         if (hasNewPermissions(state)) {
             canAddReaction = haveIChannelPermission(state, {
@@ -79,13 +78,14 @@ export function makeMapStateToProps() {
             });
         }
 
-        if (ownProps.location === THREAD) {
-            canReply = false;
-        }
+        // if (ownProps.location === THREAD) {
+        //     canReply = false;
+        // }
 
         if (channelIsArchived || ownProps.channelIsReadOnly) {
             canAddReaction = false;
-            canReply = false;
+
+            // canReply = false;
             canDelete = false;
             canPin = false;
         } else {
@@ -97,13 +97,14 @@ export function makeMapStateToProps() {
             }
         }
 
-        if (!canPost) {
-            canReply = false;
-        }
+        // if (!canPost) {
+        //     canReply = false;
+        // }
 
         if (ownProps.isSystemMessage) {
             canAddReaction = false;
-            canReply = false;
+
+            // canReply = false;
             canCopyPermalink = false;
             canEdit = false;
             canPin = false;

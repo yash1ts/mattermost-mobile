@@ -7,7 +7,7 @@ import {bindActionCreators} from 'redux';
 import {createPost, removePost} from '@mm-redux/actions/posts';
 import {Posts} from '@mm-redux/constants';
 import {isChannelReadOnlyById} from '@mm-redux/selectors/entities/channels';
-import {getPost, makeGetCommentCountForPost, makeIsPostCommentMention} from '@mm-redux/selectors/entities/posts';
+import {getGetViewsForPost, getPost, makeGetCommentCountForPost, makeIsPostCommentMention} from '@mm-redux/selectors/entities/posts';
 import {getUser, getCurrentUserId} from '@mm-redux/selectors/entities/users';
 import {getMyPreferences, getTheme} from '@mm-redux/selectors/entities/preferences';
 import {isDateLine, isStartOfNewMessages} from '@mm-redux/utils/post_list';
@@ -44,6 +44,7 @@ function makeMapStateToProps() {
         const previousPostId = (isStartOfNewMessages(ownProps.previousPostId) || isDateLine(ownProps.previousPostId)) ? ownProps.beforePrevPostId : ownProps.previousPostId;
         const previousPost = getPost(state, previousPostId);
         const beforePrevPost = getPost(state, ownProps.beforePrevPostId);
+        const views = getGetViewsForPost(state, post.id);
 
         const myPreferences = getMyPreferences(state);
         const currentUserId = getCurrentUserId(state);
@@ -82,6 +83,7 @@ function makeMapStateToProps() {
             isCommentMention,
             previousPostExists: Boolean(previousPost),
             beforePrevPostUserId: (beforePrevPost ? beforePrevPost.user_id : null),
+            views,
         };
     };
 }

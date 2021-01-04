@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import {
     Keyboard,
     Platform,
+    Text,
     View,
     ViewPropTypes,
 } from 'react-native';
@@ -30,6 +31,7 @@ import {t} from '@utils/i18n';
 import {preventDoubleTap} from '@utils/tap';
 import {fromAutoResponder} from '@utils/general';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
+import {formatReactionValue} from '@utils/reaction';
 
 export default class Post extends PureComponent {
     static propTypes = {
@@ -73,6 +75,7 @@ export default class Post extends PureComponent {
         beforePrevPostUserId: PropTypes.string,
         commentedOnDisplayName: PropTypes.string,
         displayName: PropTypes.string,
+        views: PropTypes.number,
     };
 
     static defaultProps = {
@@ -268,6 +271,7 @@ export default class Post extends PureComponent {
             location,
             previousPostExists,
             beforePrevPostUserId,
+            views,
         } = this.props;
 
         if (!post) {
@@ -324,6 +328,13 @@ export default class Post extends PureComponent {
         const rightColumnStyle = [style.rightColumn, (commentedOnPost && isLastReply && style.rightColumnPadding)];
         const itemTestID = `${testID}.${post.id}`;
 
+        const viewsStyle = {...style.viewsStyle};
+        if (postHeader) {
+            viewsStyle.top = 42;
+        } else {
+            viewsStyle.top = 0;
+        }
+
         return (
             <View
                 testID={testID}
@@ -352,6 +363,12 @@ export default class Post extends PureComponent {
                             {userProfile}
                             <View style={rightColumnStyle}>
                                 {postHeader}
+                                {views !== 0 && <View style={viewsStyle}>
+                                    <CompassIcon
+                                        name='eye-outline'
+                                    />
+                                    <Text style={{margin: 5}}>{formatReactionValue(views)}</Text>
+                                </View>}
                                 <PostBody
                                     ref={this.postBodyRef}
                                     highlight={highlight}
@@ -389,6 +406,15 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         },
         container: {
             flexDirection: 'row',
+        },
+        viewsStyle: {
+            height: 30,
+            width: 30,
+            position: 'absolute',
+            left: -38,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
         },
         pendingPost: {
             opacity: 0.5,

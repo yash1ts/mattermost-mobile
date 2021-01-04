@@ -11,6 +11,7 @@ import {
 import Emoji from 'app/components/emoji';
 import TouchableWithFeedback from 'app/components/touchable_with_feedback';
 import {changeOpacity, makeStyleSheetFromTheme} from 'app/utils/theme';
+import { formatReactionValue } from '@utils/reaction';
 
 export default class Reaction extends PureComponent {
     static propTypes = {
@@ -52,7 +53,7 @@ export default class Reaction extends PureComponent {
                     customEmojiStyle={{marginHorizontal: 3}}
                     padding={5}
                 />
-                <Text style={styles.count}>{count}</Text>
+                <Text style={styles.count}>{formatReactionValue(count)}</Text>
             </TouchableWithFeedback>
         );
     }

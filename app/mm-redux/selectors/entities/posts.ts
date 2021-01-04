@@ -43,6 +43,19 @@ export function makeGetReactionsForPost(): (b: GlobalState, a: $ID<Post>) => {
     });
 }
 
+export function getGetViewsForPost(state: GlobalState, postId: string): number {
+    const reactions = state.entities.posts.reactions[postId];
+    let views = 0;
+    if (reactions) {
+        Object.keys(reactions).forEach((key) => {
+            if (reactions[key].emoji_name === 'mattermost') {
+                ++views;
+            }
+        });
+    }
+    return views;
+}
+
 export function getOpenGraphMetadata(state: GlobalState): RelationOneToOne<Post, object> {
     return state.entities.posts.openGraph;
 }

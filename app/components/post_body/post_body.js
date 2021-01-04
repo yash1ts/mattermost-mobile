@@ -335,17 +335,16 @@ export default class PostBody extends PureComponent {
 
     renderCommentedOnMessage = () => {
         const {
-            commentedOnDisplayName,
             post,
             theme,
         } = this.props;
 
-        if (!commentedOnDisplayName) {
+        if (!post.props?.reply_user_name) {
             return null;
         }
 
         const style = getStyleSheet(theme);
-        const displayName = commentedOnDisplayName;
+        const displayName = post.props?.reply_user_name;
 
         let name;
         if (displayName) {
@@ -513,7 +512,9 @@ export default class PostBody extends PureComponent {
         }
         if (mergeMessage) {
             postContainerStyle.borderTopStartRadius = 5;
-            postContainerStyle.marginTop = 4;
+        }
+        if (!post.props?.reply_user_name) {
+            postContainerStyle.paddingTop = 8;
         }
 
         if (!hasBeenDeleted) {
@@ -583,6 +584,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         commentedOnContainer: {
             borderRadius: 5,
             backgroundColor: '#07f567',
+            marginBottom: 5,
             opacity: 0.8,
             padding: 5,
         },
@@ -590,7 +592,8 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             borderBottomStartRadius: 5,
             borderBottomEndRadius: 5,
             borderTopEndRadius: 5,
-            padding: 5,
+            paddingHorizontal: 8,
+            paddingBottom: 8,
             marginRight: 12,
         },
         messageContainer: {

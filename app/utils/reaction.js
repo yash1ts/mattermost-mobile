@@ -65,3 +65,24 @@ export function getSortedReactionsForHeader(reactionsByName = {}) {
 export function getUniqueUserIds(reactions = {}) {
     return Object.values(reactions).map((reaction) => reaction.user_id).filter((id, index, arr) => arr.indexOf(id) === index);
 }
+
+export function formatReactionValue(value) {
+    let num = 0;
+    let ext = '';
+    if (value >= 1000000000) {
+        num = value / 1000000000;
+        num = num.toFixed(1);
+        ext = 'B';
+    } else if (value >= 1000000) {
+        num = value / 1000000;
+        num = num.toFixed(1);
+        ext = 'M';
+    } else if (value >= 1000) {
+        num = value / 1000;
+        num = num.toFixed(2);
+        ext = 'K';
+    } else {
+        num = value;
+    }
+    return num + ext;
+}

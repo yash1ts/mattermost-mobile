@@ -154,7 +154,6 @@ export function getPost(postId: string) {
             ]));
             return {error};
         }
-
         dispatch(batchActions([
             receivedPost(post),
             {
@@ -218,7 +217,7 @@ export function createPost(post: Post, files: any[] = []) {
 
         try {
             const created = await Client4.createPost({...newPost, create_at: 0});
-
+            await Client4.addReaction(created.user_id, created.id, 'mattermost');
             actions = [
                 receivedPost({...created, ownPost: true}),
                 {
@@ -236,7 +235,6 @@ export function createPost(post: Post, files: any[] = []) {
                     },
                 },
             ];
-
             if (files) {
                 actions.push({
                     type: FileTypes.RECEIVED_FILES_FOR_POST,
@@ -1256,7 +1254,6 @@ function completePostReceive(post: Post, websocketMessageProps: any) {
         if (post.root_id && !rootPost) {
             dispatch(getPostThread(post.root_id));
         }
-
         dispatch(lastPostActions(post, websocketMessageProps) as any);
     };
 }
@@ -1281,7 +1278,6 @@ export function lastPostActions(post: Post, websocketMessageProps: any) {
         if (shouldIgnorePost(post)) {
             return;
         }
-
         let markAsRead = false;
         let markAsReadOnServer = false;
         if (!isManuallyUnread(getState(), post.channel_id)) {
@@ -1297,7 +1293,6 @@ export function lastPostActions(post: Post, websocketMessageProps: any) {
                 markAsReadOnServer = true;
             }
         }
-
         if (markAsRead) {
             await dispatch(markChannelAsRead(post.channel_id, undefined, markAsReadOnServer));
             await dispatch(markChannelAsViewed(post.channel_id));

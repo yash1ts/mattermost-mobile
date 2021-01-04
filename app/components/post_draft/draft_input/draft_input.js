@@ -170,7 +170,9 @@ export default class DraftInput extends PureComponent {
             channel_id: channelId,
             root_id: rootId,
             parent_id: rootId,
-            props: {reply_message: this.props.replyPopup?.message},
+            props: {
+                reply_user_name: this.props.replyPopup?.user_name,
+                reply_message: this.props.replyPopup?.message},
             message: value,
         };
 

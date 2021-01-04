@@ -3,13 +3,10 @@
 
 import {ReplyPopup} from '@mm-redux/types/reply_popup';
 import ReplyAction from '@mm-redux/action_types/channels';
-import {DispatchFunc} from '@mm-redux/types/actions';
 
 export function setReplyPopup(replyData:ReplyPopup) {
-    return async (dispatch: DispatchFunc) => {
-        dispatch({
-            type: ReplyAction.POPUP_REPLY,
-            data: replyData,
-        });
+    return {
+        type: ReplyAction.POPUP_REPLY,
+        data: replyData,
     };
 }
