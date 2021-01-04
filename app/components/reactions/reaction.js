@@ -11,7 +11,7 @@ import {
 import Emoji from 'app/components/emoji';
 import TouchableWithFeedback from 'app/components/touchable_with_feedback';
 import {changeOpacity, makeStyleSheetFromTheme} from 'app/utils/theme';
-import { formatReactionValue } from '@utils/reaction';
+import {formatReactionValue} from '@utils/reaction';
 
 export default class Reaction extends PureComponent {
     static propTypes = {
