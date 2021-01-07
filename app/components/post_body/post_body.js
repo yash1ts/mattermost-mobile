@@ -337,6 +337,7 @@ export default class PostBody extends PureComponent {
         const {
             post,
             theme,
+            mergeMessage,
         } = this.props;
 
         if (!post.props?.reply_user_name) {
@@ -364,9 +365,14 @@ export default class PostBody extends PureComponent {
         } else {
             apostrophe = '\'s';
         }
-
+        const commentedOnContainer = {...style.commentedOnContainer};
+        if (mergeMessage) {
+            commentedOnContainer.borderTopStartRadius = 5;
+        }
         return (
-            <View style={style.commentedOnContainer}>
+            <View
+                style={commentedOnContainer}
+            >
                 <FormattedText
                     id='post_body.commentedOn'
                     defaultMessage='Commented on {name}{apostrophe} message: '
@@ -505,10 +511,11 @@ export default class PostBody extends PureComponent {
 
         const postContainerStyle = {...style.postContainerStyle};
         if (currentUserId === post.user_id) {
-            postContainerStyle.backgroundColor = '#2F2C4A';
+            postContainerStyle.backgroundColor = '#0077D688';
         } else {
-            postContainerStyle.backgroundColor = '#6699ff';
-            postContainerStyle.opacity = 0.5;
+            postContainerStyle.backgroundColor = '#18183f';
+
+            // postContainerStyle.opacity = 0.5;
         }
         if (mergeMessage) {
             postContainerStyle.borderTopStartRadius = 5;
@@ -582,10 +589,12 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             flex: 1,
         },
         commentedOnContainer: {
-            borderRadius: 5,
-            backgroundColor: '#07f567',
+            borderBottomEndRadius: 5,
+            borderBottomStartRadius: 5,
             marginBottom: 5,
-            opacity: 0.8,
+            backgroundColor: '#fff3',
+            borderTopEndRadius: 5,
+            opacity: 1,
             padding: 5,
         },
         postContainerStyle: {

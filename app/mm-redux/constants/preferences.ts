@@ -44,7 +44,7 @@ const Preferences: Dictionary<any> = {
     TEAMS_ORDER: 'teams_order',
     CATEGORY_THEME: 'theme',
     THEMES: {
-        default: {
+        light: {
             type: 'Mattermost',
             sidebarBg: '#145dbf',
             sidebarText: '#ffffff',
@@ -125,7 +125,7 @@ const Preferences: Dictionary<any> = {
             mentionHighlightLink: '#a4ffeb',
             codeTheme: 'solarized-dark',
         } as Theme,
-        windows10: {
+        default: {
             type: 'Windows Dark',
             sidebarBg: '#000000',
             sidebarText: '#ffffff',
@@ -141,7 +141,7 @@ const Preferences: Dictionary<any> = {
             mentionBg: '#0177e7',
             mentionBj: '#0177e7',
             mentionColor: '#ffffff',
-            centerChannelBg: '#000000',
+            centerChannelBg: '#121212',
             centerChannelColor: '#dddddd',
             newMessageSeparator: '#cc992d',
             linkColor: '#0d93ff',

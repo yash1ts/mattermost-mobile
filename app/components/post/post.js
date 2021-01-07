@@ -366,8 +366,9 @@ export default class Post extends PureComponent {
                                 {views !== 0 && <View style={viewsStyle}>
                                     <CompassIcon
                                         name='eye-outline'
+                                        color='#999'
                                     />
-                                    <Text style={{margin: 5}}>{formatReactionValue(views)}</Text>
+                                    <Text style={style.viewsText}>{formatReactionValue(views)}</Text>
                                 </View>}
                                 <PostBody
                                     ref={this.postBodyRef}
@@ -406,6 +407,11 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         },
         container: {
             flexDirection: 'row',
+        },
+        viewsText: {
+            margin: 5,
+            color: '#999',
+            paddingBottom: 2,
         },
         viewsStyle: {
             height: 30,

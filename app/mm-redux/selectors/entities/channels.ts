@@ -805,12 +805,12 @@ export const getOrderedChannelIds = (state: GlobalState, lastUnreadChannel: Chan
     if (grouping === 'by_type') {
         channels.push({
             type: 'public',
-            name: 'PUBLIC CHANNELS',
+            name: 'PUBLIC COMMUNITIES',
             items: getSortedPublicChannelIds(state, lastUnreadChannel, unreadsAtTop, favoritesAtTop, sorting),
         });
         channels.push({
             type: 'private',
-            name: 'PRIVATE CHANNELS',
+            name: 'PRIVATE COMMUNITIES',
             items: getSortedPrivateChannelIds(state, lastUnreadChannel, unreadsAtTop, favoritesAtTop, sorting),
         });
         channels.push({
@@ -821,7 +821,7 @@ export const getOrderedChannelIds = (state: GlobalState, lastUnreadChannel: Chan
     } else {
     // Combine all channel types
         let type = 'alpha';
-        let name = 'CHANNELS';
+        let name = 'COMMUNITIES';
 
         if (sorting === 'recent') {
             type = 'recent';
@@ -838,7 +838,7 @@ export const getOrderedChannelIds = (state: GlobalState, lastUnreadChannel: Chan
     if (favoritesAtTop) {
         channels.unshift({
             type: 'favorite',
-            name: 'FAVORITE CHANNELS',
+            name: 'FAVORITE COMMUNITIES',
             items: getSortedFavoriteChannelIds(state, lastUnreadChannel, unreadsAtTop, favoritesAtTop, sorting),
         });
     }

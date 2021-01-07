@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import {Keyboard, Platform} from 'react-native';
+import {Keyboard, Platform, Dimensions} from 'react-native';
 import {Navigation} from 'react-native-navigation';
 import merge from 'deepmerge';
 
@@ -27,6 +27,7 @@ function getThemeFromState() {
 
 export function resetToChannel(passProps = {}) {
     const theme = getThemeFromState();
+    const drawerWidth = Dimensions.get('window').width;
 
     EphemeralStore.clearNavigationComponents();
 
@@ -76,6 +77,13 @@ export function resetToChannel(passProps = {}) {
                     component: {
                         id: 'SettingsSidebar',
                         name: 'SettingsSidebar',
+                    },
+                },
+                options: {
+                    sideMenu: {
+                        left: {
+                            width: drawerWidth,
+                        },
                     },
                 },
             },
@@ -425,7 +433,8 @@ export function openMainSideMenu() {
     Keyboard.dismiss();
     Navigation.mergeOptions(componentId, {
         sideMenu: {
-            left: {visible: true},
+            left: {visible: true,
+            },
         },
     });
 }

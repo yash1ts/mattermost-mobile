@@ -101,7 +101,7 @@ export default class ChannelMention extends PureComponent {
                 if (publicChannels.length) {
                     sections.push({
                         id: t('suggestion.search.public'),
-                        defaultMessage: 'Public Channels',
+                        defaultMessage: 'Public Communities',
                         data: publicChannels.filter((cId) => myMembers[cId]),
                         key: 'publicChannels',
                         hideLoadingIndicator: true,
@@ -111,7 +111,7 @@ export default class ChannelMention extends PureComponent {
                 if (privateChannels.length) {
                     sections.push({
                         id: t('suggestion.search.private'),
-                        defaultMessage: 'Private Channels',
+                        defaultMessage: 'Private Communities',
                         data: privateChannels,
                         key: 'privateChannels',
                         hideLoadingIndicator: true,
@@ -130,7 +130,7 @@ export default class ChannelMention extends PureComponent {
                 if (myChannels.length) {
                     sections.push({
                         id: t('suggestion.mention.channels'),
-                        defaultMessage: 'My Channels',
+                        defaultMessage: 'My Communities',
                         data: myChannels,
                         key: 'myChannels',
                         hideLoadingIndicator: true,
@@ -140,7 +140,7 @@ export default class ChannelMention extends PureComponent {
                 if (otherChannels.length || requestStatus === RequestStatus.STARTED) {
                     sections.push({
                         id: t('suggestion.mention.morechannels'),
-                        defaultMessage: 'Other Channels',
+                        defaultMessage: 'Other Communities',
                         data: otherChannels,
                         key: 'otherChannels',
                     });

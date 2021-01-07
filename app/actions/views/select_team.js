@@ -51,7 +51,7 @@ export function selectDefaultTeam() {
     return async (dispatch, getState) => {
         const state = getState();
 
-        const {ExperimentalPrimaryTeam} = getConfig(state);
+        const ExperimentalPrimaryTeam = 'p5f5pjdugt84uynqj61gm9ixsc';
         const locale = getCurrentLocale(state);
         const userTeamOrderPreference = getPreference(state, Preferences.TEAMS_ORDER, '', '');
         const {teams, myMembers} = state.entities.teams;

@@ -128,13 +128,13 @@ export default class List extends PureComponent {
             return {
                 action: canJoinPublicChannels ? this.goToMoreChannels : null,
                 id: t('sidebar.channels'),
-                defaultMessage: 'PUBLIC CHANNELS',
+                defaultMessage: 'PUBLIC COMMUNITES',
             };
         case SidebarSectionTypes.PRIVATE:
             return {
                 action: canCreatePrivateChannels ? this.goToCreatePrivateChannel : null,
                 id: t('sidebar.pg'),
-                defaultMessage: 'PRIVATE CHANNELS',
+                defaultMessage: 'PRIVATE COMMUNITIES',
             };
         case SidebarSectionTypes.DIRECT:
             return {

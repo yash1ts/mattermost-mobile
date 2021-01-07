@@ -5,11 +5,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
     Alert,
-    Image,
     Linking,
     Platform,
-    StyleSheet,
     StatusBar,
+    View,
 } from 'react-native';
 import {YouTubeStandaloneAndroid, YouTubeStandaloneIOS} from 'react-native-youtube';
 import {intlShape} from 'react-intl';
@@ -17,14 +16,13 @@ import parseUrl from 'url-parse';
 
 import ImageViewPort from '@components/image_viewport';
 import PostAttachmentImage from '@components/post_attachment_image';
-import ProgressiveImage from '@components/progressive_image';
 import TouchableWithFeedback from '@components/touchable_with_feedback';
 import CustomPropTypes from '@constants/custom_prop_types';
 import EventEmitter from '@mm-redux/utils/event_emitter';
 import {generateId} from '@utils/file';
 import {calculateDimensions, getViewPortWidth, openGalleryAtIndex} from '@utils/images';
 import {getYouTubeVideoId, isImageLink, isYoutubeLink} from '@utils/url';
-
+import {WebView} from 'react-native-webview';
 const MAX_YOUTUBE_IMAGE_HEIGHT = 202;
 const MAX_YOUTUBE_IMAGE_WIDTH = 360;
 const MAX_IMAGE_HEIGHT = 150;
@@ -417,32 +415,22 @@ export default class PostBodyAdditionalContent extends ImageViewPort {
             // Fallback to default YouTube thumbnail if available
             imgUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
         }
-
+        const url = `<style>.hytPlayerWrap{display: inline-block; position: relative;}.hytPlayerWrap.ended::after{content:""; position: absolute; top: 0; left: 0; bottom: 0; right: 0; cursor: pointer; background-color: black; background-repeat: no-repeat; background-position: center; background-size: 64px 64px; background-image: url(data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm94PSIwIDAgNTEwIDUxMCI+PHBhdGggZD0iTTI1NSAxMDJWMEwxMjcuNSAxMjcuNSAyNTUgMjU1VjE1M2M4NC4xNSAwIDE1MyA2OC44NSAxNTMgMTUzcy02OC44NSAxNTMtMTUzIDE1My0xNTMtNjguODUtMTUzLTE1M0g1MWMwIDExMi4yIDkxLjggMjA0IDIwNCAyMDRzMjA0LTkxLjggMjA0LTIwNC05MS44LTIwNC0yMDQtMjA0eiIgZmlsbD0iI0ZGRiIvPjwvc3ZnPg==);}.hytPlayerWrap.paused::after{content:""; position: absolute; top: 0px; left: 0; bottom: 50px; right: 0; cursor: pointer; background-color: black; background-repeat: no-repeat; background-position: center; background-size: 40px 40px; background-image: url(data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEiIHdpZHRoPSIxNzA2LjY2NyIgaGVpZ2h0PSIxNzA2LjY2NyIgdmlld0JveD0iMCAwIDEyODAgMTI4MCI+PHBhdGggZD0iTTE1Ny42MzUgMi45ODRMMTI2MC45NzkgNjQwIDE1Ny42MzUgMTI3Ny4wMTZ6IiBmaWxsPSIjZmZmIi8+PC9zdmc+);}</style><div class="hytPlayerWrapOuter"> <div class="hytPlayerWrap"> <iframe width="${dimensions.width * 3}" height="100%" src="https://www.youtube.com/embed/${videoId}?rel=0&enablejsapi=1" frameborder="0" ></iframe> </div></div><script>"use strict"; document.addEventListener('DOMContentLoaded', function(){if (window.hideYTActivated) return; let onYouTubeIframeAPIReadyCallbacks=[]; for (let playerWrap of document.querySelectorAll(".hytPlayerWrap")){let playerFrame=playerWrap.querySelector("iframe"); let tag=document.createElement('script'); tag.src="https://www.youtube.com/iframe_api"; let firstScriptTag=document.getElementsByTagName('script')[0]; firstScriptTag.parentNode.insertBefore(tag, firstScriptTag); let onPlayerStateChange=function(event){if (event.data==YT.PlayerState.ENDED){playerWrap.classList.add("ended");}else if (event.data==YT.PlayerState.PAUSED){playerWrap.classList.add("paused");}else if (event.data==YT.PlayerState.PLAYING){playerWrap.classList.remove("ended"); playerWrap.classList.remove("paused");}}; let player; onYouTubeIframeAPIReadyCallbacks.push(function(){player=new YT.Player(playerFrame,{events:{'onStateChange': onPlayerStateChange}});}); playerWrap.addEventListener("click", function(){let playerState=player.getPlayerState(); if (playerState==YT.PlayerState.ENDED){player.seekTo(0);}else if (playerState==YT.PlayerState.PAUSED){player.playVideo();}});}window.onYouTubeIframeAPIReady=function(){for (let callback of onYouTubeIframeAPIReadyCallbacks){callback();}}; window.hideYTActivated=true;});</script>`;
         return (
-            <TouchableWithFeedback
-                style={[styles.imageContainer, {height: dimensions.height}]}
-                onPress={this.playYouTubeVideo}
-                type={'opacity'}
-            >
-                <ProgressiveImage
-                    isBackgroundImage={true}
-                    imageUri={imgUrl}
-                    style={[styles.image, dimensions]}
-                    resizeMode='cover'
-                    onError={this.handleLinkLoadError}
-                >
-                    <TouchableWithFeedback
-                        style={styles.playButton}
-                        onPress={this.playYouTubeVideo}
-                        type={'opacity'}
-                    >
-                        <Image
-                            source={require('@assets/images/icons/youtube-play-icon.png')}
-                            onPress={this.playYouTubeVideo}
-                        />
-                    </TouchableWithFeedback>
-                </ProgressiveImage>
+            <TouchableWithFeedback style={{flex: 1}}>
+                <WebView
+                    ref={(element) => {
+                        this.webview = element;
+                    }}
+                    onPress={this.playYouTubeVideo}
+                    style={[{height: dimensions.height, width: dimensions.width, zIndex: 1, postion: 'absolute'}]}
+                    javaScriptEnabled={true}
+                    domStorageEnabled={true}
+                    source={{html: url}}
+                />
+                <View style={{position: 'absolute', zIndex: 1, height: 50, width: dimensions.width}}/>
             </TouchableWithFeedback>
+
         );
     }
 
@@ -503,22 +491,22 @@ export default class PostBodyAdditionalContent extends ImageViewPort {
     }
 }
 
-const styles = StyleSheet.create({
-    imageContainer: {
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        marginBottom: 6,
-        marginTop: 10,
-    },
-    image: {
-        alignItems: 'center',
-        borderRadius: 3,
-        justifyContent: 'center',
-        marginVertical: 1,
-    },
-    playButton: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
+// const styles = StyleSheet.create({
+//     imageContainer: {
+//         alignItems: 'flex-start',
+//         justifyContent: 'flex-start',
+//         marginBottom: 6,
+//         marginTop: 10,
+//     },
+//     image: {
+//         alignItems: 'center',
+//         borderRadius: 3,
+//         justifyContent: 'center',
+//         marginVertical: 1,
+//     },
+//     playButton: {
+//         flex: 1,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//     },
+// });

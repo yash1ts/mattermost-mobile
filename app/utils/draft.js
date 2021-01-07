@@ -95,7 +95,7 @@ export function buildChannelWideMentionMessage(formatMessage, membersCount, isTi
         notifyAllMessage = (
             formatMessage(
                 {
-                    id: 'mobile.post_textbox.entire_channel.message.with_timezones',
+                    id: 'mobile.post_textbox.entire_channel.message.with_t',
                     defaultMessage: 'By using @all or @channel you are about to send notifications to {totalMembers, number} {totalMembers, plural, one {person} other {people}} in {timezones, number} {timezones, plural, one {timezone} other {timezones}}. Are you sure you want to do this?',
                 },
                 {
@@ -234,5 +234,5 @@ export const mapGroupMentions = (channelMemberCountsByGroup, groupMentions) => {
 
 export const textContainsAtAllAtChannel = (text) => {
     const textWithoutCode = text.replace(CODE_REGEX, '');
-    return (/(?:\B|\b_+)@(channel|all)(?!(\.|-|_)*[^\W_])/i).test(textWithoutCode);
+    return (/(?:\B|\b_+)@(community|all)(?!(\.|-|_)*[^\W_])/i).test(textWithoutCode);
 };

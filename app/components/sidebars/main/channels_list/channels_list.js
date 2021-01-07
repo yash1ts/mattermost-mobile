@@ -20,7 +20,6 @@ import {
 } from '@utils/theme';
 
 import List from './list';
-import SwitchTeamsButton from './switch_teams_button';
 
 const {ANDROID_TOP_PORTRAIT} = ViewTypes;
 let FilteredList = null;
@@ -93,13 +92,12 @@ export default class ChannelsList extends PureComponent {
 
     render() {
         const {intl} = this.context;
-        const {testID, onShowTeams, theme} = this.props;
+        const {testID, theme} = this.props;
         const {searching, term} = this.state;
         const styles = getStyleSheet(theme);
         const filteredListTestID = `${testID}.filtered_list`;
         const listTestID = `${testID}.list`;
         const searchBarTestID = `${testID}.search_bar`;
-        const switchTeamsButtonTestID = `${testID}.switch_teams.button`;
 
         let list;
         if (searching) {
@@ -128,14 +126,15 @@ export default class ChannelsList extends PureComponent {
         };
 
         let leftComponent;
-        if (onShowTeams) {
-            leftComponent = (
-                <SwitchTeamsButton
-                    testID={switchTeamsButtonTestID}
-                    onShowTeams={onShowTeams}
-                />
-            );
-        }
+
+        // if (onShowTeams) {
+        //     leftComponent = (
+        //         <SwitchTeamsButton
+        //             testID={switchTeamsButtonTestID}
+        //             onShowTeams={onShowTeams}
+        //         />
+        //     );
+        // }
 
         const title = (
             <View

@@ -105,7 +105,7 @@ const ChannelList = ({intl}: ChannnelListProps) => {
         if (publicFiltered.length) {
             sectionsArray.push({
                 id: 'sidebar.channels',
-                defaultMessage: 'PUBLIC CHANNELS',
+                defaultMessage: 'PUBLIC COMMUNITIES',
                 data: publicFiltered,
             });
         }
@@ -113,7 +113,7 @@ const ChannelList = ({intl}: ChannnelListProps) => {
         if (privateFiletered.length) {
             sectionsArray.push({
                 id: 'sidebar.pg',
-                defaultMessage: 'PRIVATE CHANNELS',
+                defaultMessage: 'PRIVATE COMMUNITIES',
                 data: privateFiletered,
             });
         }

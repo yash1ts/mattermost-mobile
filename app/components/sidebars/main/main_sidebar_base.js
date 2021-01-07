@@ -197,7 +197,7 @@ export default class MainSidebarBase extends Component {
             searching,
         } = this.state;
 
-        const offset = Platform.select({android: 64, ios: 0});
+        const offset = Platform.select({android: 0, ios: 0});
         const multipleTeams = teamsCount > 1;
         const showTeams = !searching && multipleTeams;
         if (this.drawerSwiper) {
@@ -210,20 +210,21 @@ export default class MainSidebarBase extends Component {
         }
 
         const lists = [];
-        if (multipleTeams) {
-            const teamsList = (
-                <View
-                    key='teamsList'
-                    style={style.swiperContent}
-                >
-                    <TeamsList
-                        testID='main.sidebar.teams_list'
-                        closeMainSidebar={this.closeMainSidebar}
-                    />
-                </View>
-            );
-            lists.push(teamsList);
-        }
+
+        // if (multipleTeams) {
+        //     const teamsList = (
+        //         <View
+        //             key='teamsList'
+        //             style={style.swiperContent}
+        //         >
+        //             <TeamsList
+        //                 testID='main.sidebar.teams_list'
+        //                 closeMainSidebar={this.closeMainSidebar}
+        //             />
+        //         </View>
+        //     );
+        //     lists.push(teamsList);
+        // }
 
         lists.push(
             <View

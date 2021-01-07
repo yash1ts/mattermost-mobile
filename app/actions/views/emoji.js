@@ -105,6 +105,9 @@ export function addRecentUsedEmojisInMessage(message) {
     return (dispatch) => {
         const RE_UNICODE_EMOJI = emojiRegex();
         const RE_NAMED_EMOJI = /(:([a-zA-Z0-9_-]+):)/g;
+        if (!message) {
+            return;
+        }
         const emojis = message.match(RE_UNICODE_EMOJI);
         const namedEmojis = message.match(RE_NAMED_EMOJI);
         function emojiUnicode(input) {
