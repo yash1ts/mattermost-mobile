@@ -145,7 +145,7 @@ export default class ChannelIOS extends ChannelBase {
 const getStyle = makeStyleSheetFromTheme((theme) => ({
     backdrop: {
         flex: 1,
-        backgroundColor: theme.centerChannelBg,
+        backgroundColor: theme.sidebarBg,
     },
     flex: {
         flex: 1,

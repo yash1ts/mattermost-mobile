@@ -50,6 +50,9 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         },
         dateContainer: {
             marginHorizontal: 15,
+            backgroundColor: theme.sidebarHeaderBg,
+            padding: 8,
+            borderRadius: 5,
         },
         line: {
             flex: 1,

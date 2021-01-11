@@ -7,15 +7,15 @@ import {intlShape} from 'react-intl';
 import {
     ActivityIndicator,
     Dimensions,
-    Image,
     InteractionManager,
     Keyboard,
     StyleSheet,
-    Text,
     TextInput,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import CompassIcon from '@components/compass_icon';
+
 import Button from 'react-native-button';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -32,6 +32,7 @@ import tracker from '@utils/time_tracker';
 import mattermostManaged from 'app/mattermost_managed';
 import {GlobalStyles} from 'app/styles';
 import telemetry from 'app/telemetry';
+import {logo} from '@utils/general';
 
 export const mfaExpectedErrors = ['mfa.validate_token.authenticate.app_error', 'ent.mfa.validate_token.authenticate.app_error'];
 
@@ -405,14 +406,8 @@ export default class Login extends PureComponent {
                         keyboardShouldPersistTaps='handled'
                         enableOnAndroid={true}
                     >
-                        <Image
-                            source={require('@assets/images/logo.png')}
-                            style={{height: 72, resizeMode: 'contain'}}
-                        />
+                        {logo()}
                         <View testID='login.screen'>
-                            <Text style={GlobalStyles.header}>
-                                {this.props.config.SiteName}
-                            </Text>
                             <FormattedText
                                 style={GlobalStyles.subheader}
                                 id='web.root.signup_info'

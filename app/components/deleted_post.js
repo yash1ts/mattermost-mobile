@@ -9,6 +9,7 @@ import CompassIcon from '@components/compass_icon';
 import FormattedText from '@components/formatted_text';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
 import {ViewTypes} from '@constants';
+import { logo } from '@utils/general';
 
 class DeletedPost extends PureComponent {
     static propTypes = {
@@ -21,11 +22,7 @@ class DeletedPost extends PureComponent {
         return (
             <View style={style.main}>
                 <View style={style.iconContainer}>
-                    <CompassIcon
-                        name='mattermost'
-                        color={theme.centerChannelColor}
-                        size={ViewTypes.PROFILE_PICTURE_SIZE}
-                    />
+                    {logo(ViewTypes.PROFILE_PICTURE_SIZE)}
                 </View>
                 <View style={style.textContainer}>
                     <FormattedText

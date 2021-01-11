@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import {DeviceTypes} from '@constants';
-import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
+import {makeStyleSheetFromTheme} from '@utils/theme';
 import {emptyFunction} from '@utils/general';
 import EventEmitter from '@mm-redux/utils/event_emitter';
 
@@ -269,8 +269,8 @@ const getStyleFromTheme = makeStyleSheetFromTheme((theme) => {
             right: 8,
         },
         borders: {
-            borderWidth: 1,
-            borderColor: changeOpacity(theme.centerChannelColor, 0.2),
+            borderWidth: 2,
+            borderColor: theme.sidebarHeaderBg,
             overflow: 'hidden',
             borderRadius: 4,
         },

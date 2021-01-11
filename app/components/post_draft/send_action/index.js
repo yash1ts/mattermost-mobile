@@ -7,13 +7,12 @@ import PropTypes from 'prop-types';
 
 import CompassIcon from '@components/compass_icon';
 import TouchableWithFeedback from '@components/touchable_with_feedback';
-import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
+import {changeOpacity} from '@utils/theme';
 
 function SendButton(props) {
     const {testID, theme} = props;
     const sendButtonTestID = `${testID}.send.button`;
     const sendButtonDisabledTestID = `${testID}.send.button.disabled`;
-    const style = getStyleSheet(theme);
 
     if (props.disabled) {
         return (
@@ -21,13 +20,11 @@ function SendButton(props) {
                 testID={sendButtonDisabledTestID}
                 style={style.sendButtonContainer}
             >
-                <View style={[style.sendButton, style.disableButton]}>
-                    <CompassIcon
-                        name='send'
-                        size={24}
-                        color={changeOpacity(theme.buttonColor, 0.5)}
-                    />
-                </View>
+                <CompassIcon
+                    name='send'
+                    size={32}
+                    color={changeOpacity(theme.buttonColor, 0.2)}
+                />
             </View>
         );
     }
@@ -39,13 +36,11 @@ function SendButton(props) {
             style={style.sendButtonContainer}
             type={'opacity'}
         >
-            <View style={style.sendButton}>
-                <CompassIcon
-                    name='send'
-                    size={24}
-                    color={theme.buttonColor}
-                />
-            </View>
+            <CompassIcon
+                name='send'
+                size={32}
+                color={theme.buttonColor}
+            />
         </TouchableWithFeedback>
     );
 }
@@ -57,24 +52,22 @@ SendButton.propTypes = {
     theme: PropTypes.object.isRequired,
 };
 
-const getStyleSheet = makeStyleSheetFromTheme((theme) => {
-    return {
-        disableButton: {
-            backgroundColor: changeOpacity(theme.buttonBg, 0.3),
-        },
-        sendButtonContainer: {
-            justifyContent: 'flex-end',
-            paddingRight: 8,
-        },
-        sendButton: {
-            backgroundColor: theme.buttonBg,
-            borderRadius: 4,
-            height: 32,
-            width: 80,
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-    };
-});
+const style = {
+    disableButton: {
+
+        // backgroundColor: changeOpacity('#fff', 0.3),
+    },
+    sendButtonContainer: {
+        justifyContent: 'flex-end',
+        paddingRight: 16,
+    },
+    sendButton: {
+        borderRadius: 4,
+        height: 32,
+        width: 80,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+};
 
 export default memo(SendButton);

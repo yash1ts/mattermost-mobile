@@ -9,14 +9,12 @@ import {
     ActivityIndicator,
     Alert,
     DeviceEventEmitter,
-    Image,
     Keyboard,
     KeyboardAvoidingView,
     Platform,
     StatusBar,
     StyleSheet,
     Text,
-    TextInput,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
@@ -37,13 +35,13 @@ import {Client4} from '@mm-redux/client';
 import {checkUpgradeType, isUpgradeAvailable} from '@utils/client_upgrade';
 import {t} from '@utils/i18n';
 import {preventDoubleTap} from '@utils/tap';
-import {changeOpacity} from '@utils/theme';
 import tracker from '@utils/time_tracker';
 import {isValidUrl, stripTrailingSlashes} from '@utils/url';
 
 import mattermostBucket from 'app/mattermost_bucket';
 import {GlobalStyles} from 'app/styles';
 import telemetry from 'app/telemetry';
+import {logo} from '@utils/general';
 
 export default class SelectServer extends PureComponent {
     static propTypes = {
@@ -452,13 +450,11 @@ export default class SelectServer extends PureComponent {
     };
 
     render() {
-        const {formatMessage} = this.context.intl;
         const {allowOtherServers} = this.props;
         const {
             connected,
             connecting,
             error,
-            url,
         } = this.state;
 
         let buttonIcon;
@@ -514,10 +510,7 @@ export default class SelectServer extends PureComponent {
                         accessible={false}
                     >
                         <View style={[GlobalStyles.container, GlobalStyles.signupContainer]}>
-                            <Image
-                                source={require('@assets/images/logo.png')}
-                                style={{height: 72, resizeMode: 'contain', marginBottom: 40}}
-                            />
+                            {logo()}
 
                             {/* <View testID='select_server.header.text'>
                                 <FormattedText

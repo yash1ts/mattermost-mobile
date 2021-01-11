@@ -159,20 +159,23 @@ export default class DraftInput extends PureComponent {
     };
 
     doSubmitMessage = (message = null, rootId) => {
-        const {createPost, currentUserId, channelId, files, handleClearFiles} = this.props;
+        const {createPost, currentUserId, channelId, files, handleClearFiles, replyPopup} = this.props;
         let value = message;
         if (!value) {
             value = this.input.current?.getValue() || '';
         }
         const postFiles = files.filter((f) => !f.failed);
+        if (replyPopup?.user_name) {
+            value = `@${replyPopup.user_name} ${value}`;
+        }
         const post = {
             user_id: currentUserId,
             channel_id: channelId,
             root_id: rootId,
             parent_id: rootId,
             props: {
-                reply_user_name: this.props.replyPopup?.user_name,
-                reply_message: this.props.replyPopup?.message},
+                reply_user_name: replyPopup?.user_name,
+                reply_message: replyPopup?.message},
             message: value,
         };
 
@@ -543,14 +546,15 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             flexDirection: 'row', justifyContent: 'space-between',
         },
         replyContainer: {
-            backgroundColor: '#abd',
-            borderTopRightRadius: 5,
-            borderTopLeftRadius: 5,
+            backgroundColor: theme.centerChannelBg,
+            borderWidth: 2,
+            borderColor: theme.sidebarHeaderBg,
+            borderRadius: 5,
             position: 'absolute',
             left: 8,
             right: 8,
-            bottom: 86,
-            zIndex: 1,
+            bottom: 82,
+            zIndex: 2,
             paddingHorizontal: 10,
             paddingVertical: 8,
         },
@@ -573,7 +577,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             flexDirection: 'row',
             justifyContent: 'center',
             paddingBottom: 2,
-            backgroundColor: theme.centerChannelBg,
+            backgroundColor: theme.sidebarHeaderBg,
             borderTopWidth: 1,
             borderTopColor: changeOpacity(theme.centerChannelColor, 0.20),
         },

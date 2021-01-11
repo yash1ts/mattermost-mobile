@@ -87,9 +87,7 @@ export default class ChannelPostList extends PureComponent {
     }
 
     bottomPaddingAnimation = (visible) => {
-        const [padding, duration] = visible ?
-            [TYPING_HEIGHT, 200] :
-            [0, 400];
+        const [padding, duration] = visible ? [TYPING_HEIGHT, 200] : [0, 400];
 
         return Animated.timing(this.bottomPadding, {
             toValue: padding,

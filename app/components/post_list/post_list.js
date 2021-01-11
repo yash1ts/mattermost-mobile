@@ -3,7 +3,7 @@
 
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {Alert, DeviceEventEmitter, FlatList, Platform, RefreshControl, StyleSheet} from 'react-native';
+import {Alert, DeviceEventEmitter, FlatList, Platform, RefreshControl, StyleSheet, View} from 'react-native';
 import {intlShape} from 'react-intl';
 
 import {Posts} from '@mm-redux/constants';
@@ -23,6 +23,8 @@ import {t} from 'app/utils/i18n';
 import DateHeader from './date_header';
 import NewMessagesDivider from './new_messages_divider';
 import MoreMessagesButton from './more_messages_button';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import CompassIcon from '@components/compass_icon';
 
 const INITIAL_BATCH_TO_RENDER = 10;
 const SCROLL_UP_MULTIPLIER = 3.5;
@@ -97,6 +99,9 @@ export default class PostList extends PureComponent {
         this.shouldScrollToBottom = false;
         this.makeExtraData = makeExtraData();
         this.flatListRef = React.createRef();
+        this.state = {
+            scrollToBottom: false,
+        };
     }
 
     componentDidMount() {
@@ -143,6 +148,10 @@ export default class PostList extends PureComponent {
             this.props.extraData
         ) {
             this.loadToFillContent();
+        }
+        if (this.state.scrollToBottom && this.props.channelId !== prevProps.channelId) {
+            // eslint-disable-next-line react/no-did-update-set-state
+            this.setState({scrollToBottom: false});
         }
     }
 
@@ -250,6 +259,12 @@ export default class PostList extends PureComponent {
             ) {
                 this.props.onLoadMoreUp();
             }
+        }
+        if (!this.state.scrollToBottom && pageOffsetY >= 60) {
+            this.setState({scrollToBottom: true});
+        }
+        if (this.state.scrollToBottom && pageOffsetY < 60) {
+            this.setState({scrollToBottom: false});
         }
     };
 
@@ -412,6 +427,12 @@ export default class PostList extends PureComponent {
         }, 250);
     };
 
+    scrollToBottomImmediate = () => {
+        if (this.flatListRef.current) {
+            this.flatListRef.current.scrollToOffset({offset: 0, animated: true});
+        }
+    }
+
     scrollToIndex = (index) => {
         this.animationFrameInitialIndex = requestAnimationFrame(() => {
             if (this.flatListRef.current && index > 0 && index <= this.getItemCount()) {
@@ -543,6 +564,16 @@ export default class PostList extends PureComponent {
                         registerScrollEndIndexListener={this.registerScrollEndIndexListener}
                     />
                 }
+                {this.state.scrollToBottom && <View style={{margin: 10, position: 'absolute', bottom: 0, right: 0}}>
+                    <TouchableOpacity
+                        onPress={this.scrollToBottomImmediate}
+                    >
+                        <CompassIcon
+                            name='chevron-down-circle-outline'
+                            size={32}
+                        />
+                    </TouchableOpacity>
+                </View>}
             </>
         );
     }

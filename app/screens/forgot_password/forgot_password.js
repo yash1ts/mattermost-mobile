@@ -23,6 +23,7 @@ import {isEmail} from '@mm-redux/utils/helpers';
 import {changeOpacity} from '@utils/theme';
 
 import {GlobalStyles} from 'app/styles';
+import { logo } from '@utils/general';
 
 export default class ForgotPassword extends PureComponent {
     static propTypes = {
@@ -158,10 +159,7 @@ export default class ForgotPassword extends PureComponent {
                     onPress={this.blur}
                 >
                     <View style={style.innerContainer}>
-                        <Image
-                            source={require('@assets/images/logo.png')}
-                            style={{height: 72, resizeMode: 'contain'}}
-                        />
+                        {logo()}
                         {displayError}
                         {passwordFormView}
                     </View>

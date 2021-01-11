@@ -10,7 +10,7 @@ import CompassIcon from '@components/compass_icon';
 import ProfilePicture from '@components/profile_picture';
 import TouchableWithFeedback from '@components/touchable_with_feedback';
 import {ViewTypes} from '@constants';
-import {emptyFunction} from '@utils/general';
+import {emptyFunction, logo} from '@utils/general';
 
 export default class PostProfilePicture extends PureComponent {
     static propTypes = {
@@ -38,7 +38,6 @@ export default class PostProfilePicture extends PureComponent {
             fromAutoResponder,
             onViewUserProfile,
             overrideIconUrl,
-            theme,
             userId,
             isBot,
             isEmoji,
@@ -47,11 +46,7 @@ export default class PostProfilePicture extends PureComponent {
         if (isSystemMessage && !fromAutoResponder && !isBot) {
             return (
                 <View style={style.buffer}>
-                    <CompassIcon
-                        name='mattermost'
-                        color={theme.centerChannelColor}
-                        size={ViewTypes.PROFILE_PICTURE_SIZE}
-                    />
+                    {logo(ViewTypes.PROFILE_PICTURE_SIZE)}
                 </View>
             );
         }

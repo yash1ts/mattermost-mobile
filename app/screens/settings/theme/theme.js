@@ -18,10 +18,10 @@ import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
 import ThemeTile from './theme_tile';
 
 const thumbnailImages = {
-    default: require('@assets/images/themes/mattermost.png'),
+    default: require('@assets/images/themes/windows_dark.png'),
     organization: require('@assets/images/themes/organization.png'),
     mattermostDark: require('@assets/images/themes/mattermost_dark.png'),
-    windows10: require('@assets/images/themes/windows_dark.png'),
+    windows10: require('@assets/images/themes/mattermost.png'),
 };
 
 export default class Theme extends React.PureComponent {

@@ -47,9 +47,9 @@ export default class ThreadBase extends PureComponent {
         let title;
 
         if (channelType === General.DM_CHANNEL) {
-            title = formatMessage({id: 'mobile.routes.thread_dm', defaultMessage: 'Direct Message Thread'});
+            title = formatMessage({id: 'mobile.routes.thread_dm', defaultMessage: 'Direct Message Comments'});
         } else {
-            title = formatMessage({id: 'mobile.routes.thread', defaultMessage: '{channelName} Thread'}, {channelName: displayName});
+            title = formatMessage({id: 'mobile.routes.thread', defaultMessage: '{channelName} Comments'}, {channelName: displayName});
         }
 
         this.postDraft = React.createRef();

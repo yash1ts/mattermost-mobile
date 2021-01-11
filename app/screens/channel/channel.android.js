@@ -113,6 +113,5 @@ export default class ChannelAndroid extends ChannelBase {
 const style = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: '#000',
     },
 });

@@ -21,7 +21,6 @@ import SettingsItem from '@screens/settings/settings_item';
 import {t} from '@utils/i18n';
 import {preventDoubleTap} from '@utils/tap';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
-import {isValidUrl} from '@utils/url';
 
 class Settings extends PureComponent {
     static propTypes = {
@@ -160,10 +159,11 @@ class Settings extends PureComponent {
     });
 
     render() {
-        const {config, theme} = this.props;
+        const {theme} = this.props;
         const style = getStyleSheet(theme);
         const showTeams = false;
-        const showHelp = isValidUrl(config.HelpLink);
+
+        // const showHelp = isValidUrl(config.HelpLink);
 
         let showArrow = false;
         let middleDividerStyle = style.divider;
@@ -238,7 +238,7 @@ class Settings extends PureComponent {
                             separator={true}
                         />
                     }
-                    <SettingsItem
+                    {/* <SettingsItem
                         testID='general_settings.about.action'
                         defaultMessage='About {appTitle}'
                         messageValues={{appTitle: config.SiteName || 'Mattermost'}}
@@ -248,9 +248,9 @@ class Settings extends PureComponent {
                         separator={false}
                         showArrow={showArrow}
                         theme={theme}
-                    />
+                    /> */}
                     <View style={middleDividerStyle}/>
-                    {showHelp &&
+                    {/* {showHelp &&
                         <SettingsItem
                             testID='general_settings.help.action'
                             defaultMessage='Help'
@@ -261,7 +261,7 @@ class Settings extends PureComponent {
                             separator={true}
                             isLink={true}
                         />
-                    }
+                    } */}
                     <SettingsItem
                         testID='general_settings.report.action'
                         defaultMessage='Report a Problem'

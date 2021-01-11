@@ -12,8 +12,6 @@ import {t} from '@utils/i18n';
 import {resetToChannel, goToScreen} from '@actions/navigation';
 import {
     ActivityIndicator,
-    Dimensions,
-    Image,
     InteractionManager,
     Keyboard,
     StyleSheet,
@@ -28,6 +26,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {preventDoubleTap} from '@utils/tap';
 import PropTypes from 'prop-types';
 import {intlShape} from 'react-intl';
+import {logo} from '@utils/general';
 
 export const mfaExpectedErrors = ['mfa.validate_token.authenticate.app_error', 'ent.mfa.validate_token.authenticate.app_error'];
 
@@ -88,7 +87,7 @@ export default class Signup extends PureComponent {
                 });
                 return;
             }
-            if(!this.username) {
+            if (!this.username) {
                 this.setState({
                     isLoading: false,
                     error: {
@@ -325,10 +324,7 @@ export default class Signup extends PureComponent {
                         keyboardShouldPersistTaps='handled'
                         enableOnAndroid={true}
                     >
-                        <Image
-                            source={require('@assets/images/logo.png')}
-                            style={{height: 72, resizeMode: 'contain'}}
-                        />
+                        {logo()}
                         <View testID='signup.screen'>
                             <Text style={GlobalStyles.header}>
                                 {this.props.config.SiteName}
@@ -361,7 +357,7 @@ export default class Signup extends PureComponent {
                         />
                         <TextInput
                             testID='signup.username.input'
-                            autoCapitalize='none'Register
+                            autoCapitalize='none'
                             autoCorrect={false}
                             blurOnSubmit={false}
                             disableFullscreenUI={true}

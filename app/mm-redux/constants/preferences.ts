@@ -44,8 +44,8 @@ const Preferences: Dictionary<any> = {
     TEAMS_ORDER: 'teams_order',
     CATEGORY_THEME: 'theme',
     THEMES: {
-        light: {
-            type: 'Mattermost',
+        windows10: {
+            type: 'Tupp Light',
             sidebarBg: '#145dbf',
             sidebarText: '#ffffff',
             sidebarUnreadText: '#ffffff',
@@ -99,7 +99,7 @@ const Preferences: Dictionary<any> = {
             codeTheme: 'github',
         } as Theme,
         mattermostDark: {
-            type: 'Mattermost Dark',
+            type: 'Tupp Dark',
             sidebarBg: '#1b2c3e',
             sidebarText: '#ffffff',
             sidebarUnreadText: '#ffffff',
@@ -126,14 +126,14 @@ const Preferences: Dictionary<any> = {
             codeTheme: 'solarized-dark',
         } as Theme,
         default: {
-            type: 'Windows Dark',
-            sidebarBg: '#000000',
+            type: 'Tupp Night',
+            sidebarBg: '#000',
             sidebarText: '#ffffff',
             sidebarUnreadText: '#ffffff',
             sidebarTextHoverBg: '#302e30',
             sidebarTextActiveBorder: '#196caf',
             sidebarTextActiveColor: '#ffffff',
-            sidebarHeaderBg: '#1f1f1f',
+            sidebarHeaderBg: '#121212',
             sidebarHeaderTextColor: '#ffffff',
             onlineIndicator: '#399fff',
             awayIndicator: '#c1b966',
@@ -141,7 +141,7 @@ const Preferences: Dictionary<any> = {
             mentionBg: '#0177e7',
             mentionBj: '#0177e7',
             mentionColor: '#ffffff',
-            centerChannelBg: '#121212',
+            centerChannelBg: '#000',
             centerChannelColor: '#dddddd',
             newMessageSeparator: '#cc992d',
             linkColor: '#0d93ff',

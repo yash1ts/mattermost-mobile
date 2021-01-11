@@ -189,5 +189,3 @@ DEPENDENCIES
   fastlane-plugin-versioning_android
   nokogiri
 
-BUNDLED WITH
-   2.1.4
