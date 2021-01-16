@@ -194,7 +194,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             paddingLeft: 16,
         },
         action: {
-            color: changeOpacity(theme.sidebarText, 0.4),
+            color: changeOpacity(theme.sidebarText, 0.8),
             fontSize: 18,
             fontWeight: '100',
         },
@@ -265,7 +265,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         },
         title: {
             color: theme.sidebarText,
-            opacity: 0.4,
+            opacity: 0.8,
             fontSize: 12,
             fontWeight: '600',
             letterSpacing: 0.2,
@@ -274,10 +274,11 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         },
         titleContainer: { // These aren't used by this component, but they are passed down to the list component
             alignItems: 'center',
-            backgroundColor: theme.sidebarBg,
+            backgroundColor: theme.sidebarTextActiveBorder,
             flex: 1,
             flexDirection: 'row',
-            height: 40,
+            height: 30,
+            marginVertical: 5,
             paddingLeft: 16,
         },
     };

@@ -15,7 +15,6 @@ import {
     InteractionManager,
     Keyboard,
     StyleSheet,
-    Text,
     TextInput,
     TouchableWithoutFeedback,
     View,
@@ -35,6 +34,8 @@ export default class Signup extends PureComponent {
         actions: PropTypes.shape({
             scheduleExpiredNotification: PropTypes.func.isRequired,
             signup: PropTypes.func.isRequired,
+            login: PropTypes.func.isRequired,
+            addUserToInitialTeam: PropTypes.func.isRequired,
         }).isRequired,
         config: PropTypes.object.isRequired,
         license: PropTypes.object.isRequired,
@@ -257,7 +258,15 @@ export default class Signup extends PureComponent {
         const {isLoading} = this.state;
         if (isLoading) {
             const result = await actions.signup(this.firstName, this.lastName, this.email.toLowerCase(), this.username, this.password);
-            if (this.checkLoginResponse(result)) {
+            if (result?.error) {
+                this.setState({
+                    error: result.error,
+                    isLoading: false,
+                });
+            }
+            const res = await actions.login(this.username, this.password);
+            if (this.checkLoginResponse(res)) {
+                await actions.addUserToInitialTeam(result.id);
                 this.goToChannel();
             }
         }
@@ -326,9 +335,6 @@ export default class Signup extends PureComponent {
                     >
                         {logo()}
                         <View testID='signup.screen'>
-                            <Text style={GlobalStyles.header}>
-                                {this.props.config.SiteName}
-                            </Text>
                             <FormattedText
                                 style={GlobalStyles.subheader}
                                 id='web.root.signup_info'
@@ -349,7 +355,7 @@ export default class Signup extends PureComponent {
                             onChangeText={this.handleFirstNameChange}
                             onSubmitEditing={this.passwordFocus}
                             placeholder={formatMessage({id: 'signup.first_name', defaultMessage: 'First Name'})}
-                            placeholderTextColor={changeOpacity('#000', 0.5)}
+                            placeholderTextColor={changeOpacity('#fff', 0.5)}
                             ref={this.loginRef}
                             returnKeyType='next'
                             style={GlobalStyles.inputBox}
@@ -365,7 +371,7 @@ export default class Signup extends PureComponent {
                             onChangeText={this.handleLastNameChange}
                             onSubmitEditing={this.passwordFocus}
                             placeholder={formatMessage({id: 'signup.last_name', defaultMessage: 'Last Name'})}
-                            placeholderTextColor={changeOpacity('#000', 0.5)}
+                            placeholderTextColor={changeOpacity('#fff', 0.5)}
                             ref={this.loginRef}
                             returnKeyType='next'
                             style={GlobalStyles.inputBox}
@@ -381,7 +387,7 @@ export default class Signup extends PureComponent {
                             onChangeText={this.handleEmailChange}
                             onSubmitEditing={this.passwordFocus}
                             placeholder={formatMessage({id: 'signup.email.register', defaultMessage: 'Email'})}
-                            placeholderTextColor={changeOpacity('#000', 0.5)}
+                            placeholderTextColor={changeOpacity('#fff', 0.5)}
                             ref={this.loginRef}
                             returnKeyType='next'
                             style={GlobalStyles.inputBox}
@@ -397,7 +403,7 @@ export default class Signup extends PureComponent {
                             onChangeText={this.handleUserNameChange}
                             onSubmitEditing={this.passwordFocus}
                             placeholder={formatMessage({id: 'signup.username', defaultMessage: 'User Name'})}
-                            placeholderTextColor={changeOpacity('#000', 0.5)}
+                            placeholderTextColor={changeOpacity('#fff', 0.5)}
                             ref={this.loginRef}
                             returnKeyType='next'
                             style={GlobalStyles.inputBox}
@@ -412,7 +418,7 @@ export default class Signup extends PureComponent {
                             onSubmitEditing={this.preSignIn}
                             style={GlobalStyles.inputBox}
                             placeholder={formatMessage({id: 'signup.password', defaultMessage: 'Password'})}
-                            placeholderTextColor={changeOpacity('#000', 0.5)}
+                            placeholderTextColor={changeOpacity('#fff', 0.5)}
                             ref={this.passwordRef}
                             returnKeyType='go'
                             secureTextEntry={true}

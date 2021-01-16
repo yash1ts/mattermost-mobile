@@ -571,6 +571,7 @@ export default class PostList extends PureComponent {
                         <CompassIcon
                             name='chevron-down-circle-outline'
                             size={32}
+                            color='grey'
                         />
                     </TouchableOpacity>
                 </View>}

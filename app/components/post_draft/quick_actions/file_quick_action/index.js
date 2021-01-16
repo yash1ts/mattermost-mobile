@@ -146,7 +146,7 @@ export default class FileQuickAction extends PureComponent {
             testID;
         const color = disabled ?
             changeOpacity(theme.centerChannelColor, 0.16) :
-            changeOpacity(theme.centerChannelColor, 0.64);
+            changeOpacity('#fafafa', 0.64);
 
         return (
             <TouchableWithFeedback

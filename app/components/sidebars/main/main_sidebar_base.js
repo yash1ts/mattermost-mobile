@@ -20,7 +20,6 @@ import telemetry from '@telemetry/';
 
 import ChannelsList from './channels_list';
 import DrawerSwiper from './drawer_swiper';
-import TeamsList from './teams_list';
 
 export default class MainSidebarBase extends Component {
     static propTypes = {

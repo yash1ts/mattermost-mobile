@@ -66,7 +66,7 @@ export function makeMapStateToProps() {
         const channelIsArchived = channel?.delete_at !== 0; //eslint-disable-line camelcase
         let canDelete = false;
         let commentedOnPost = null;
-        if (post.props?.reply_message) {
+        if (post.root_id) {
             commentedOnPost = getPost(state, post.root_id);
         }
 

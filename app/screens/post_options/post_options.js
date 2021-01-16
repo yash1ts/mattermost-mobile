@@ -13,7 +13,6 @@ import ReactionPicker from '@components/reaction_picker';
 import SlideUpPanel from '@components/slide_up_panel';
 import {BOTTOM_MARGIN} from '@components/slide_up_panel/slide_up_panel';
 import {REACTION_PICKER_HEIGHT} from '@constants/reaction_picker';
-import EventEmitter from '@mm-redux/utils/event_emitter';
 import {isSystemMessage} from '@mm-redux/utils/post_utils';
 import {t} from '@utils/i18n';
 import {preventDoubleTap} from '@utils/tap';
@@ -32,6 +31,7 @@ export default class PostOptions extends PureComponent {
             unflagPost: PropTypes.func.isRequired,
             unpinPost: PropTypes.func.isRequired,
             setUnreadPost: PropTypes.func.isRequired,
+            setReplyPopup: PropTypes.func.isRequired,
         }).isRequired,
         canAddReaction: PropTypes.bool,
         canReply: PropTypes.bool,
@@ -49,6 +49,7 @@ export default class PostOptions extends PureComponent {
         isFlagged: PropTypes.bool,
         post: PropTypes.object.isRequired,
         theme: PropTypes.object.isRequired,
+        displayName: PropTypes.string,
     };
 
     static contextTypes = {
@@ -266,9 +267,15 @@ export default class PostOptions extends PureComponent {
     };
 
     handleReply = () => {
-        const {post} = this.props;
+        const {post, displayName} = this.props;
         this.closeWithAnimation(() => {
-            EventEmitter.emit('goToThread', post);
+            const trimmed = post.message.length > 500 ? post.message.slice(0, 500) + '...' : post.message;
+            const passProp = {
+                root_id: (post.root_id || post.id),
+                user_name: displayName,
+                message: trimmed,
+            };
+            this.props.actions.setReplyPopup(passProp);
         });
     };
 

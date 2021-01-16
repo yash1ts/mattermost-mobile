@@ -128,7 +128,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.mattermost.rnbeta"
+        applicationId "com.tupp.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         missingDimensionStrategy "RNNotifications.reactNativeVersion", "reactNative60"
@@ -142,9 +142,9 @@ android {
         release {
             if (project.hasProperty('MATTERMOST_RELEASE_STORE_FILE')) {
                 storeFile file(MATTERMOST_RELEASE_STORE_FILE)
-                storePassword MATTERMOST_RELEASE_PASSWORD
+                storePassword MATTERMOST_RELEASE_STORE_PASSWORD
                 keyAlias MATTERMOST_RELEASE_KEY_ALIAS
-                keyPassword MATTERMOST_RELEASE_PASSWORD
+                keyPassword MATTERMOST_RELEASE_KEY_PASSWORD
             }
         }
     }

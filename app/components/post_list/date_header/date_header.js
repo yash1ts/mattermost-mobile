@@ -10,6 +10,7 @@ import {
 
 import RecentDate from 'app/components/recent_date';
 import {makeStyleSheetFromTheme} from 'app/utils/theme';
+import { changeOpacity } from '@mm-redux/utils/theme_utils';
 
 // DateHeader accepts as a timestamp for rendering as part of a post list.
 export default class DateHeader extends PureComponent {
@@ -61,7 +62,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             opacity: 0.2,
         },
         date: {
-            color: theme.centerChannelColor,
+            color: changeOpacity('#fafafa', 0.8),
             fontSize: 14,
             fontWeight: '600',
         },

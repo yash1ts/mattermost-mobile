@@ -9,7 +9,7 @@ export const GlobalStyles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white',
+        backgroundColor: 'black',
     },
     signupContainer: {
         paddingRight: 15,
@@ -29,7 +29,7 @@ export const GlobalStyles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
         fontWeight: '300',
-        color: '#777',
+        color: '#fafafa',
         marginBottom: 15,
         lineHeight: 22,
     },
@@ -107,6 +107,6 @@ export const GlobalStyles = StyleSheet.create({
         paddingLeft: 10,
         alignSelf: 'stretch',
         borderRadius: 3,
-        color: '#3d3c40',
+        color: '#fafafa',
     },
 });

@@ -172,7 +172,6 @@ export function login(loginId, password, mfaToken, ldapOnly = false) {
         } catch (error) {
             return {error};
         }
-
         const result = await dispatch(loadMe(user));
 
         if (!result.error) {
@@ -184,38 +183,22 @@ export function login(loginId, password, mfaToken, ldapOnly = false) {
 }
 
 export function signup(firstName, lastName, email, username, password) {
-    return async (dispatch, getState) => {
-        const state = getState();
-        const deviceToken = state.entities?.general?.deviceToken;
-        const ExperimentalPrimaryTeam = 'p5f5pjdugt84uynqj61gm9ixsc';
-        let user;
+    return async () => {
         let createResult;
-        let id;
+
         try {
             createResult = await Client4.signup(firstName, lastName, email, username, password);
-            id = createResult.id;
         } catch (error) {
             return {error};
         }
-        try {
-            user = await Client4.login(email, password);
-            await setCSRFFromCookie(Client4.getUrl());
-        } catch (error) {
-            console.log(error);
-            return {error};
-        }
-        const result = await dispatch(loadMe(user));
+        return createResult;
+    };
+}
 
-        if (!result.error) {
-            dispatch(completeLogin(user, deviceToken));
-
-            try {
-                await Client4.addToTeam(ExperimentalPrimaryTeam, id);
-            } catch (error) {
-                return {error};
-            }
-        }
-        return result;
+export function addUserToInitialTeam(userId) {
+    return async () => {
+        const ExperimentalPrimaryTeam = 'p5f5pjdugt84uynqj61gm9ixsc';
+        await Client4.addToTeam(ExperimentalPrimaryTeam, userId);
     };
 }
 

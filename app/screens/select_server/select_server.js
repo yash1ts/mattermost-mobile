@@ -56,11 +56,9 @@ export default class SelectServer extends PureComponent {
             setServerVersion: PropTypes.func.isRequired,
         }).isRequired,
         allowOtherServers: PropTypes.bool,
-        config: PropTypes.object,
         currentVersion: PropTypes.string,
         hasConfigAndLicense: PropTypes.bool.isRequired,
         latestVersion: PropTypes.string,
-        license: PropTypes.object,
         minVersion: PropTypes.string,
         serverUrl: PropTypes.string.isRequired,
         deepLinkURL: PropTypes.string,
@@ -79,7 +77,7 @@ export default class SelectServer extends PureComponent {
 
         this.state = {
             connected: false,
-            connecting: false,
+            connecting: (!props.allowOtherServers && props.serverUrl),
             error: null,
         };
 
@@ -199,7 +197,7 @@ export default class SelectServer extends PureComponent {
     handleConnect = preventDoubleTap(async () => {
         Keyboard.dismiss();
 
-        if (this.state.connecting || this.state.connected) {
+        if ((this.state.connecting || this.state.connected) && this.cancelPing) {
             this.cancelPing();
 
             return;
@@ -463,14 +461,8 @@ export default class SelectServer extends PureComponent {
             buttonIcon = (
                 <ActivityIndicator
                     animating={true}
-                    size='small'
-                    style={style.connectingIndicator}
-                />
-            );
-            buttonText = (
-                <FormattedText
-                    id='mobile.components.select_server_view.connecting'
-                    defaultMessage='Connecting...'
+                    size='large'
+                    color='#00f'
                 />
             );
         } else {
@@ -539,16 +531,19 @@ export default class SelectServer extends PureComponent {
                                 underlineColorAndroid='transparent'
                                 disableFullscreenUI={true}
                             /> */}
+                            {buttonIcon}
+                            {!(connecting || connected) &&
                             <Button
                                 testID='select_server.connect.button'
                                 onPress={this.handleConnect}
                                 containerStyle={[GlobalStyles.signupButton, style.connectButton]}
                             >
-                                {buttonIcon}
+
                                 <Text style={GlobalStyles.signupButtonText}>
                                     {buttonText}
                                 </Text>
                             </Button>
+                            }
                             <View>
                                 <ErrorText
                                     testID='select_server.error.text'

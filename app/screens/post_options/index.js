@@ -29,6 +29,8 @@ import {addReaction} from 'app/actions/views/emoji';
 import {getDimensions} from 'app/selectors/device';
 
 import PostOptions from './post_options';
+import {THREAD} from '@constants/screen';
+import {setReplyPopup} from '@mm-redux/actions/reply_popup';
 
 export function makeMapStateToProps() {
     const getReactionsForPostSelector = makeGetReactionsForPost();
@@ -44,10 +46,11 @@ export function makeMapStateToProps() {
         const reactions = getReactionsForPostSelector(state, post.id);
         const channelIsArchived = channel.delete_at !== 0;
         const {serverVersion} = state.entities.general;
+        const displayName = ownProps.displayName;
 
         let canMarkAsUnread = true;
         let canAddReaction = true;
-        const canReply = false;
+        let canReply = true;
         let canCopyPermalink = true;
         let canCopyText = false;
         let canEdit = false;
@@ -56,18 +59,18 @@ export function makeMapStateToProps() {
         let canFlag = true;
         let canPin = true;
 
-        // let canPost = true;
-        // if (isMinimumServerVersion(serverVersion, 5, 22)) {
-        //     canPost = haveIChannelPermission(
-        //         state,
-        //         {
-        //             channel: post.channel_id,
-        //             team: channel.team_id,
-        //             permission: Permissions.CREATE_POST,
-        //             default: true,
-        //         },
-        //     );
-        // }
+        let canPost = true;
+        if (isMinimumServerVersion(serverVersion, 5, 22)) {
+            canPost = haveIChannelPermission(
+                state,
+                {
+                    channel: post.channel_id,
+                    team: channel.team_id,
+                    permission: Permissions.CREATE_POST,
+                    default: true,
+                },
+            );
+        }
 
         if (hasNewPermissions(state)) {
             canAddReaction = haveIChannelPermission(state, {
@@ -78,14 +81,14 @@ export function makeMapStateToProps() {
             });
         }
 
-        // if (ownProps.location === THREAD) {
-        //     canReply = false;
-        // }
+        if (ownProps.location === THREAD) {
+            canReply = false;
+        }
 
         if (channelIsArchived || ownProps.channelIsReadOnly) {
             canAddReaction = false;
 
-            // canReply = false;
+            canReply = false;
             canDelete = false;
             canPin = false;
         } else {
@@ -97,14 +100,14 @@ export function makeMapStateToProps() {
             }
         }
 
-        // if (!canPost) {
-        //     canReply = false;
-        // }
+        if (!canPost) {
+            canReply = false;
+        }
 
         if (ownProps.isSystemMessage) {
             canAddReaction = false;
 
-            // canReply = false;
+            canReply = false;
             canCopyPermalink = false;
             canEdit = false;
             canPin = false;
@@ -142,6 +145,7 @@ export function makeMapStateToProps() {
             canFlag,
             canPin,
             canMarkAsUnread,
+            displayName,
             currentTeamUrl: getCurrentTeamUrl(state),
             currentUserId,
             theme: getTheme(state),
@@ -152,6 +156,7 @@ export function makeMapStateToProps() {
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
+            setReplyPopup,
             addReaction,
             deletePost,
             flagPost,

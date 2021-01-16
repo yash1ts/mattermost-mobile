@@ -7,7 +7,6 @@ import Button from 'react-native-button';
 import {intlShape} from 'react-intl';
 
 import {
-    Image,
     StyleSheet,
     Text,
     TextInput,
@@ -23,7 +22,7 @@ import {isEmail} from '@mm-redux/utils/helpers';
 import {changeOpacity} from '@utils/theme';
 
 import {GlobalStyles} from 'app/styles';
-import { logo } from '@utils/general';
+import {logo} from '@utils/general';
 
 export default class ForgotPassword extends PureComponent {
     static propTypes = {
@@ -127,7 +126,7 @@ export default class ForgotPassword extends PureComponent {
                         style={GlobalStyles.inputBox}
                         onChangeText={this.changeEmail}
                         placeholder={formatMessage({id: 'login.email', defaultMessage: 'Email'})}
-                        placeholderTextColor={changeOpacity('#000', 0.5)}
+                        placeholderTextColor={changeOpacity('#fff', 0.5)}
                         autoCorrect={false}
                         autoCapitalize='none'
                         keyboardType='email-address'

@@ -82,6 +82,7 @@ export default class PostBody extends PureComponent {
         commentedOnDisplayName: PropTypes.string,
         mergeMessage: PropTypes.bool,
         currentUserId: PropTypes.string,
+        commentedOnPost: PropTypes.object,
     };
 
     static defaultProps = {
@@ -177,6 +178,7 @@ export default class PostBody extends PureComponent {
             post,
             showAddReaction,
             location,
+            displayName,
         } = this.props;
 
         if (isSystemMessage && (!canDelete || hasBeenDeleted)) {
@@ -198,6 +200,7 @@ export default class PostBody extends PureComponent {
             managedConfig,
             showAddReaction,
             location,
+            displayName,
         };
 
         Keyboard.dismiss();
@@ -338,14 +341,16 @@ export default class PostBody extends PureComponent {
             post,
             theme,
             mergeMessage,
+            commentedOnPost,
+            commentedOnDisplayName,
         } = this.props;
 
-        if (!post.props?.reply_user_name) {
+        const style = getStyleSheet(theme);
+        const displayName = post.props?.reply_user_name || commentedOnDisplayName;
+
+        if (!displayName) {
             return null;
         }
-
-        const style = getStyleSheet(theme);
-        const displayName = post.props?.reply_user_name;
 
         let name;
         if (displayName) {
@@ -368,6 +373,24 @@ export default class PostBody extends PureComponent {
         const commentedOnContainer = {...style.commentedOnContainer};
         if (mergeMessage) {
             commentedOnContainer.borderTopStartRadius = 5;
+        }
+        if (post.root_id && !post.props?.reply_message) {
+            return (
+                <View
+                    style={commentedOnContainer}
+                >
+                    <FormattedText
+                        id='post_body.commentedOn'
+                        defaultMessage='Commented on {name}{apostrophe} message: '
+                        values={{
+                            name,
+                            apostrophe,
+                        }}
+                        style={style.commentedOn}
+                    />
+                    <Text>{commentedOnPost.message}</Text>
+                </View>
+            );
         }
         return (
             <View
@@ -511,11 +534,9 @@ export default class PostBody extends PureComponent {
 
         const postContainerStyle = {...style.postContainerStyle};
         if (currentUserId === post.user_id) {
-            postContainerStyle.backgroundColor = '#0077D688';
+            postContainerStyle.backgroundColor = '#448aff88';
         } else {
-            postContainerStyle.backgroundColor = '#18183f';
-
-            // postContainerStyle.opacity = 0.5;
+            postContainerStyle.backgroundColor = '#5555D688';
         }
         if (mergeMessage) {
             postContainerStyle.borderTopStartRadius = 5;

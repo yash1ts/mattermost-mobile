@@ -7,7 +7,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 import {t} from '@utils/i18n';
 import {Posts} from '@mm-redux/constants';
-import Svg, { Path } from 'react-native-svg';
+import Svg, {Path} from 'react-native-svg';
 
 const INVALID_VERSIONS = ['1.29.0'];
 

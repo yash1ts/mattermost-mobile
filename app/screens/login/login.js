@@ -14,7 +14,6 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import CompassIcon from '@components/compass_icon';
 
 import Button from 'react-native-button';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
@@ -428,7 +427,7 @@ export default class Login extends PureComponent {
                             onChangeText={this.handleLoginChange}
                             onSubmitEditing={this.passwordFocus}
                             placeholder={this.createLoginPlaceholder()}
-                            placeholderTextColor={changeOpacity('#000', 0.5)}
+                            placeholderTextColor={changeOpacity('#fff', 0.5)}
                             ref={this.loginRef}
                             returnKeyType='next'
                             style={GlobalStyles.inputBox}
@@ -443,7 +442,7 @@ export default class Login extends PureComponent {
                             onSubmitEditing={this.preSignIn}
                             style={GlobalStyles.inputBox}
                             placeholder={this.context.intl.formatMessage({id: 'login.password', defaultMessage: 'Password'})}
-                            placeholderTextColor={changeOpacity('#000', 0.5)}
+                            placeholderTextColor={changeOpacity('#fff', 0.5)}
                             ref={this.passwordRef}
                             returnKeyType='go'
                             secureTextEntry={true}

@@ -418,17 +418,18 @@ export default class DraftInput extends PureComponent {
     renderReplyPopup = (style, replyPopup) => (
         <View style={style.replyContainer}>
             <View style={style.replyHeader}>
-                <Text>{replyPopup.user_name + ':'} </Text>
+                <Text style={style.replyText}>{replyPopup.user_name + ':'} </Text>
                 <TouchableOpacity
                     onPress={this.closeReplyPopup}
                 >
                     <CompassIcon
                         name='close'
+                        color='grey'
                         style={style.closeButton}
                     />
                 </TouchableOpacity>
             </View>
-            <Text >{replyPopup.message}</Text>
+            <Text style={style.replyText}>{replyPopup.message}</Text>
         </View>)
 
     render() {
@@ -544,6 +545,9 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         },
         replyHeader: {
             flexDirection: 'row', justifyContent: 'space-between',
+        },
+        replyText: {
+            color: 'grey',
         },
         replyContainer: {
             backgroundColor: theme.centerChannelBg,

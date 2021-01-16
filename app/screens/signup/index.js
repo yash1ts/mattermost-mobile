@@ -4,7 +4,7 @@
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
-import {signup} from '@actions/views/user';
+import {signup, login, addUserToInitialTeam} from '@actions/views/user';
 import {scheduleExpiredNotification} from '@actions/views/session';
 import {getTheme} from '@mm-redux/selectors/entities/preferences';
 import {getConfig, getLicense} from '@mm-redux/selectors/entities/general';
@@ -27,6 +27,8 @@ function mapDispatchToProps(dispatch) {
         actions: bindActionCreators({
             scheduleExpiredNotification,
             signup,
+            login,
+            addUserToInitialTeam,
         }, dispatch),
     };
 }

@@ -1,4 +1,4 @@
-package com.mattermost.rnbeta;
+package com.tupp.app;
 
 import com.wix.detox.Detox;
 

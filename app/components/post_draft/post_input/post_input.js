@@ -286,7 +286,7 @@ export default class PostInput extends PureComponent {
                 onChangeText={this.handleTextChange}
                 onSelectionChange={this.handlePostDraftSelectionChanged}
                 placeholder={formatMessage(placeholder, {channelDisplayName})}
-                placeholderTextColor={changeOpacity(theme.centerChannelColor, 0.5)}
+                placeholderTextColor={changeOpacity('#fafafa', 0.5)}
                 multiline={true}
                 blurOnSubmit={false}
                 underlineColorAndroid='transparent'
@@ -301,9 +301,9 @@ export default class PostInput extends PureComponent {
     }
 }
 
-const getStyleSheet = makeStyleSheetFromTheme((theme) => ({
+const getStyleSheet = makeStyleSheetFromTheme(() => ({
     input: {
-        color: theme.centerChannelColor,
+        color: '#fafafa',
         fontSize: 15,
         lineHeight: INPUT_LINE_HEIGHT,
         paddingHorizontal: 12,

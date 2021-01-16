@@ -48,25 +48,27 @@ export default class ChannelListRow extends React.PureComponent {
                 selectable={this.props.selectable}
                 selected={this.props.selected}
             >
-                <View style={style.container}>
-                    <View style={style.titleContainer}>
-                        <CompassIcon
-                            name={this.props.isArchived ? 'archive-outline' : 'globe'}
-                            style={style.icon}
-                        />
-                        <Text style={style.displayName}>
-                            {this.props.channel.display_name}
-                        </Text>
-                    </View>
-                    <View style={style.detailContainer}>
-                        <Text style={style.displayStats}>
-                            {this.props.channelStats ? this.props.channelStats.member_count : 1}
-                        </Text>
-                        <CompassIcon
-                            name={'account-multiple-outline'}
-                            style={style.icon}
-                        />
+                <View style={{flexDirection: 'column', paddingHorizontal: 15}}>
+                    <View style={style.container}>
+                        <View style={style.titleContainer}>
+                            <CompassIcon
+                                name={this.props.isArchived ? 'archive-outline' : 'globe'}
+                                style={style.icon}
+                            />
+                            <Text style={style.displayName}>
+                                {this.props.channel.display_name}
+                            </Text>
+                        </View>
+                        <View style={style.detailContainer}>
+                            <Text style={style.displayStats}>
+                                {this.props.channelStats ? this.props.channelStats.member_count : 1}
+                            </Text>
+                            <CompassIcon
+                                name={'account-multiple-outline'}
+                                style={style.icon}
+                            />
 
+                        </View>
                     </View>
                     {purpose}
                 </View>
@@ -103,13 +105,12 @@ const getStyleFromTheme = makeStyleSheetFromTheme((theme) => {
         },
         container: {
             flex: 1,
-            flexDirection: 'column',
-            paddingHorizontal: 15,
+            flexDirection: 'row',
         },
         purpose: {
-            marginTop: 7,
+            marginTop: 10,
             fontSize: 13,
-            color: changeOpacity(theme.centerChannelColor, 0.5),
+            color: changeOpacity(theme.centerChannelColor, 0.6),
         },
     };
 });
