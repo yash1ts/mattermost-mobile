@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import {
     Keyboard,
     Platform,
+    Pressable,
     Text,
     View,
     ViewPropTypes,
@@ -23,7 +24,6 @@ import PostBody from '@components/post_body';
 import PostHeader from '@components/post_header';
 import PostProfilePicture from '@components/post_profile_picture';
 import PostPreHeader from '@components/post_header/post_pre_header';
-import TouchableWithFeedback from '@components/touchable_with_feedback';
 
 import {NavigationTypes} from '@constants';
 
@@ -340,36 +340,34 @@ export default class Post extends PureComponent {
                 testID={testID}
                 style={[style.postStyle, highlighted]}
             >
-                <TouchableWithFeedback
-                    testID={itemTestID}
-                    onPress={this.handlePress}
-                    onLongPress={this.showPostOptions}
-                    delayLongPress={200}
 
-                    // underlayColor={changeOpacity(theme.centerChannelColor, 0.1)}
-                    cancelTouchOnPanning={true}
-                >
-                    <>
-                        <PostPreHeader
-                            isConsecutive={mergeMessage}
-                            isFlagged={isFlagged}
-                            isPinned={post.is_pinned}
-                            rightColumnStyle={style.preHeaderRightColumn}
-                            skipFlaggedHeader={skipFlaggedHeader}
-                            skipPinnedHeader={skipPinnedHeader}
-                            theme={theme}
-                        />
-                        <View style={[style.container, this.props.style, consecutiveStyle]}>
-                            {userProfile}
-                            <View style={rightColumnStyle}>
-                                {postHeader}
-                                {views !== 0 && <View style={viewsStyle}>
-                                    <CompassIcon
-                                        name='eye-outline'
-                                        color='#999'
-                                    />
-                                    <Text style={style.viewsText}>{formatReactionValue(views)}</Text>
-                                </View>}
+                <>
+                    <PostPreHeader
+                        isConsecutive={mergeMessage}
+                        isFlagged={isFlagged}
+                        isPinned={post.is_pinned}
+                        rightColumnStyle={style.preHeaderRightColumn}
+                        skipFlaggedHeader={skipFlaggedHeader}
+                        skipPinnedHeader={skipPinnedHeader}
+                        theme={theme}
+                    />
+                    <View style={[style.container, this.props.style, consecutiveStyle]}>
+                        {userProfile}
+                        <View style={rightColumnStyle}>
+                            {postHeader}
+                            {views !== 0 && <View style={viewsStyle}>
+                                <CompassIcon
+                                    name='eye-outline'
+                                    color='#999'
+                                />
+                                <Text style={style.viewsText}>{formatReactionValue(views)}</Text>
+                            </View>}
+                            <Pressable
+                                testID={itemTestID}
+                                onPress={this.handlePress}
+                                onLongPress={this.showPostOptions}
+                                delayLongPress={200}
+                            >
                                 <PostBody
                                     ref={this.postBodyRef}
                                     highlight={highlight}
@@ -390,10 +388,12 @@ export default class Post extends PureComponent {
                                     showLongPost={showLongPost}
                                     location={location}
                                 />
-                            </View>
+                            </Pressable>
+
                         </View>
-                    </>
-                </TouchableWithFeedback>
+                    </View>
+                </>
+
             </View>
         );
     }

@@ -17,7 +17,7 @@ import Emoji from 'app/components/emoji';
 import FormattedText from 'app/components/formatted_text';
 import Hashtag from 'app/components/markdown/hashtag';
 import CustomPropTypes from 'app/constants/custom_prop_types';
-import {blendColors, concatStyles, makeStyleSheetFromTheme} from 'app/utils/theme';
+import {concatStyles, makeStyleSheetFromTheme} from 'app/utils/theme';
 import {getScheme} from 'app/utils/url';
 
 import MarkdownBlockQuote from './markdown_block_quote';
@@ -36,6 +36,7 @@ import {
     highlightMentions,
     pullOutImages,
 } from './transform';
+import {changeOpacity} from '@mm-redux/utils/theme_utils';
 
 export default class Markdown extends PureComponent {
     static propTypes = {
@@ -476,7 +477,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
     });
     const editedColor = Platform.select({
         ios: theme.centerChannelColor,
-        android: blendColors(theme.centerChannelBg, theme.centerChannelColor, 0.3),
+        android: changeOpacity(theme.centerChannelColor, 0.5),
     });
 
     return {

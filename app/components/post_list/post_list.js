@@ -25,6 +25,7 @@ import NewMessagesDivider from './new_messages_divider';
 import MoreMessagesButton from './more_messages_button';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import CompassIcon from '@components/compass_icon';
+import { blendColors } from '@mm-redux/utils/theme_utils';
 
 const INITIAL_BATCH_TO_RENDER = 10;
 const SCROLL_UP_MULTIPLIER = 3.5;
@@ -427,11 +428,11 @@ export default class PostList extends PureComponent {
         }, 250);
     };
 
-    scrollToBottomImmediate = () => {
-        if (this.flatListRef.current) {
-            this.flatListRef.current.scrollToOffset({offset: 0, animated: true});
-        }
-    }
+    // scrollToBottomImmediate = () => {
+    //     if (this.flatListRef.current) {
+    //         this.flatListRef.current.scrollToOffset({offset: 0, animated: true});
+    //     }
+    // }
 
     scrollToIndex = (index) => {
         this.animationFrameInitialIndex = requestAnimationFrame(() => {
@@ -566,12 +567,12 @@ export default class PostList extends PureComponent {
                 }
                 {this.state.scrollToBottom && <View style={{margin: 10, position: 'absolute', bottom: 0, right: 0}}>
                     <TouchableOpacity
-                        onPress={this.scrollToBottomImmediate}
+                        onPress={this.scrollToBottom}
                     >
                         <CompassIcon
                             name='chevron-down-circle-outline'
                             size={32}
-                            color='grey'
+                            color={blendColors(theme.sidebarHeaderBg,'#fff',0.3)}
                         />
                     </TouchableOpacity>
                 </View>}

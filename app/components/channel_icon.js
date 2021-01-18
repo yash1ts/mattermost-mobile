@@ -106,7 +106,7 @@ export default class ChannelIcon extends React.PureComponent {
         } else if (type === General.OPEN_CHANNEL) {
             icon = (
                 <CompassIcon
-                    name='globe'
+                    name='radiobox-marked'
                     style={[style.icon, unreadIcon, activeIcon, {fontSize: size}]}
                     testID='channel_icon.public'
                 />

@@ -195,6 +195,7 @@ export default class DraftInput extends PureComponent {
         }
 
         this.setState({sendingMessage: false});
+        this.closeReplyPopup();
 
         if (Platform.OS === 'android') {
             // Fixes the issue where Android predictive text would prepend suggestions to the post draft when messages
@@ -459,7 +460,7 @@ export default class DraftInput extends PureComponent {
                     registerTypingAnimation={registerTypingAnimation}
                 />
 
-                {replyPopup?.message && this.renderReplyPopup(style, replyPopup)}
+                {(replyPopup.user_name) && this.renderReplyPopup(style, replyPopup)}
 
                 <SafeAreaView
                     edges={['left', 'right']}

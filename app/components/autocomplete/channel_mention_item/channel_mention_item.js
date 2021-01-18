@@ -61,7 +61,7 @@ const ChannelMentionItem = (props) => {
 
     const style = getStyleFromTheme(theme);
     const margins = {marginLeft: insets.left, marginRight: insets.right};
-    let iconName = 'globe';
+    let iconName = 'radiobox-marked';
     let component;
     if (type === General.PRIVATE_CHANNEL) {
         iconName = 'lock';

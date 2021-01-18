@@ -423,7 +423,7 @@ export default class PostBodyAdditionalContent extends ImageViewPort {
                         this.webview = element;
                     }}
                     onPress={this.playYouTubeVideo}
-                    style={[{height: dimensions.height, width: dimensions.width, zIndex: 1, postion: 'absolute'}]}
+                    style={[{height: dimensions.height, width: dimensions.width, zIndex: 1, postion: 'absolute', marginTop: 5}]}
                     javaScriptEnabled={true}
                     domStorageEnabled={true}
                     source={{html: url}}

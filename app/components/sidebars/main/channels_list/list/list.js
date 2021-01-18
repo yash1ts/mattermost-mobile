@@ -340,9 +340,7 @@ export default class List extends PureComponent {
                 <Text style={styles.title}>
                     {intl.formatMessage({id, defaultMessage}).toUpperCase()}
                 </Text>
-                <View style={styles.separatorContainer}>
-                    {/* <View style={styles.separator}/> */}
-                </View>
+                <View style={styles.separatorContainer}/>
                 {action && this.renderSectionAction(styles, action, anchor, id)}
             </View>
         );

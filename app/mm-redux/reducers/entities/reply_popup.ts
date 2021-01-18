@@ -4,10 +4,15 @@ import {GenericAction} from '@mm-redux/types/actions';
 import {ReplyPopup} from '@mm-redux/types/reply_popup';
 import ReplyAction from '@mm-redux/action_types/channels';
 
-export default function replyPopup(state:ReplyPopup, action:GenericAction) {
-    let nextState = {};
+const initial = {
+    message: '',
+    user_name: '',
+    root_id: '',
+};
+
+export default function replyPopup(state:ReplyPopup = initial, action:GenericAction) {
     if (action.type === ReplyAction.POPUP_REPLY) {
-        nextState = {...action.data};
+        return {...action.data};
     }
-    return nextState;
+    return state;
 }

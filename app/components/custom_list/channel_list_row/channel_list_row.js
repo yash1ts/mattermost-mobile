@@ -52,7 +52,7 @@ export default class ChannelListRow extends React.PureComponent {
                     <View style={style.container}>
                         <View style={style.titleContainer}>
                             <CompassIcon
-                                name={this.props.isArchived ? 'archive-outline' : 'globe'}
+                                name={this.props.isArchived ? 'archive-outline' : 'radiobox-marked'}
                                 style={style.icon}
                             />
                             <Text style={style.displayName}>

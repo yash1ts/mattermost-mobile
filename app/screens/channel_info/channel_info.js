@@ -19,7 +19,6 @@ import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
 
 import AddMembers from './add_members';
 import NotificationPreference from './notification_preference';
-import Archive from './archive';
 import ChannelInfoHeader from './channel_info_header';
 import ConvertPrivate from './convert_private';
 import EditChannel from './edit_channel';
@@ -224,10 +223,10 @@ export default class ChannelInfo extends PureComponent {
                             close={this.close}
                             theme={theme}
                         />
-                        <Archive
+                        {/* <Archive
                             close={this.close}
                             theme={theme}
-                        />
+                        /> */}
                     </View>
                 </ScrollView>
             </SafeAreaView>
@@ -246,6 +245,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         },
         footer: {
             marginTop: 40,
+            marginBottom: 10,
         },
         rowsContainer: {
             borderTopWidth: 1,

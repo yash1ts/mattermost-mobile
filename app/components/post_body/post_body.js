@@ -30,6 +30,7 @@ import telemetry from '@telemetry';
 
 import {renderSystemMessage} from './system_message_helpers';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 let FileAttachmentList;
 let PostAddChannelMember;
@@ -409,6 +410,7 @@ export default class PostBody extends PureComponent {
             </View>
         );
     };
+    swipeableRef = React.createRef(null);
 
     render() {
         const {
@@ -439,6 +441,7 @@ export default class PostBody extends PureComponent {
             displayName,
             currentUserId,
             mergeMessage,
+            commentedOnDisplayName,
         } = this.props;
         const {isLongPost, maxHeight} = this.state;
         const style = getStyleSheet(theme);
@@ -447,20 +450,31 @@ export default class PostBody extends PureComponent {
         const messageStyle = isSystemMessage ? [style.message, style.systemMessage] : style.message;
         const isPendingOrFailedPost = isPending || isFailed;
 
-        const LeftActions = () => {
+        const leftActions = () => {
             return (
-                <View
-                    style={{margin: 0.1}}
-                />
-            );
+                <View style={{marginStart: 80}}/>);
         };
-
         const openReply = () => {
-            const trimmed = post.message.length > 500 ? post.message.slice(0, 500) + '...' : post.message;
+            const options = {
+                enableVibrateFallback: true,
+                ignoreAndroidSystemSettings: true,
+            };
+            this.swipeableRef.current.close();
+            ReactNativeHapticFeedback.trigger('selection', options);
+            const trimmedInitial = post.message.length > 500 ? post.message.slice(0, 500) + '...' : post.message;
+            const trimmedFormat = trimmedInitial.split('\n');
+            let trimmedFinal = trimmedInitial;
+            if (trimmedFormat.length > 5) {
+                trimmedFinal = trimmedFormat[0];
+                for (let i = 1; i < 6; i++) {
+                    trimmedFinal += `\n${trimmedFormat[i]}`;
+                }
+                trimmedFinal += '...';
+            }
             const passProp = {
                 root_id: (post.root_id || post.id),
                 user_name: displayName,
-                message: trimmed,
+                message: trimmedFinal,
             };
             this.props.actions.setReplyPopup(passProp);
         };
@@ -534,14 +548,14 @@ export default class PostBody extends PureComponent {
 
         const postContainerStyle = {...style.postContainerStyle};
         if (currentUserId === post.user_id) {
-            postContainerStyle.backgroundColor = '#448aff88';
+            postContainerStyle.backgroundColor = '#449aff99';
         } else {
             postContainerStyle.backgroundColor = '#5555D688';
         }
         if (mergeMessage) {
             postContainerStyle.borderTopStartRadius = 5;
         }
-        if (!post.props?.reply_user_name) {
+        if (!post.props?.reply_user_name && !commentedOnDisplayName) {
             postContainerStyle.paddingTop = 8;
         }
 
@@ -549,9 +563,11 @@ export default class PostBody extends PureComponent {
             body = (
                 <View style={style.messageBody}>
                     <Swipeable
-                        renderLeftActions={LeftActions}
-                        onSwipeableOpen={openReply}
+                        ref={this.swipeableRef}
+                        renderLeftActions={leftActions}
+                        onSwipeableLeftWillOpen={openReply}
                         friction={2}
+                        overshootFriction={8}
                     >
                         <View style={postContainerStyle}>
                             {this.renderCommentedOnMessage()}

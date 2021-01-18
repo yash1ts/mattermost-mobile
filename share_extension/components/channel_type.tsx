@@ -13,7 +13,7 @@ export function PublicChannel() {
     return (
         <View style={style.container}>
             <CompassIcon
-                name='globe'
+                name='radiobox-marked'
                 style={style.icon}
             />
         </View>

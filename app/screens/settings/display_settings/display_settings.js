@@ -96,7 +96,7 @@ export default class DisplaySettings extends PureComponent {
                 <SettingsItem
                     defaultMessage='Timezone'
                     i18nId='mobile.advanced_settings.timezone'
-                    iconName='globe'
+                    iconName='radiobox-marked'
                     onPress={this.goToTimezoneSettings}
                     separator={false}
                     showArrow={showArrow}
