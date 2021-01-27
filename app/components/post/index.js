@@ -17,6 +17,7 @@ import {insertToDraft, setPostTooltipVisible} from 'app/actions/views/channel';
 
 import Post from './post';
 import {getChannel} from '@mm-redux/actions/channels';
+import {showingPermalink} from '@actions/views/permalink';
 
 function isConsecutivePost(post, previousPost) {
     let consecutivePost = false;
@@ -68,6 +69,12 @@ function makeMapStateToProps() {
                 }
             }
         }
+
+        let enableSwipe = ownProps.enableSwipe;
+
+        if (enableSwipe === undefined || enableSwipe === null) {
+            enableSwipe = true;
+        }
         return {
             channelIsReadOnly: isChannelReadOnlyById(state, post.channel_id),
             channelIsArchived: channel ? channel.delete_at !== 0 : false,
@@ -84,6 +91,7 @@ function makeMapStateToProps() {
             previousPostExists: Boolean(previousPost),
             beforePrevPostUserId: (beforePrevPost ? beforePrevPost.user_id : null),
             views,
+            enableSwipe,
         };
     };
 }

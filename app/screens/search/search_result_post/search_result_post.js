@@ -31,7 +31,7 @@ export default class SearchResultPost extends PureComponent {
         if (this.props.isDeleted) {
             postComponentProps.shouldRenderReplyButton = false;
         } else {
-            postComponentProps.onPress = this.props.previewPost;
+            postComponentProps.onPress = this.props.goToThread;
             postComponentProps.onReply = this.props.goToThread;
             postComponentProps.shouldRenderReplyButton = true;
             postComponentProps.managedConfig = this.props.managedConfig;
@@ -49,6 +49,7 @@ export default class SearchResultPost extends PureComponent {
                 {...postComponentProps}
                 isSearchResult={true}
                 showAddReaction={false}
+                enableSwipe={false}
                 showFullDate={this.props.showFullDate}
             />
         );

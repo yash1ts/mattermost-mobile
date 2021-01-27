@@ -100,7 +100,6 @@ export default class ChannelPostList extends PureComponent {
         telemetry.start(['post_list:thread']);
         const {actions, channelId} = this.props;
         const rootId = (post.root_id || post.id);
-        actions.setReplyPopup();
         Keyboard.dismiss();
         actions.getPostThread(rootId);
         actions.selectPost(rootId);

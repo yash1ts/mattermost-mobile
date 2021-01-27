@@ -3,7 +3,7 @@
 
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {Alert, DeviceEventEmitter, FlatList, Platform, RefreshControl, StyleSheet, View} from 'react-native';
+import {Alert, Animated, DeviceEventEmitter, FlatList, Platform, RefreshControl, StyleSheet, View} from 'react-native';
 import {intlShape} from 'react-intl';
 
 import {Posts} from '@mm-redux/constants';
@@ -25,7 +25,7 @@ import NewMessagesDivider from './new_messages_divider';
 import MoreMessagesButton from './more_messages_button';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import CompassIcon from '@components/compass_icon';
-import { blendColors } from '@mm-redux/utils/theme_utils';
+import {blendColors} from '@mm-redux/utils/theme_utils';
 
 const INITIAL_BATCH_TO_RENDER = 10;
 const SCROLL_UP_MULTIPLIER = 3.5;
@@ -75,6 +75,7 @@ export default class PostList extends PureComponent {
         location: PropTypes.string,
         scrollViewNativeID: PropTypes.string,
         showMoreMessagesButton: PropTypes.bool,
+        isPermalink: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -100,13 +101,20 @@ export default class PostList extends PureComponent {
         this.shouldScrollToBottom = false;
         this.makeExtraData = makeExtraData();
         this.flatListRef = React.createRef();
+        this.scrolledToHighlighted = false;
+        this.itemHeights = new Array(props.postIds.length + 5).fill(70);
+        this.animatedOpacity = new Animated.Value(1);
+        this.animateLoading = Boolean(this.props.highlightPostId);
         this.state = {
             scrollToBottom: false,
         };
     }
 
     componentDidMount() {
-        const {actions, deepLinkURL, highlightPostId, initialIndex} = this.props;
+        const {actions, deepLinkURL, highlightPostId} = this.props;
+        if (highlightPostId && this.animateLoading) {
+            this.loadingAnimation();
+        }
 
         EventEmitter.on('scroll-to-bottom', this.handleSetScrollToBottom);
         EventEmitter.on(NavigationTypes.NAVIGATION_DISMISS_AND_POP_TO_ROOT, this.handleClosePermalink);
@@ -118,9 +126,9 @@ export default class PostList extends PureComponent {
         }
 
         // Scroll to highlighted post for permalinks
-        if (!this.hasDoneInitialScroll && initialIndex > 0 && highlightPostId) {
-            this.scrollToInitialIndexIfNeeded(initialIndex);
-        }
+        // if (!this.hasDoneInitialScroll && initialIndex > 0 && highlightPostId) {
+        //     this.scrollToInitialIndexIfNeeded(initialIndex);
+        // }
     }
 
     componentDidUpdate(prevProps) {
@@ -303,6 +311,12 @@ export default class PostList extends PureComponent {
         alertErrorWithFallback(intl, {}, message);
     };
 
+    getItemLayout=(data, index) => {
+        const length = this.itemHeights[index];
+        const offset = this.itemHeights.slice(0, index).reduce((a, c) => a + c, 0);
+        return {length, offset, index};
+    }
+
     renderItem = ({item, index}) => {
         const {
             testID,
@@ -387,6 +401,18 @@ export default class PostList extends PureComponent {
         );
     };
 
+    preRender = ({item, index}) => {
+        const {initialIndex} = this.props;
+        const view = this.renderItem({item, index});
+        if (index === initialIndex) {
+            this.animatedOpacity.stopAnimation();
+            this.animatedOpacity.setValue(1);
+            this.scrollToInitialIndexIfNeeded(initialIndex);
+            this.animateLoading = false;
+        }
+        return view;
+    };
+
     resetPostList = () => {
         this.contentOffsetY = 0;
         this.hasDoneInitialScroll = false;
@@ -427,12 +453,6 @@ export default class PostList extends PureComponent {
             }
         }, 250);
     };
-
-    // scrollToBottomImmediate = () => {
-    //     if (this.flatListRef.current) {
-    //         this.flatListRef.current.scrollToOffset({offset: 0, animated: true});
-    //     }
-    // }
 
     scrollToIndex = (index) => {
         this.animationFrameInitialIndex = requestAnimationFrame(() => {
@@ -494,6 +514,23 @@ export default class PostList extends PureComponent {
         }
     }
 
+    loadingAnimation = () => {
+        Animated.loop(Animated.sequence([
+            Animated.timing(this.animatedOpacity, {
+                toValue: 0.8,
+                duration: 200,
+                useNativeDriver: true,
+                isInteraction: false,
+            }),
+            Animated.timing(this.animatedOpacity, {
+                toValue: 0.2,
+                duration: 200,
+                useNativeDriver: true,
+                isInteraction: false,
+            }),
+        ]), {useNativeDriver: true}).start();
+    }
+
     render() {
         const {
             channelId,
@@ -521,39 +558,43 @@ export default class PostList extends PureComponent {
 
         return (
             <>
-                <FlatList
-                    contentContainerStyle={styles.postListContent}
-                    data={postIds}
-                    extraData={this.makeExtraData(channelId, highlightPostId, extraData, loadMorePostsVisible)}
-                    initialNumToRender={INITIAL_BATCH_TO_RENDER}
-                    inverted={true}
-                    key={`recyclerFor-${channelId}-${hasPostsKey}`}
-                    keyboardDismissMode={'interactive'}
-                    keyboardShouldPersistTaps={'handled'}
-                    keyExtractor={this.keyExtractor}
-                    ListFooterComponent={this.props.renderFooter}
-                    listKey={`recyclerFor-${channelId}`}
-                    maintainVisibleContentPosition={SCROLL_POSITION_CONFIG}
-                    maxToRenderPerBatch={Platform.select({android: 5})}
-                    nativeID={scrollViewNativeID}
-                    onContentSizeChange={this.handleContentSizeChange}
-                    onLayout={this.handleLayout}
-                    onScroll={this.handleScroll}
-                    onScrollToIndexFailed={this.handleScrollToIndexFailed}
-                    ref={this.flatListRef}
-                    refreshControl={refreshControl}
-                    removeClippedSubviews={false}
-                    renderItem={this.renderItem}
-                    scrollEventThrottle={60}
-                    style={styles.flex}
-                    windowSize={Posts.POST_CHUNK_SIZE / 2}
-                    viewabilityConfig={{
-                        itemVisiblePercentThreshold: 1,
-                        minimumViewTime: 100,
-                    }}
-                    onViewableItemsChanged={this.onViewableItemsChanged}
-                />
-                {showMoreMessagesButton &&
+                <Animated.View
+                    pointerEvents={ this.animateLoading ? 'none' : 'auto'}
+                    style={{flex: 1, opacity: this.animatedOpacity}}
+                >
+                    <FlatList
+                        contentContainerStyle={styles.postListContent}
+                        data={postIds}
+                        extraData={this.makeExtraData(channelId, highlightPostId, extraData, loadMorePostsVisible)}
+                        initialNumToRender={INITIAL_BATCH_TO_RENDER}
+                        inverted={true}
+                        key={`recyclerFor-${channelId}-${hasPostsKey}`}
+                        keyboardDismissMode={'interactive'}
+                        keyboardShouldPersistTaps={'handled'}
+                        keyExtractor={this.keyExtractor}
+                        ListFooterComponent={this.props.renderFooter}
+                        listKey={`recyclerFor-${channelId}`}
+                        maintainVisibleContentPosition={SCROLL_POSITION_CONFIG}
+                        maxToRenderPerBatch={Platform.select({android: 5})}
+                        nativeID={scrollViewNativeID}
+                        onContentSizeChange={this.handleContentSizeChange}
+                        onLayout={this.handleLayout}
+                        onScroll={this.handleScroll}
+                        onScrollToIndexFailed={this.handleScrollToIndexFailed}
+                        ref={this.flatListRef}
+                        refreshControl={refreshControl}
+                        removeClippedSubviews={false}
+                        renderItem={this.preRender}
+                        scrollEventThrottle={60}
+                        style={styles.flex}
+                        windowSize={Posts.POST_CHUNK_SIZE / 2}
+                        viewabilityConfig={{
+                            itemVisiblePercentThreshold: 1,
+                            minimumViewTime: 100,
+                        }}
+                        onViewableItemsChanged={this.onViewableItemsChanged}
+                    />
+                    {showMoreMessagesButton &&
                     <MoreMessagesButton
                         theme={theme}
                         postIds={postIds}
@@ -564,18 +605,19 @@ export default class PostList extends PureComponent {
                         registerViewableItemsListener={this.registerViewableItemsListener}
                         registerScrollEndIndexListener={this.registerScrollEndIndexListener}
                     />
-                }
-                {this.state.scrollToBottom && <View style={{margin: 10, position: 'absolute', bottom: 0, right: 0}}>
-                    <TouchableOpacity
-                        onPress={this.scrollToBottom}
-                    >
-                        <CompassIcon
-                            name='chevron-down-circle-outline'
-                            size={32}
-                            color={blendColors(theme.sidebarHeaderBg,'#fff',0.3)}
-                        />
-                    </TouchableOpacity>
-                </View>}
+                    }
+                    {this.state.scrollToBottom && <View style={{margin: 10, position: 'absolute', bottom: 0, right: 0}}>
+                        <TouchableOpacity
+                            onPress={this.scrollToBottom}
+                        >
+                            <CompassIcon
+                                name='chevron-down-circle-outline'
+                                size={32}
+                                color={blendColors(theme.sidebarHeaderBg, '#fff', 0.3)}
+                            />
+                        </TouchableOpacity>
+                    </View>}
+                </Animated.View>
             </>
         );
     }
@@ -612,4 +654,5 @@ const styles = StyleSheet.create({
     postListContent: {
         paddingTop: 5,
     },
+    animatedScreen: {position: 'absolute', flex: 1, left: 0, top: 0, backgroundColor: '#fff', zIndex: 1},
 });

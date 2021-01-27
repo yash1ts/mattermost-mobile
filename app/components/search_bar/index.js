@@ -64,6 +64,7 @@ export default class Search extends PureComponent {
         deleteIconSize: PropTypes.number,
         showCancel: PropTypes.bool,
         containerHeight: PropTypes.number,
+        onShowModifiers: PropTypes.func,
     };
 
     static contextTypes = {
@@ -259,7 +260,8 @@ export default class Search extends PureComponent {
                 />
             );
         } else {
-            searchIcon = this.props.showArrow ?
+            if (this.props.showArrow) {
+                searchIcon =
                 (
                     <TouchableWithoutFeedback onPress={this.onCancel}>
                         <CompassIcon
@@ -269,14 +271,16 @@ export default class Search extends PureComponent {
                             color={searchBarStyle.clearIconColorAndroid}
                         />
                     </TouchableWithoutFeedback>
-                ) :
-                (
+                );
+            } else {
+                searchIcon = (
                     <CompassIcon
                         name='magnify'
                         size={this.props.searchIconSize}
                         color={searchBarStyle.searchIconColor}
                     />
                 );
+            }
 
             // Making sure the icon won't change depending on whether the input is in focus on Android devices
             cancelIcon = (
@@ -290,13 +294,23 @@ export default class Search extends PureComponent {
             );
 
             clearIcon = (
-                <CompassIcon
-                    testID={searchClearButtonTestID}
-                    name='close'
-                    size={this.props.deleteIconSize}
-                    color={searchBarStyle.clearIconColorAndroid}
-                    onPress={this.onClear}
-                />
+                <View style={{flexDirection: 'row'}}>
+                    <CompassIcon
+                        testID={searchClearButtonTestID}
+                        name='menu-variant'
+                        size={this.props.deleteIconSize}
+                        color={searchBarStyle.clearIconColorAndroid}
+                        onPress={this.props.onShowModifiers}
+                    />
+                    <View style={{paddingStart: 10}}/>
+                    <CompassIcon
+                        testID={searchClearButtonTestID}
+                        name='close'
+                        size={this.props.deleteIconSize}
+                        color={searchBarStyle.clearIconColorAndroid}
+                        onPress={this.onClear}
+                    />
+                </View>
             );
         }
 
@@ -305,7 +319,7 @@ export default class Search extends PureComponent {
                 testID={testID}
                 style={[searchBarStyle.container, this.props.containerStyle]}
             >
-                {((this.props.leftComponent) ?
+                {((this.props.leftComponent) &&
                     <Animated.View
                         style={[styles.leftComponent, {
                             left: this.leftComponentAnimated,
@@ -313,8 +327,7 @@ export default class Search extends PureComponent {
                         onLayout={this.onLeftComponentLayout}
                     >
                         {this.props.leftComponent}
-                    </Animated.View> :
-                    null
+                    </Animated.View>
                 )}
                 <Animated.View
                     style={[

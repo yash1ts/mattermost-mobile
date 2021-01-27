@@ -76,6 +76,7 @@ export default class Post extends PureComponent {
         commentedOnDisplayName: PropTypes.string,
         displayName: PropTypes.string,
         views: PropTypes.number,
+        enableSwipe: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -272,6 +273,7 @@ export default class Post extends PureComponent {
             previousPostExists,
             beforePrevPostUserId,
             views,
+            enableSwipe,
         } = this.props;
 
         if (!post) {
@@ -379,6 +381,7 @@ export default class Post extends PureComponent {
                                     onPermalinkPress={onPermalinkPress}
                                     onPress={this.handlePress}
                                     post={post}
+                                    enableSwipe={enableSwipe}
                                     mergeMessage={mergeMessage}
                                     replyBarStyle={replyBarStyle}
                                     managedConfig={managedConfig}

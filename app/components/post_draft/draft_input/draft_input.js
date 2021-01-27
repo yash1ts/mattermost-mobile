@@ -480,6 +480,9 @@ export default class DraftInput extends PureComponent {
                         disableScrollViewPanResponder={true}
                     >
                         <PostInput
+                            onBlur={() => {
+                                this.closeReplyPopup();
+                            }}
                             testID={postInputTestID}
                             channelDisplayName={channelDisplayName}
                             channelId={channelId}

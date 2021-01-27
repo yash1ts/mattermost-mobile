@@ -84,6 +84,7 @@ export default class PostBody extends PureComponent {
         mergeMessage: PropTypes.bool,
         currentUserId: PropTypes.string,
         commentedOnPost: PropTypes.object,
+        enableSwipe: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -180,6 +181,7 @@ export default class PostBody extends PureComponent {
             showAddReaction,
             location,
             displayName,
+            enableSwipe,
         } = this.props;
 
         if (isSystemMessage && (!canDelete || hasBeenDeleted)) {
@@ -201,6 +203,7 @@ export default class PostBody extends PureComponent {
             managedConfig,
             showAddReaction,
             location,
+            enableSwipe,
             displayName,
         };
 
@@ -442,6 +445,7 @@ export default class PostBody extends PureComponent {
             currentUserId,
             mergeMessage,
             commentedOnDisplayName,
+            enableSwipe,
         } = this.props;
         const {isLongPost, maxHeight} = this.state;
         const style = getStyleSheet(theme);
@@ -451,6 +455,9 @@ export default class PostBody extends PureComponent {
         const isPendingOrFailedPost = isPending || isFailed;
 
         const leftActions = () => {
+            if (!enableSwipe) {
+                return null;
+            }
             return (
                 <View style={{marginStart: 80}}/>);
         };

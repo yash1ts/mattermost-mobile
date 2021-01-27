@@ -41,6 +41,7 @@ export default class PostInput extends PureComponent {
         theme: PropTypes.object.isRequired,
         updateInitialValue: PropTypes.func.isRequired,
         userTyping: PropTypes.func.isRequired,
+        onBlur: PropTypes.func.isRequired,
     }
 
     constructor(props) {
@@ -282,6 +283,7 @@ export default class PostInput extends PureComponent {
             <PasteableTextInput
                 testID={testID}
                 ref={this.input}
+                onBlur={this.props.onBlur}
                 style={{...style.input, maxHeight}}
                 onChangeText={this.handleTextChange}
                 onSelectionChange={this.handlePostDraftSelectionChanged}

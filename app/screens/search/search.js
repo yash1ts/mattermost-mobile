@@ -104,6 +104,7 @@ export default class Search extends PureComponent {
             isLoading: false,
             isLoaded: false,
             status: 'not_started',
+            showModifiers: false,
         };
     }
 
@@ -182,6 +183,12 @@ export default class Search extends PureComponent {
         this.listRef = ref;
     }
 
+    onShowModifiers = () => {
+        this.setState((state) => ({
+            showModifiers: !state.showModifiers,
+        }));
+    }
+
     archivedIndicator = (postID, style) => {
         const channelIsArchived = this.props.archivedPostIds.includes(postID);
         let archivedIndicator = null;
@@ -225,6 +232,7 @@ export default class Search extends PureComponent {
         const passProps = {
             channelId,
             rootId,
+            highlightPostId: post.id,
         };
 
         goToScreen(screen, title, passProps);
@@ -370,12 +378,11 @@ export default class Search extends PureComponent {
             );
         }
 
-        return null;
+        return <View style={{marginBottom: 10}}/>;
     };
 
     renderModifiers = ({item}) => {
         const {theme} = this.props;
-
         return (
             <Modifier
                 item={item}
@@ -622,14 +629,18 @@ export default class Search extends PureComponent {
             });
         }
 
-        const sections = [{
-            data: sectionsData,
-            key: 'modifiers',
-            title: '',
-            renderItem: this.renderModifiers,
-            keyExtractor: this.keyModifierExtractor,
-            ItemSeparatorComponent: this.renderRecentSeparator,
-        }];
+        const sections = [];
+
+        if (this.state.showModifiers) {
+            sections.push({
+                data: sectionsData,
+                key: 'modifiers',
+                title: '',
+                renderItem: this.renderModifiers,
+                keyExtractor: this.keyModifierExtractor,
+                ItemSeparatorComponent: this.renderRecentSeparator,
+            });
+        }
 
         if (recent.length) {
             sections.push({
@@ -733,6 +744,7 @@ export default class Search extends PureComponent {
                             autoCapitalize='none'
                             showArrow={true}
                             value={value}
+                            onShowModifiers={this.onShowModifiers}
                             containerStyle={style.searchBarContainer}
                             backArrowSize={28}
                             keyboardAppearance={getKeyboardAppearanceFromTheme(theme)}

@@ -39,7 +39,6 @@ import {getChannelReachable} from '@selectors/channel';
 import telemetry from '@telemetry';
 import {isDirectChannelVisible, isGroupChannelVisible, getChannelSinceValue} from '@utils/channels';
 import {isPendingPost} from '@utils/general';
-import { setReplyPopup } from '@mm-redux/actions/reply_popup';
 
 const MAX_RETRIES = 3;
 
@@ -209,8 +208,6 @@ export function handleSelectChannel(channelId) {
                     teamId: channel.team_id || currentTeamId,
                 },
             });
-
-            dispatch(setReplyPopup());
 
             dispatch(batchActions(actions, 'BATCH_SWITCH_CHANNEL'));
 

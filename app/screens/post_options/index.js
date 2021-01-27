@@ -100,6 +100,10 @@ export function makeMapStateToProps() {
             }
         }
 
+        if (!ownProps.enableSwipe) {
+            canReply = false;
+        }
+
         if (!canPost) {
             canReply = false;
         }

@@ -24,6 +24,7 @@ export default class ThreadAndroid extends ThreadBase {
             rootId,
             channelIsArchived,
             theme,
+            highlightPostId,
         } = this.props;
 
         let content;
@@ -42,6 +43,7 @@ export default class ThreadAndroid extends ThreadBase {
                             currentUserId={myMember && myMember.user_id}
                             lastViewedAt={this.state.lastViewedAt}
                             lastPostIndex={-1}
+                            highlightPostId={highlightPostId}
                             onPostPress={this.hideKeyboard}
                             location={THREAD}
                         />
