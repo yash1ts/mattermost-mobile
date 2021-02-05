@@ -93,6 +93,7 @@ export default class SavedPosts extends PureComponent {
         const title = '';
         const passProps = {
             channelId,
+            highlightPostId: post.id,
             rootId,
         };
 

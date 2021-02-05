@@ -14,14 +14,13 @@ import DeviceInfo from 'react-native-device-info';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import Config from '@assets/config';
-import CompassIcon from '@components/compass_icon';
 import FormattedText from '@components/formatted_text';
 import StatusBar from '@components/status_bar';
 import AboutLinks from '@constants/about_links';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
-import { logo } from '@utils/general';
+import {logo} from '@utils/general';
 
-const MATTERMOST_BUNDLE_IDS = ['com.mattermost.rnbeta', 'com.mattermost.rn'];
+const MATTERMOST_BUNDLE_IDS = ['com.tupp.app'];
 
 export default class About extends PureComponent {
     static propTypes = {

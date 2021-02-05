@@ -95,6 +95,7 @@ export default class PinnedPosts extends PureComponent {
         const passProps = {
             channelId,
             rootId,
+            highlightPostId: post.id,
         };
         Keyboard.dismiss();
         actions.getPostThread(rootId);

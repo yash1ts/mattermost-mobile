@@ -28,6 +28,8 @@ function mapStateToProps(state) {
     let currentChannelMemberCount = currentChannelStats && currentChannelStats.member_count;
     let currentChannelGuestCount = (currentChannelStats && currentChannelStats.guest_count) || 0;
     const currentUserId = getCurrentUserId(state);
+    let isBlockedByMe = false;
+    let isBlockedByOther = false;
 
     let status;
     let isBot = false;
@@ -36,6 +38,8 @@ function mapStateToProps(state) {
     if (isDirectMessage) {
         const teammateId = getUserIdFromChannelName(currentUserId, currentChannel.name);
         const teammate = getUser(state, teammateId);
+        isBlockedByOther = currentChannel.header.includes(teammateId);
+        isBlockedByMe = currentChannel.header.includes(currentUserId);
         status = getStatusForUserId(state, teammateId);
         if (teammate && teammate.is_bot) {
             isBot = true;
@@ -61,6 +65,8 @@ function mapStateToProps(state) {
         isTeammateGuest,
         isDirectMessage,
         status,
+        isBlockedByMe,
+        isBlockedByOther,
         theme: getTheme(state),
     };
 }

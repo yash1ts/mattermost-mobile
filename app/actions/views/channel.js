@@ -11,6 +11,7 @@ import {
     getChannelByNameAndTeamName,
     joinChannel,
     leaveChannel as serviceLeaveChannel,
+    updateChannelHeader,
 } from '@mm-redux/actions/channels';
 import {savePreferences} from '@mm-redux/actions/preferences';
 import {getLicense} from '@mm-redux/selectors/entities/general';
@@ -487,6 +488,27 @@ export function leaveChannel(channel, reset = false) {
         }
 
         await dispatch(serviceLeaveChannel(channel.id));
+    };
+}
+
+export function blockDMChannel(channel) {
+    return async (dispatch, getState) => {
+        const state = getState();
+        let header = channel.header;
+        if (!header.includes(getCurrentUserId(state))) {
+            header += `${getCurrentUserId(state)} `;
+        }
+        await dispatch(updateChannelHeader(channel.id, header));
+    };
+}
+export function unblockDMChannel(channel) {
+    return async (dispatch, getState) => {
+        const state = getState();
+        let header = channel.header;
+        if (header.includes(getCurrentUserId(state))) {
+            header = header.replace(`${getCurrentUserId(state)} `, '');
+        }
+        await dispatch(updateChannelHeader(channel.id, header));
     };
 }
 

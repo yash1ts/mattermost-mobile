@@ -31,6 +31,7 @@ import Pinned from './pinned';
 import Separator from './separator';
 import ChannelLinkShare from './channel_link_share';
 import ChannelLinkCopy from './channel_link_copy';
+import Block from './block';
 
 export default class ChannelInfo extends PureComponent {
     static propTypes = {
@@ -51,6 +52,8 @@ export default class ChannelInfo extends PureComponent {
         isDirectMessage: PropTypes.bool.isRequired,
         status: PropTypes.string,
         theme: PropTypes.object.isRequired,
+        isBlockedByOther: PropTypes.bool,
+        isBlockedByMe: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -155,10 +158,11 @@ export default class ChannelInfo extends PureComponent {
                     testID='channel_info.convert_private.action'
                     theme={theme}
                 />
+                {!isDirectMessage &&
                 <EditChannel
                     testID='channel_info.edit_channel.action'
                     theme={theme}
-                />
+                />}
                 <ChannelLinkShare
                     testID='channel_info.edit_channel.action'
                     theme={theme}
@@ -181,6 +185,8 @@ export default class ChannelInfo extends PureComponent {
             theme,
             isBot,
             isTeammateGuest,
+            isBlockedByMe,
+            isBlockedByOther,
         } = this.props;
 
         const style = getStyleSheet(theme);
@@ -204,7 +210,7 @@ export default class ChannelInfo extends PureComponent {
                         header={currentChannel.header}
                         memberCount={currentChannelMemberCount}
                         onPermalinkPress={this.handlePermalinkPress}
-                        purpose={currentChannel.purpose}
+                        purpose={''}
                         status={status}
                         theme={theme}
                         type={currentChannel.type}
@@ -222,6 +228,11 @@ export default class ChannelInfo extends PureComponent {
                         <Leave
                             close={this.close}
                             theme={theme}
+                        />
+                        <Block
+                            theme={theme}
+                            isBlockedByMe={isBlockedByMe}
+                            isBlockedByOther={isBlockedByOther}
                         />
                         {/* <Archive
                             close={this.close}

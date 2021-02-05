@@ -5,11 +5,11 @@ import {connect} from 'react-redux';
 
 import {getCurrentChannel} from '@mm-redux/selectors/entities/channels';
 import ChannelLinkShare from './channel_link_share';
-import {Client4} from '@mm-redux/client';
+import {getCurrentTeamUrl} from '@mm-redux/selectors/entities/teams';
 
 function mapStateToProps(state) {
     const currentChannel = getCurrentChannel(state);
-    const channelUrl = Client4.getChannelRoute(currentChannel?.id);
+    const channelUrl = `${getCurrentTeamUrl(state)}/communities/${currentChannel.name}`;
     return {
         channelUrl,
         currentChannel,

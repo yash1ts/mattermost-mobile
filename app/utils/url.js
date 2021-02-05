@@ -116,8 +116,7 @@ export function matchDeepLink(url, serverURL, siteURL) {
     const urlBaseWithoutProtocol = removeProtocol(urlBase);
 
     const linkRoot = `(?:${escapeRegex(urlBaseWithoutProtocol)})`;
-
-    match = new RegExp(linkRoot + '\\/([^\\/]+)\\/channels\\/(\\S+)').exec(urlToMatch);
+    match = new RegExp(linkRoot + '\\/([^\\/]+)\\/communities\\/(\\S+)').exec(urlToMatch);
 
     if (match) {
         return {type: DeepLinkTypes.CHANNEL, teamName: match[1], channelName: match[2]};

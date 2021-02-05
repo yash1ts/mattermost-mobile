@@ -10,7 +10,7 @@ import {selectDefaultTeam} from '@actions/views/select_team';
 import {ViewTypes} from '@constants';
 import {getChannelStats} from '@mm-redux/actions/channels';
 import {Client4} from '@mm-redux/client';
-import {getCurrentChannelId} from '@mm-redux/selectors/entities/channels';
+import {getCurrentChannel, getCurrentChannelId} from '@mm-redux/selectors/entities/channels';
 import {getServerVersion} from '@mm-redux/selectors/entities/general';
 import {getTheme} from '@mm-redux/selectors/entities/preferences';
 import {getCurrentTeam} from '@mm-redux/selectors/entities/teams';
@@ -19,12 +19,24 @@ import {isMinimumServerVersion} from '@mm-redux/utils/helpers';
 import {isSystemAdmin as checkIsSystemAdmin} from '@mm-redux/utils/user_utils';
 
 import Channel from './channel';
+import {General} from '@mm-redux/constants';
+import {getUserIdFromChannelName} from '@mm-redux/utils/channel_utils';
 
 function mapStateToProps(state) {
     const currentTeam = getCurrentTeam(state);
-    const roles = getCurrentUserId(state) ? getCurrentUserRoles(state) : '';
+    const currentUserId = getCurrentUserId(state);
+    const roles = currentUserId ? getCurrentUserRoles(state) : '';
     const isSystemAdmin = checkIsSystemAdmin(roles);
     const serverVersion = Client4.getServerVersion() || getServerVersion(state);
+    const currentChannel = getCurrentChannel(state);
+    let isBlockedByMe = false;
+    let isBlockedByOther = false;
+    if (currentChannel) {
+        if (currentChannel.type === General.DM_CHANNEL) {
+            isBlockedByMe = currentChannel.header.includes(currentUserId);
+            isBlockedByOther = currentChannel.header.includes(getUserIdFromChannelName(currentUserId, currentChannel.name));
+        }
+    }
 
     let isSupportedServer = true;
     if (serverVersion) {
@@ -43,6 +55,8 @@ function mapStateToProps(state) {
         isSystemAdmin,
         teamName: currentTeam?.display_name,
         theme: getTheme(state),
+        isBlockedByOther,
+        isBlockedByMe,
         showTermsOfService: shouldShowTermsOfService(state),
     };
 }

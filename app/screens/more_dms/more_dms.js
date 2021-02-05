@@ -31,7 +31,7 @@ import {
     getKeyboardAppearanceFromTheme,
 } from '@utils/theme';
 
-import SelectedUsers from './selected_users';
+// import SelectedUsers from './selected_users';
 
 const START_BUTTON = 'start-conversation';
 const CLOSE_BUTTON = 'close-dms';
@@ -83,7 +83,8 @@ export default class MoreDirectMessages extends PureComponent {
     componentDidMount() {
         this.navigationEventListener = Navigation.events().bindComponent(this);
         this.mounted = true;
-        this.updateNavigationButtons(false);
+
+        // this.updateNavigationButtons(false);
 
         this.getProfiles();
     }
@@ -93,10 +94,10 @@ export default class MoreDirectMessages extends PureComponent {
     }
 
     componentDidUpdate() {
-        const {selectedCount, startingConversation} = this.state;
-        const canStart = selectedCount > 0 && !startingConversation;
+        // const {selectedCount, startingConversation} = this.state;
+        // const canStart = selectedCount > 0 && !startingConversation;
 
-        this.updateNavigationButtons(canStart);
+        // this.updateNavigationButtons(canStart);
     }
 
     navigationButtonPressed({buttonId}) {
@@ -134,6 +135,12 @@ export default class MoreDirectMessages extends PureComponent {
             });
         }
     }, 100);
+
+    startDM = (id) => {
+        const prop = {};
+        prop[id] = true;
+        this.startConversation(prop);
+    }
 
     handleSelectProfile = (id) => {
         const {currentUserId} = this.props;
@@ -499,12 +506,12 @@ export default class MoreDirectMessages extends PureComponent {
                             value={term}
                         />
                     </View>
-                    <SelectedUsers
+                    {/* <SelectedUsers
                         selectedIds={this.state.selectedIds}
                         warnCount={5}
                         maxCount={7}
                         onRemove={this.handleRemoveProfile}
-                    />
+                    /> */}
                     <CustomList
                         data={data}
                         extraData={selectedIds}
@@ -514,7 +521,7 @@ export default class MoreDirectMessages extends PureComponent {
                         loadingComponent={this.renderLoading()}
                         noResults={this.renderNoResults()}
                         onLoadMore={this.getProfiles}
-                        onRowPress={this.handleSelectProfile}
+                        onRowPress={this.startDM}
                         renderItem={this.renderItem}
                         testID='more_direct_messages.list'
                         theme={theme}

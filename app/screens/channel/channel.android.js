@@ -19,6 +19,7 @@ import ChannelNavBar from './channel_nav_bar';
 import ChannelPostList from './channel_post_list';
 
 import ChannelBase, {ClientUpgradeListener} from './channel_base';
+import {Text} from 'react-native-elements';
 
 let backPressedCount = 0;
 
@@ -60,6 +61,29 @@ export default class ChannelAndroid extends ChannelBase {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
     }
 
+    renderFooter = () => {
+        const {isBlockedByMe, isBlockedByOther, theme} = this.props;
+        let element;
+        if ((!isBlockedByMe && !isBlockedByOther)) {
+            element = (
+                <PostDraft
+                    testID='channel.post_draft'
+                    ref={this.postDraft}
+                    screenId={this.props.componentId}
+                    registerTypingAnimation={this.registerTypingAnimation}
+                />
+            );
+        } else {
+            const message = isBlockedByMe ? 'You have blocked this User' : 'You have been blocked by this User';
+            element = (<View style={{marginVertical: 10}}>
+                <View style={{backgroundColor: theme.sidebarHeaderBg, borderRadius: 5, alignSelf: 'center'}}>
+                    <Text style={{color: '#fffa', padding: 8}}>{message}</Text>
+                </View>
+            </View>);
+        }
+        return element;
+    }
+
     render() {
         const {theme} = this.props;
         let component = this.renderLoadingOrFailedChannel();
@@ -73,12 +97,7 @@ export default class ChannelAndroid extends ChannelBase {
                     >
                         <ChannelPostList registerTypingAnimation={this.registerTypingAnimation}/>
                     </View>
-                    <PostDraft
-                        testID='channel.post_draft'
-                        ref={this.postDraft}
-                        screenId={this.props.componentId}
-                        registerTypingAnimation={this.registerTypingAnimation}
-                    />
+                    {this.renderFooter()}
                 </KeyboardLayout>
             );
         }

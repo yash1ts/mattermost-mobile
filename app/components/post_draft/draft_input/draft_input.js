@@ -3,13 +3,12 @@
 
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {Platform, ScrollView, Text, View} from 'react-native';
+import {Platform, ScrollView, View} from 'react-native';
 import {intlShape} from 'react-intl';
 import HWKeyboardEvent from 'react-native-hw-keyboard-event';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import Autocomplete from '@components/autocomplete';
-import CompassIcon from '@components/compass_icon';
 import PostInput from '@components/post_draft/post_input';
 import QuickActions from '@components/post_draft/quick_actions';
 import SendAction from '@components/post_draft/send_action';
@@ -22,7 +21,7 @@ import EphemeralStore from '@store/ephemeral_store';
 import * as DraftUtils from '@utils/draft';
 import {confirmOutOfOfficeDisabled} from '@utils/status';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import ReplyPopup from '../reply_popup/reply_popup';
 const AUTOCOMPLETE_MARGIN = 20;
 const AUTOCOMPLETE_MAX_HEIGHT = 200;
 const HW_SHIFT_ENTER_TEXT = Platform.OS === 'ios' ? '\n' : '';
@@ -95,6 +94,7 @@ export default class DraftInput extends PureComponent {
     }
 
     componentDidMount() {
+        this.closeReplyPopup();
         const {getChannelMemberCountsByGroup, channelId, isTimezoneEnabled, useGroupMentions, value} = this.props;
 
         HWKeyboardEvent.onHWKeyPressed(this.handleHardwareEnterPress);
@@ -138,6 +138,7 @@ export default class DraftInput extends PureComponent {
     }
 
     componentWillUnmount() {
+        this.closeReplyPopup();
         HWKeyboardEvent.removeOnHWKeyPressed();
     }
 
@@ -416,23 +417,6 @@ export default class DraftInput extends PureComponent {
         setStatus({user_id: currentUserId, status});
     };
 
-    renderReplyPopup = (style, replyPopup) => (
-        <View style={style.replyContainer}>
-            <View style={style.replyHeader}>
-                <Text style={style.replyText}>{replyPopup.user_name + ':'} </Text>
-                <TouchableOpacity
-                    onPress={this.closeReplyPopup}
-                >
-                    <CompassIcon
-                        name='close'
-                        color='grey'
-                        style={style.closeButton}
-                    />
-                </TouchableOpacity>
-            </View>
-            <Text style={style.replyText}>{replyPopup.message}</Text>
-        </View>)
-
     render() {
         const {
             testID,
@@ -459,8 +443,11 @@ export default class DraftInput extends PureComponent {
                     theme={theme}
                     registerTypingAnimation={registerTypingAnimation}
                 />
-
-                {(replyPopup.user_name) && this.renderReplyPopup(style, replyPopup)}
+                <ReplyPopup
+                    theme={theme}
+                    replyPopup={replyPopup}
+                    closeReplyPopup={this.closeReplyPopup}
+                />
 
                 <SafeAreaView
                     edges={['left', 'right']}
@@ -546,25 +533,6 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
                 ios: 1,
                 android: 2,
             }),
-        },
-        replyHeader: {
-            flexDirection: 'row', justifyContent: 'space-between',
-        },
-        replyText: {
-            color: 'grey',
-        },
-        replyContainer: {
-            backgroundColor: theme.centerChannelBg,
-            borderWidth: 2,
-            borderColor: theme.sidebarHeaderBg,
-            borderRadius: 5,
-            position: 'absolute',
-            left: 8,
-            right: 8,
-            bottom: 82,
-            zIndex: 2,
-            paddingHorizontal: 10,
-            paddingVertical: 8,
         },
         inputContainer: {
             flex: 1,

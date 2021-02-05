@@ -559,7 +559,7 @@ export default class PostList extends PureComponent {
         return (
             <>
                 <Animated.View
-                    pointerEvents={ this.animateLoading ? 'none' : 'auto'}
+                    pointerEvents={this.animateLoading ? 'none' : 'auto'}
                     style={{flex: 1, opacity: this.animatedOpacity}}
                 >
                     <FlatList
