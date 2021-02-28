@@ -34,13 +34,13 @@ export const GlobalStyles = StyleSheet.create({
         lineHeight: 22,
     },
     signupButton: {
-        borderRadius: 3,
+        borderRadius: 20,
         borderColor: '#2389D7',
         borderWidth: 1,
         alignItems: 'center',
         alignSelf: 'stretch',
         marginTop: 10,
-        padding: 15,
+        padding: 10,
     },
     signupButtonText: {
         textAlign: 'center',
@@ -99,14 +99,13 @@ export const GlobalStyles = StyleSheet.create({
 
     inputBox: {
         fontSize: 16,
-        height: 45,
         borderColor: 'gainsboro',
         borderWidth: 1,
         marginTop: 5,
         marginBottom: 5,
-        paddingLeft: 10,
+        paddingLeft: 15,
         alignSelf: 'stretch',
-        borderRadius: 3,
+        borderRadius: 20,
         color: '#fafafa',
     },
 });

@@ -139,4 +139,5 @@ export default {
     SidebarSectionTypes,
     IOS_HORIZONTAL_LANDSCAPE: 44,
     INDICATOR_BAR_HEIGHT,
+    RESEND_EMAIL_WAIT: 59,
 };

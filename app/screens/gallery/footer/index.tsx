@@ -146,11 +146,12 @@ const Footer = forwardRef<FooterRef, FooterProps>((props: FooterProps, ref) => {
     return (
         <>
             <Animated.View style={[{transform: [{translateY}], opacity}, styles.footer]}>
+                {props?.file &&
                 <Summary
                     copyPublicLink={copyPublicLink}
                     dowloadFile={dowloadFile}
                     file={props.file}
-                />
+                />}
                 <Toast ref={toastRef}/>
             </Animated.View>
             <Animated.View style={[{transform: [{translateY: downloadingY}], opacity: downloadingOpacitity}, styles.footer]}>

@@ -30,6 +30,7 @@ export function mapStateToProps(state, ownProps) {
     const currentDraft = ownProps.rootId ? getThreadDraft(state, ownProps.rootId) : getCurrentChannelDraft(state);
     const config = getConfig(state);
     const channel = ownProps.rootId ? getChannel(state, channelId) : getCurrentChannel(state);
+    const isDirectMessage = channel.type === General.DM_CHANNEL;
     const currentUserId = getCurrentUserId(state);
     const status = getStatusForUserId(state, currentUserId);
     const userIsOutOfOffice = status === General.OUT_OF_OFFICE;
@@ -86,6 +87,7 @@ export function mapStateToProps(state, ownProps) {
         membersCount,
         theme: getTheme(state),
         useChannelMentions,
+        isDirectMessage,
         userIsOutOfOffice,
         value: currentDraft.draft,
         groupsWithAllowReference,

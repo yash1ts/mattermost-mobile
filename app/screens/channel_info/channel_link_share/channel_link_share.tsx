@@ -9,12 +9,10 @@ import ChannelInfoRow from '@screens/channel_info/channel_info_row';
 import Separator from '@screens/channel_info/separator';
 import {t} from '@utils/i18n';
 import {preventDoubleTap} from '@utils/tap';
-import {General} from '@mm-redux/constants';
 import {Alert, Share} from 'react-native';
 interface ChannelLinkProps {
     testID?: string;
     channelUrl:string;
-    currentChannel:any;
     theme: Theme;
 }
 
@@ -44,22 +42,20 @@ export default class ChannelLinkShare extends PureComponent<ChannelLinkProps> {
         }
     });
     render() {
-        const {currentChannel, testID, theme} = this.props;
-        if (currentChannel?.type === General.OPEN_CHANNEL) {
-            return (
-                <>
-                    <Separator theme={theme}/>
-                    <ChannelInfoRow
-                        testID={testID}
-                        action={this.shareLink}
-                        defaultMessage='Share Channel'
-                        icon='reply-outline'
-                        textId={t('channel_header.share')}
-                        theme={theme}
-                    />
-                </>
-            );
-        }
+        const {testID, theme} = this.props;
+        return (
+            <>
+                <Separator theme={theme}/>
+                <ChannelInfoRow
+                    testID={testID}
+                    action={this.shareLink}
+                    defaultMessage='Share Channel'
+                    icon='reply-outline'
+                    textId={t('channel_header.share')}
+                    theme={theme}
+                />
+            </>
+        );
 
         return null;
     }

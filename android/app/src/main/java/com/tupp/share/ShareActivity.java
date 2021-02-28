@@ -8,7 +8,7 @@ import com.tupp.app.MainApplication;
 public class ShareActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
-        return "TuppShare";
+        return "MattermostShare";
     }
 
     @Override

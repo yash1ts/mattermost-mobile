@@ -30,6 +30,8 @@ import {hasEmojisOnly} from 'app/utils/emoji_utils';
 
 import PostBody from './post_body';
 import {bindActionCreators} from 'redux';
+import {addReaction} from '@mm-redux/actions/posts';
+import { getUserIdFromChannelName } from '@mm-redux/utils/channel_utils';
 
 const POST_TIMEOUT = 20000;
 
@@ -102,6 +104,11 @@ export function makeMapStateToProps() {
             isPostAddChannelMember = true;
         }
 
+        let isBlocked = false;
+        if (channel.type === General.DM_CHANNEL) {
+            isBlocked = channel.header.includes(currentUserId) || channel.header.includes(getUserIdFromChannelName(currentUserId, channel.name));
+        }
+
         const customEmojis = getCustomEmojisByName(state);
         const {isEmojiOnly, shouldRenderJumboEmoji} = memoizeHasEmojisOnly(post.message, customEmojis);
         const systemMessage = isSystemMessage(post);
@@ -122,6 +129,7 @@ export function makeMapStateToProps() {
             commentedOnPost,
             metadata: post.metadata,
             postProps,
+            isBlocked,
             postType: post.type || '',
             fileIds: post.file_ids,
             hasBeenDeleted: post.state === Posts.POST_DELETED,
@@ -148,6 +156,7 @@ function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
             setReplyPopup,
+            addReaction,
         }, dispatch),
     };
 }

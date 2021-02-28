@@ -356,7 +356,7 @@ class ShareViewController: SLComposeServiceViewController {
     
     // If currentChannel is nil it means we don't have the channels for this team
     if (currentChannel == nil) {
-      let urlString = "\(serverURL!)/api/v4/users/me/teams/\(forTeamId)/channels"
+      let urlString = "\(serverURL!)/api/tupp/users/me/teams/\(forTeamId)/channels"
       let url = URL(string: urlString)
       var request = URLRequest(url: url!)
       let auth = "Bearer \(sessionToken!)" as String

@@ -10,7 +10,8 @@ import CompassIcon from '@components/compass_icon';
 import ProfilePicture from '@components/profile_picture';
 import TouchableWithFeedback from '@components/touchable_with_feedback';
 import {ViewTypes} from '@constants';
-import {emptyFunction, logo} from '@utils/general';
+import {emptyFunction} from '@utils/general';
+import logo from '@utils/logo';
 
 export default class PostProfilePicture extends PureComponent {
     static propTypes = {

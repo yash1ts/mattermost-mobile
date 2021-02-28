@@ -6,13 +6,13 @@ import {batchActions} from 'redux-batched-actions';
 import {lastChannelIdForTeam} from '@actions/helpers/channels';
 import {NavigationTypes} from '@constants';
 import {ChannelTypes, TeamTypes} from '@mm-redux/action_types';
-import {getMyTeams} from '@mm-redux/actions/teams';
+import {addUserToTeam, getMyTeams} from '@mm-redux/actions/teams';
 import {Preferences, RequestStatus} from '@mm-redux/constants';
-import {getConfig} from '@mm-redux/selectors/entities/general';
 import {get as getPreference} from '@mm-redux/selectors/entities/preferences';
 import {getCurrentLocale} from 'app/selectors/i18n';
 import EventEmitter from '@mm-redux/utils/event_emitter';
 import {selectFirstAvailableTeam} from '@utils/teams';
+import {getCurrentUserId} from '@mm-redux/selectors/entities/users';
 
 export function handleTeamChange(teamId) {
     return async (dispatch, getState) => {
@@ -51,7 +51,7 @@ export function selectDefaultTeam() {
     return async (dispatch, getState) => {
         const state = getState();
 
-        const ExperimentalPrimaryTeam = 'p5f5pjdugt84uynqj61gm9ixsc';
+        const ExperimentalPrimaryTeam = 'cim3xa9f6tnj5edxaa3nym9exe';
         const locale = getCurrentLocale(state);
         const userTeamOrderPreference = getPreference(state, Preferences.TEAMS_ORDER, '', '');
         const {teams, myMembers} = state.entities.teams;
@@ -62,6 +62,10 @@ export function selectDefaultTeam() {
 
             return result;
         }, []);
+
+        if (myTeams.length === 0) {
+            await dispatch(addUserToTeam(ExperimentalPrimaryTeam, getCurrentUserId(state)));
+        }
 
         let defaultTeam = selectFirstAvailableTeam(myTeams, locale, userTeamOrderPreference, ExperimentalPrimaryTeam);
 

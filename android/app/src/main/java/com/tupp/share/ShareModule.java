@@ -210,7 +210,7 @@ public class ShareModule extends ReactContextBaseJavaModule {
         RequestBody body = RequestBody.create(JSON, postData.toString());
         Request request = new Request.Builder()
                 .header("Authorization", "BEARER " + token)
-                .url(serverUrl + "/api/v4/posts")
+                .url(serverUrl + "/api/tupp/posts")
                 .post(body)
                 .build();
         Response response = client.newCall(request).execute();
@@ -235,7 +235,7 @@ public class ShareModule extends ReactContextBaseJavaModule {
             RequestBody body = builder.build();
             Request request = new Request.Builder()
                     .header("Authorization", "BEARER " + token)
-                    .url(serverUrl + "/api/v4/files")
+                    .url(serverUrl + "/api/tupp/files")
                     .post(body)
                     .build();
 

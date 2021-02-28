@@ -39,7 +39,7 @@ export function makeGetMentionKeysForPost(): (state: GlobalState, channel: Chann
             }
 
             if (mentionHighlightDisabled) {
-                const CHANNEL_MENTIONS = ['@all', '@channel', '@here'];
+                const CHANNEL_MENTIONS = ['@all', '@community', '@here'];
                 mentionKeys = mentionKeys.filter((value) => !CHANNEL_MENTIONS.includes(value.key));
             }
 

@@ -137,7 +137,7 @@ export const getCurrentUserMentionKeys: (a: GlobalState) => Array<UserMentionKey
     }
 
     if (user.notify_props.channel === 'true') {
-        keys.push({key: '@channel'});
+        keys.push({key: '@community'});
         keys.push({key: '@all'});
         keys.push({key: '@here'});
     }
@@ -373,18 +373,20 @@ function removeCurrentUserFromList(profiles: Array<UserProfile>, currentUserId: 
 }
 
 export const shouldShowTermsOfService: (a: GlobalState) => boolean = createSelector(
-    getConfig,
-    getCurrentUser,
-    getLicense,
-    (config, user, license) => {
-        // Defaults to false if the user is not logged in or the setting doesn't exist
-        const acceptedTermsId = user ? user.terms_of_service_id : '';
-        const acceptedAt = user ? user.terms_of_service_create_at : 0;
 
-        const featureEnabled = license.IsLicensed === 'true' && config.EnableCustomTermsOfService === 'true';
-        const reacceptanceTime = parseInt(config.CustomTermsOfServiceReAcceptancePeriod!, 10) * 1000 * 60 * 60 * 24;
-        const timeElapsed = new Date().getTime() - acceptedAt;
-        return Boolean(user && featureEnabled && (config.CustomTermsOfServiceId !== acceptedTermsId || timeElapsed > reacceptanceTime));
+    // getConfig,
+    getCurrentUser,
+
+    // getLicense,
+    (user) => {
+        // Defaults to false if the user is not logged in or the setting doesn't exist
+        // const acceptedTermsId = user ? user.terms_of_service_id : '';
+        const accepted = Boolean(user?.terms_of_service_create_at);
+
+        // const featureEnabled = license.IsLicensed === 'true' && config.EnableCustomTermsOfService === 'true';
+        // const reacceptanceTime = parseInt(config.CustomTermsOfServiceReAcceptancePeriod!, 10) * 1000 * 60 * 60 * 24;
+        // const timeElapsed = new Date().getTime() - acceptedAt;
+        return Boolean(user && !accepted);
     },
 );
 

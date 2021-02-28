@@ -458,6 +458,14 @@ export const canManageChannelMembers: (a: GlobalState) => boolean = createSelect
         return false;
     }
 
+    if (!channelMembership) {
+        return false;
+    }
+
+    if (!channelMembership.roles.split(' ').includes('channel_admin')) {
+        return false;
+    }
+
     if (newPermissions) {
         if (channel.type === General.OPEN_CHANNEL) {
             return managePublicMembers;

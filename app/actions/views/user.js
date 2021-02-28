@@ -29,7 +29,6 @@ export function completeLogin(user, deviceToken) {
         const license = getLicense(state);
         const token = Client4.getToken();
         const url = Client4.getUrl();
-
         setAppCredentials(deviceToken, user.id, token, url);
 
         // Set timezone
@@ -192,13 +191,6 @@ export function signup(firstName, lastName, email, username, password) {
             return {error};
         }
         return createResult;
-    };
-}
-
-export function addUserToInitialTeam(userId) {
-    return async () => {
-        const ExperimentalPrimaryTeam = 'p5f5pjdugt84uynqj61gm9ixsc';
-        await Client4.addToTeam(ExperimentalPrimaryTeam, userId);
     };
 }
 

@@ -274,12 +274,17 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         },
         titleContainer: { // These aren't used by this component, but they are passed down to the list component
             alignItems: 'center',
-            backgroundColor: '#4a80d6',
+            backgroundColor: '#4a80d6dd',
             flex: 1,
             flexDirection: 'row',
             height: 30,
             marginBottom: 5,
+            marginTop: 5,
             paddingLeft: 16,
+        },
+        titleBg: {
+            backgroundColor: theme.sidebarBg,
+            flex: 1,
         },
     };
 });

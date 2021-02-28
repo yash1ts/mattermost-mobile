@@ -14,6 +14,10 @@ export function getMyPreferences(state: GlobalState) {
     return state.entities.preferences.myPreferences;
 }
 
+export function getPreferences(state: GlobalState) {
+    return state.entities.preferences;
+}
+
 export function get(state: GlobalState, category: string, name: string, defaultValue: any = '') {
     const key = getPreferenceKey(category, name);
     const prefs = getMyPreferences(state);

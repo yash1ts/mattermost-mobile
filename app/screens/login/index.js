@@ -8,8 +8,8 @@ import {login} from '@actions/views/user';
 import {scheduleExpiredNotification} from '@actions/views/session';
 import {getTheme} from '@mm-redux/selectors/entities/preferences';
 import {getConfig, getLicense} from '@mm-redux/selectors/entities/general';
-
 import Login from './login.js';
+import {clearErrors} from '@mm-redux/actions/errors';
 
 function mapStateToProps(state) {
     const config = getConfig(state);
@@ -27,6 +27,7 @@ function mapDispatchToProps(dispatch) {
         actions: bindActionCreators({
             scheduleExpiredNotification,
             login,
+            clearErrors,
         }, dispatch),
     };
 }

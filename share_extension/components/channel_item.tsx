@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 45,
         paddingHorizontal: 15,
+        backgroundColor: 'grey',
     },
     item: {
         alignItems: 'center',

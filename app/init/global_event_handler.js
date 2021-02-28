@@ -11,11 +11,11 @@ import semver from 'semver/preload';
 
 import {setDeviceDimensions, setDeviceOrientation, setDeviceAsTablet, setStatusBarHeight} from '@actions/device';
 import {selectDefaultChannel} from '@actions/views/channel';
-import {showOverlay} from '@actions/navigation';
+import {dismissModal, dismissOverlay, showModal, showOverlay} from '@actions/navigation';
 import {loadConfigAndLicense, setDeepLinkURL, startDataCleanup} from '@actions/views/root';
 import {loadMe, logout} from '@actions/views/user';
 import LocalConfig from '@assets/config';
-import {NavigationTypes, ViewTypes} from '@constants';
+import {DeepLinkTypes, NavigationTypes, ViewTypes} from '@constants';
 import {getTranslations, resetMomentLocale} from '@i18n';
 import PushNotifications from '@init/push_notifications';
 import {setAppState, setServerVersion} from '@mm-redux/actions/general';
@@ -43,7 +43,8 @@ import mattermostManaged from 'app/mattermost_managed';
 import {getAppCredentials, removeAppCredentials} from './credentials';
 import emmProvider from './emm_provider';
 import {analytics} from '@init/analytics.ts';
-
+import {matchDeepLink} from '@utils/url';
+import EphemeralStore from '@store/ephemeral_store';
 const {StatusBarManager} = NativeModules;
 const PROMPT_IN_APP_PIN_CODE_AFTER = 5 * 1000;
 
@@ -146,6 +147,20 @@ class GlobalEventHandler {
         const {url} = event;
         if (url) {
             Store.redux.dispatch(setDeepLinkURL(url));
+            const state = Store.redux.getState();
+            const data = matchDeepLink(url, state.views.selectServer.serverUrl, getConfig(state).SiteURL);
+            if (data) {
+                if (data.type === DeepLinkTypes.VERIFY_EMAIL) {
+                    dismissOverlay(EphemeralStore.getNavigationTopComponentId());
+                    const screen = 'VerifyEmail';
+                    EventEmitter.emit(NavigationTypes.NAVIGATION_SHOW_OVERLAY);
+                    showOverlay(screen, {deepLinkURL: url});
+                } else if (data.type === DeepLinkTypes.CHANGE_PASSWORD) {
+                    const screen = 'ChangePassword';
+                    dismissModal();
+                    showModal(screen, 'Change Password', {deepLinkURL: url});
+                }
+            }
         }
     };
 

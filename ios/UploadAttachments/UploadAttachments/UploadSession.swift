@@ -18,7 +18,7 @@ import os.log
         let sessionToken = store.getToken()
         
         if (serverURL != nil && sessionToken != nil) {
-            let urlString = "\(serverURL!)/api/v4/posts"
+            let urlString = "\(serverURL!)/api/tupp/posts"
             
             guard let uploadSessionData = UploadSessionManager.shared.getUploadSessionData(identifier: identifier) else {return}
             guard let url = URL(string: urlString) else {return}
@@ -144,7 +144,7 @@ import os.log
                 let sessionToken = store.getToken()
                 
                 if (serverURL != nil && sessionToken != nil) {
-                    let urlString = "\(serverURL!)/api/v4/notifications/ack"
+                    let urlString = "\(serverURL!)/api/tupp/notifications/ack"
                     
                     let jsonObject: [String: Any] = [
                         "id": notificationId as Any,

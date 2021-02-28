@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginTop: 16,
         marginBottom: 3,
+        color: 'grey',
     },
     buttonValue: {
         color: changeOpacity(theme.centerChannelColor, 0.6),

@@ -17,7 +17,9 @@ const getPostIdsForThread = makeGetPostIdsForThread();
 export function addReaction(postId, emoji) {
     return (dispatch) => {
         dispatch(serviceAddReaction(postId, emoji));
-        dispatch(addRecentEmoji(emoji));
+        if (emoji !== 'mattermost') {
+            dispatch(addRecentEmoji(emoji));
+        }
     };
 }
 
@@ -28,7 +30,9 @@ export function addReactionToLatestPost(emoji, rootId) {
         const lastPostId = postIds[0];
 
         dispatch(serviceAddReaction(lastPostId, emoji));
-        dispatch(addRecentEmoji(emoji));
+        if (emoji !== 'mattermost') {
+            dispatch(addRecentEmoji(emoji));
+        }
     };
 }
 

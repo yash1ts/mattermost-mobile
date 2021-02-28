@@ -7,11 +7,11 @@ import {Provider} from 'react-redux';
 
 import EventEmitter from '@mm-redux/utils/event_emitter';
 
-import {resetToChannel, resetToSelectServer} from '@actions/navigation';
+import {dismissModal, resetToChannel, resetToSelectServer, showModal, showOverlay} from '@actions/navigation';
 import {setDeepLinkURL} from '@actions/views/root';
 import {loadMe, logout} from '@actions/views/user';
 import telemetry from 'app/telemetry';
-import {NavigationTypes} from '@constants';
+import {DeepLinkTypes, NavigationTypes} from '@constants';
 import {getAppCredentials} from '@init/credentials';
 import emmProvider from '@init/emm_provider';
 import '@init/device';
@@ -25,6 +25,8 @@ import Store from '@store/store';
 import {waitForHydration} from '@store/utils';
 import {validatePreviousVersion} from '@utils/general';
 import {captureJSException} from '@utils/sentry';
+import {matchDeepLink} from '@utils/url';
+import {getConfig} from '@mm-redux/selectors/entities/general';
 
 const init = async () => {
     const credentials = await getAppCredentials();
@@ -58,6 +60,20 @@ const launchApp = (credentials) => {
         Linking.getInitialURL().then((url) => {
             if (url) {
                 store.dispatch(setDeepLinkURL(url));
+                const state = Store.redux.getState();
+                const data = matchDeepLink(url, state.views.selectServer.serverUrl, getConfig(state).SiteURL);
+                if (data) {
+                    if (data.type === DeepLinkTypes.VERIFY_EMAIL) {
+                        const screen = 'VerifyEmail';
+                        EventEmitter.emit(NavigationTypes.NAVIGATION_SHOW_OVERLAY);
+                        showOverlay(screen);
+                    } else if (data.type === DeepLinkTypes.CHANGE_PASSWORD) {
+                        const screen = 'ChangePassword';
+                        EventEmitter.emit(NavigationTypes.NAVIGATION_CLOSE_MODAL);
+                        dismissModal();
+                        showModal(screen, 'Change Password', {deepLinkURL: url});
+                    }
+                }
             }
         });
 

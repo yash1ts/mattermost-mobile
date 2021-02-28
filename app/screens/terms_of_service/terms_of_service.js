@@ -41,7 +41,7 @@ export default class TermsOfService extends PureComponent {
     };
 
     static defaultProps = {
-        siteName: 'Mattermost',
+        siteName: 'Tupp',
     };
 
     leftButton = {
@@ -196,8 +196,7 @@ export default class TermsOfService extends PureComponent {
         this.setState({
             loading: true,
         });
-
-        const {data} = await actions.updateMyTermsOfServiceStatus(this.state.termsId, accepted);
+        const {data} = await actions.updateMyTermsOfServiceStatus('3ma443hixtgwbdx1iw9ik3mqfe', accepted);
         this.setState({
             loading: false,
         });

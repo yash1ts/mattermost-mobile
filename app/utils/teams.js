@@ -7,7 +7,7 @@ import {sortTeamsByUserPreference} from '@mm-redux/utils/team_utils';
 export function selectFirstAvailableTeam(teams, locale, teamsOrder = '', primaryTeamName) {
     let defaultTeam;
     if (primaryTeamName) {
-        defaultTeam = teams.find((t) => t?.id === primaryTeamName.toLowerCase());
+        defaultTeam = teams.find((t) => t?.id === primaryTeamName);
     }
 
     if (!defaultTeam) {

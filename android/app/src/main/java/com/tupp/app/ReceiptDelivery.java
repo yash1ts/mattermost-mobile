@@ -85,7 +85,7 @@ public class ReceiptDelivery {
         }
 
         final HttpUrl url = HttpUrl.parse(
-            String.format("%s/api/v4/notifications/ack", serverUrl.replaceAll("/$", "")));
+            String.format("%s/api/tupp/notifications/ack", serverUrl.replaceAll("/$", "")));
         if (url != null) {
             final OkHttpClient client = new OkHttpClient();
             final MediaType JSON = MediaType.parse("application/json; charset=utf-8");

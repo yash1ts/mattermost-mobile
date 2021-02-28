@@ -38,7 +38,7 @@ export default class ExpandedAnnouncementBanner extends React.PureComponent {
     };
 
     render() {
-        const {allowDismissal, theme} = this.props;
+        const {allowDismissal, theme, bannerText} = this.props;
         const style = getStyleSheet(theme);
 
         let dismissButton = null;
@@ -72,7 +72,7 @@ export default class ExpandedAnnouncementBanner extends React.PureComponent {
                             disableGallery={true}
                             onChannelLinkPress={this.handleChannelLinkPress}
                             textStyles={getMarkdownTextStyles(theme)}
-                            value={this.props.bannerText}
+                            value={bannerText}
                         />
                     </ScrollView>
                     {dismissButton}

@@ -99,7 +99,7 @@ class NotificationSettingsMentionsIos extends NotificationSettingsMentionsBase {
                 <SectionItem
                     label={(
                         <Text>
-                            {'@channel, @all, @here'}
+                            {'@community, @all, @here'}
                         </Text>
                     )}
                     description={(

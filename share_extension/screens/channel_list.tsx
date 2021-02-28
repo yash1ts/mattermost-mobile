@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
         height: 38,
     },
     searchBarInput: {
-        backgroundColor: '#fff',
+        backgroundColor: 'grey',
         color: theme.centerChannelColor,
         fontSize: 15,
     },

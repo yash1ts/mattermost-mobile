@@ -66,7 +66,7 @@ const Share = ({intl}: ShareProps) => {
         const filesOK = files.length ? files.length <= MAX_FILE_COUNT : false;
         const sizeOK = totalSize ? totalSize <= maxFileSize : false;
 
-        if ((!error && ((filesOK && sizeOK) || text?.length)) && team?.id && channel?.id) {
+        if ((!error && (text?.trim().length !== 0) && (!files || (filesOK && sizeOK))) && team?.id && channel?.id) {
             navigation.setOptions({headerRight: rightButton});
         } else {
             navigation.setOptions({headerRight: null});
@@ -198,10 +198,10 @@ const Share = ({intl}: ShareProps) => {
                     ref={shareBodyRef}
                 />
                 <View style={styles.flex}>
-                    <TeamButton
+                    {/* <TeamButton
                         onSelect={selectTeam}
                         team={team}
-                    />
+                    /> */}
                     <ChannelButton
                         channel={channel}
                         onSelect={selectChannel}

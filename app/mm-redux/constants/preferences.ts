@@ -63,13 +63,15 @@ const Preferences: Dictionary<any> = {
             centerChannelBg: '#ffffff',
             centerChannelColor: '#3d3c40',
             newMessageSeparator: '#ff8800',
-            linkColor: '#2389d7',
+            linkColor: '#2355d7',
             buttonBg: '#166de0',
             buttonColor: '#ffffff',
             errorTextColor: '#fd5960',
             mentionHighlightBg: '#ffe577',
             mentionHighlightLink: '#166de0',
             codeTheme: 'github',
+            myPostColor: '#449aff99',
+            othersPostColor: '#5555D688',
         } as Theme,
         organization: {
             type: 'Organization',
@@ -97,6 +99,8 @@ const Preferences: Dictionary<any> = {
             mentionHighlightBg: '#f3e197',
             mentionHighlightLink: '#2f81b7',
             codeTheme: 'github',
+            myPostColor: '#449aff99',
+            othersPostColor: '#5555D688',
         } as Theme,
         mattermostDark: {
             type: 'Tupp Dark',
@@ -124,6 +128,8 @@ const Preferences: Dictionary<any> = {
             mentionHighlightBg: '#984063',
             mentionHighlightLink: '#a4ffeb',
             codeTheme: 'solarized-dark',
+            myPostColor: '#449aff99',
+            othersPostColor: '#5555D688',
         } as Theme,
         default: {
             type: 'Tupp Night',
@@ -151,6 +157,8 @@ const Preferences: Dictionary<any> = {
             mentionHighlightBg: '#784098',
             mentionHighlightLink: '#a4ffeb',
             codeTheme: 'monokai',
+            myPostColor: '#449aff99',
+            othersPostColor: '#5555D688',
         } as Theme,
     },
 };

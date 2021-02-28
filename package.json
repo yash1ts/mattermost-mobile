@@ -10,9 +10,11 @@
     "@babel/runtime": "7.12.5",
     "@react-native-community/async-storage": "1.12.1",
     "@react-native-community/cameraroll": "4.0.1",
+    "@react-native-community/checkbox": "0.5.7",
     "@react-native-community/clipboard": "1.5.1",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/netinfo": "5.9.7",
+    "@react-native-firebase/app": "10.8.0",
     "@react-navigation/native": "5.8.9",
     "@react-navigation/stack": "5.12.6",
     "@rudderstack/rudder-sdk-react-native": "1.0.4",
@@ -192,7 +194,10 @@
     "build:android-unsigned": "./scripts/build.sh apk unsigned",
     "build-storybook": "build-storybook",
     "prestorybook": "rnstl",
-    "storybook": "start-storybook -p 7007"
+    "storybook": "start-storybook -p 7007",
+    "android-bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android && rm -rf ./app/src/main/res/raw ./app/src/main/res/drawable-mdpi ./app/src/main/res/drawable-hdpi ./app/src/main/res/drawable-xhdpi ./app/src/main/res/drawable-xxhdpi ./app/src/main/res/drawable-xxxhdpi && ./gradlew bundleRelease && cd ..",
+    "android-assemble": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android && rm -rf ./app/src/main/res/raw ./app/src/main/res/drawable-mdpi ./app/src/main/res/drawable-hdpi ./app/src/main/res/drawable-xhdpi ./app/src/main/res/drawable-xxhdpi ./app/src/main/res/drawable-xxxhdpi && ./gradlew assembleRelease -x bundleReleaseJsAndAssets && cd ..",
+    "watch": "watchman watch-del-all && echo 999 | sudo tee -a /proc/sys/fs/inotify/max_user_instances && echo 99999 | sudo tee -a /proc/sys/fs/inotify/max_queued_events && echo 99999 | sudo tee -a /proc/sys/fs/inotify/max_user_watches && watchman shutdown-server"
   },
   "config": {
     "react-native-storybook-loader": {

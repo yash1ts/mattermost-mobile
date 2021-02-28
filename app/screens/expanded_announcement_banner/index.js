@@ -11,12 +11,12 @@ import {isLandscape} from '@selectors/device';
 
 import ExpandedAnnouncementBanner from './expanded_announcement_banner';
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     const config = getConfig(state);
 
     return {
         allowDismissal: config.AllowBannerDismissal === 'true',
-        bannerText: config.BannerText,
+        bannerText: config.BannerText || ownProps.bannerText,
         isLandscape: isLandscape(state),
         theme: getTheme(state),
     };

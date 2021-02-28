@@ -7,6 +7,7 @@ import Button from 'react-native-button';
 import {intlShape} from 'react-intl';
 
 import {
+    ActivityIndicator,
     StyleSheet,
     Text,
     TextInput,
@@ -22,7 +23,7 @@ import {isEmail} from '@mm-redux/utils/helpers';
 import {changeOpacity} from '@utils/theme';
 
 import {GlobalStyles} from 'app/styles';
-import {logo} from '@utils/general';
+import logo from '@utils/logo';
 
 export default class ForgotPassword extends PureComponent {
     static propTypes = {
@@ -42,6 +43,7 @@ export default class ForgotPassword extends PureComponent {
             error: null,
             email: '',
             sentPasswordLink: false,
+            isLoading: false,
         };
     }
 
@@ -59,6 +61,9 @@ export default class ForgotPassword extends PureComponent {
             });
             return;
         }
+        this.setState({
+            isLoading: true,
+        });
 
         const {data, error} = await this.props.actions.sendPasswordResetEmail(this.state.email);
         if (error) {
@@ -66,6 +71,9 @@ export default class ForgotPassword extends PureComponent {
         } else if (this.state.error) {
             this.setState({error: ''});
         }
+        this.setState({
+            isLoading: false,
+        });
         if (data) {
             this.setState({sentPasswordLink: true});
         }
@@ -134,17 +142,25 @@ export default class ForgotPassword extends PureComponent {
                         blurOnSubmit={false}
                         disableFullscreenUI={true}
                     />
-                    <Button
-                        containerStyle={GlobalStyles.signupButton}
-                        disabled={!this.state.email}
-                        onPress={this.submitResetPassword}
-                    >
-                        <FormattedText
-                            id='password_send.reset'
-                            defaultMessage='Reset my password'
-                            style={[GlobalStyles.signupButtonText]}
+                    {!this.state.isLoading &&
+                        <Button
+                            containerStyle={GlobalStyles.signupButton}
+                            disabled={!this.state.email}
+                            onPress={this.submitResetPassword}
+                        >
+                            <FormattedText
+                                id='password_send.reset'
+                                defaultMessage='Reset my password'
+                                style={[GlobalStyles.signupButtonText]}
+                            />
+                        </Button>}
+                    {this.state.isLoading &&
+                        <ActivityIndicator
+                            size='large'
+                            color='#00f'
+                            style={{margin: 10}}
                         />
-                    </Button>
+                    }
                 </View>
             );
         }

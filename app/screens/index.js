@@ -206,8 +206,19 @@ Navigation.setLazyComponentRegistrator((screenName) => {
     case 'SignUp':
         screen = require('@screens/signup').default;
         break;
+    case 'Verification':
+        screen = require('@screens/verification').default;
+        break;
+    case 'VerifyEmail' :
+        screen = require('@screens/verify_email').default;
+        break;
+    case 'ChangePassword' :
+        screen = require('@screens/change_password').default;
+        break;
+    case 'Policies' :
+        screen = require('@screens/policies').default;
+        break;
     }
-
     if (screen) {
         Navigation.registerComponent(screenName, () => withGestures(withReduxProvider(screen), extraStyles), () => screen);
     }

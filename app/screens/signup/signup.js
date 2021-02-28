@@ -6,10 +6,7 @@ import StatusBar from '@components/status_bar';
 import {changeOpacity} from '@mm-redux/utils/theme_utils';
 import {GlobalStyles} from 'app/styles';
 import React, {PureComponent} from 'react';
-import tracker from '@utils/time_tracker';
-import telemetry from 'app/telemetry';
 import {t} from '@utils/i18n';
-import {resetToChannel, goToScreen} from '@actions/navigation';
 import {
     ActivityIndicator,
     InteractionManager,
@@ -18,6 +15,7 @@ import {
     TextInput,
     TouchableWithoutFeedback,
     View,
+    Text,
 } from 'react-native';
 import Button from 'react-native-button';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
@@ -25,7 +23,12 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {preventDoubleTap} from '@utils/tap';
 import PropTypes from 'prop-types';
 import {intlShape} from 'react-intl';
-import {logo} from '@utils/general';
+import logo from '@utils/logo';
+import InputPassword from '@components/input_password/input_password';
+import {goToScreen} from '@actions/navigation';
+import CheckBox from '@react-native-community/checkbox';
+import EventEmitter from '@mm-redux/utils/event_emitter';
+import {NavigationTypes} from '@constants/';
 
 export const mfaExpectedErrors = ['mfa.validate_token.authenticate.app_error', 'ent.mfa.validate_token.authenticate.app_error'];
 
@@ -35,10 +38,10 @@ export default class Signup extends PureComponent {
             scheduleExpiredNotification: PropTypes.func.isRequired,
             signup: PropTypes.func.isRequired,
             login: PropTypes.func.isRequired,
-            addUserToInitialTeam: PropTypes.func.isRequired,
         }).isRequired,
         config: PropTypes.object.isRequired,
         license: PropTypes.object.isRequired,
+        theme: PropTypes.object,
     };
 
     static contextTypes = {
@@ -51,24 +54,26 @@ export default class Signup extends PureComponent {
         InteractionManager.runAfterInteractions(async () => {
             if (!this.email) {
                 t('login.noEmail');
-                t('login.noEmailLdapUsername');
-                t('login.noEmailUsername');
-                t('login.noEmailUsernameLdapUsername');
-                t('login.noLdapUsername');
-                t('login.noUsername');
-                t('login.noUsernameLdapUsername');
+                const msgId = 'login.noEmail';
 
-                // it's slightly weird to be constructing the message ID, but it's a bit nicer than triply nested if statements
-                let msgId = 'login.no';
-                if (this.props.config.EnableSignInWithEmail === 'true') {
-                    msgId += 'Email';
-                }
-                if (this.props.config.EnableSignInWithUsername === 'true') {
-                    msgId += 'Username';
-                }
-                if (this.props.license.IsLicensed === 'true' && this.props.config.EnableLdap === 'true') {
-                    msgId += 'LdapUsername';
-                }
+                // t('login.noEmailLdapUsername');
+                // t('login.noEmailUsername');
+                // t('login.noEmailUsernameLdapUsername');
+                // t('login.noLdapUsername');
+                // t('login.noUsername');
+                // t('login.noUsernameLdapUsername');
+
+                // // it's slightly weird to be constructing the message ID, but it's a bit nicer than triply nested if statements
+                // let msgId = 'login.no';
+                // if (this.props.config.EnableSignInWithEmail === 'true') {
+                //     msgId += 'Email';
+                // }
+                // if (this.props.config.EnableSignInWithUsername === 'true') {
+                //     msgId += 'Username';
+                // }
+                // if (this.props.license.IsLicensed === 'true' && this.props.config.EnableLdap === 'true') {
+                //     msgId += 'LdapUsername';
+                // }
 
                 this.setState({
                     isLoading: false,
@@ -113,49 +118,21 @@ export default class Signup extends PureComponent {
                 });
                 return;
             }
-
+            if (!this.state.tosAccept) {
+                this.setState({
+                    isLoading: false,
+                    error: {
+                        intl: {
+                            id: t('signup.noTos'),
+                            defaultMessage: 'Please Read and Accept the Terms of Service',
+                        },
+                    },
+                });
+                return;
+            }
             this.signIn();
         });
     });
-
-    getLoginErrorMessage = (error) => {
-        return (
-            this.getServerErrorForLogin(error) ||
-            this.state.error
-        );
-    };
-
-    getServerErrorForLogin = (error) => {
-        if (!error) {
-            return null;
-        }
-        const errorId = error.server_error_id;
-        if (!errorId) {
-            return error.message;
-        }
-        if (
-            errorId === 'store.sql_user.get_for_login.app_error' ||
-            errorId === 'ent.ldap.do_login.user_not_registered.app_error'
-        ) {
-            return {
-                intl: {
-                    id: t('login.userNotFound'),
-                    defaultMessage: "We couldn't find an account matching your login credentials.",
-                },
-            };
-        } else if (
-            errorId === 'api.user.check_user_password.invalid.app_error' ||
-            errorId === 'ent.ldap.do_login.invalid_password.app_error'
-        ) {
-            return {
-                intl: {
-                    id: t('login.invalidPassword'),
-                    defaultMessage: 'Your password is incorrect.',
-                },
-            };
-        }
-        return error.message;
-    };
 
     constructor(props) {
         super(props);
@@ -172,18 +149,9 @@ export default class Signup extends PureComponent {
         this.state = {
             error: null,
             isLoading: false,
+            tosAccept: false,
         };
     }
-
-    goToMfa = () => {
-        const {intl} = this.context;
-        const screen = 'MFA';
-        const title = intl.formatMessage({id: 'mobile.routes.mfa', defaultMessage: 'Multi-factor Authentication'});
-        const loginId = this.email;
-        const password = this.password;
-
-        goToScreen(screen, title, {goToChannel: this.goToChannel, loginId, password});
-    };
 
     blur = () => {
         if (this.loginRef.current) {
@@ -197,25 +165,6 @@ export default class Signup extends PureComponent {
         Keyboard.dismiss();
     };
 
-    checkLoginResponse = (data) => {
-        if (mfaExpectedErrors.includes(data?.error?.server_error_id)) { // eslint-disable-line camelcase
-            this.goToMfa();
-            this.setState({isLoading: false});
-            return false;
-        }
-
-        if (data?.error) {
-            this.setState({
-                error: this.getLoginErrorMessage(data.error),
-                isLoading: false,
-            });
-            return false;
-        }
-
-        this.setState({isLoading: false});
-        return true;
-    };
-
     handleEmailChange = (text) => {
         this.email = text;
     };
@@ -227,10 +176,10 @@ export default class Signup extends PureComponent {
         this.password = text;
     };
     handleFirstNameChange = (text) => {
-        this.password = text;
+        this.firstName = text;
     };
     handleLastNameChange = (text) => {
-        this.password = text;
+        this.lastName = text;
     };
 
     orientationDidChange = () => {
@@ -245,13 +194,13 @@ export default class Signup extends PureComponent {
         }
     };
 
-    goToChannel = () => {
-        telemetry.remove(['start:overall']);
-
-        tracker.initialLoad = Date.now();
-        this.scheduleSessionExpiredNotification();
-        resetToChannel();
-    };
+    onShowTos = () => {
+        EventEmitter.emit(NavigationTypes.NAVIGATION_SHOW_OVERLAY);
+        const passProps = {
+            type: 'tos',
+        };
+        goToScreen('Policies', 'Terms of Service', passProps);
+    }
 
     signIn = async () => {
         const {actions} = this.props;
@@ -263,19 +212,17 @@ export default class Signup extends PureComponent {
                     error: result.error,
                     isLoading: false,
                 });
+                return;
             }
-            const res = await actions.login(this.username, this.password);
-            if (this.checkLoginResponse(res)) {
-                await actions.addUserToInitialTeam(result.id);
-                this.goToChannel();
-            }
-        }
-    };
-    scheduleSessionExpiredNotification = () => {
-        const {intl} = this.context;
-        const {actions} = this.props;
+            const data = {
+                email: this.email,
+            };
+            this.setState({
+                isLoading: false,
+            });
 
-        actions.scheduleExpiredNotification(intl);
+            goToScreen('Verification', 'Email Verification', data);
+        }
     };
 
     render() {
@@ -286,17 +233,16 @@ export default class Signup extends PureComponent {
         if (isLoading) {
             proceed = (
                 <ActivityIndicator
+                    style={{margin: 20}}
                     animating={true}
-                    size='small'
+                    size='large'
+                    color='#00f'
                 />
             );
         } else {
             const additionalStyle = {};
             if (this.props.config.EmailLoginButtonColor) {
                 additionalStyle.backgroundColor = this.props.config.EmailLoginButtonColor;
-            }
-            if (this.props.config.EmailLoginButtonBorderColor) {
-                additionalStyle.borderColor = this.props.config.EmailLoginButtonBorderColor;
             }
 
             const additionalTextStyle = {};
@@ -333,12 +279,14 @@ export default class Signup extends PureComponent {
                         keyboardShouldPersistTaps='handled'
                         enableOnAndroid={true}
                     >
-                        {logo()}
+                        <View style={{margin: 20}}>
+                            {logo()}
+                        </View>
                         <View testID='signup.screen'>
                             <FormattedText
                                 style={GlobalStyles.subheader}
                                 id='web.root.signup_info'
-                                defaultMessage='All team communication in one place, searchable and accessible anywhere'
+                                defaultMessage='Join and create communities.'
                             />
                         </View>
                         <ErrorText
@@ -409,21 +357,32 @@ export default class Signup extends PureComponent {
                             style={GlobalStyles.inputBox}
                             underlineColorAndroid='transparent'
                         />
-                        <TextInput
+                        <InputPassword
                             testID='signup.password.input'
-                            autoCapitalize='none'
-                            autoCorrect={false}
                             disableFullscreenUI={true}
                             onChangeText={this.handlePasswordChange}
                             onSubmitEditing={this.preSignIn}
-                            style={GlobalStyles.inputBox}
                             placeholder={formatMessage({id: 'signup.password', defaultMessage: 'Password'})}
                             placeholderTextColor={changeOpacity('#fff', 0.5)}
-                            ref={this.passwordRef}
+                            reference={this.passwordRef}
                             returnKeyType='go'
-                            secureTextEntry={true}
                             underlineColorAndroid='transparent'
                         />
+                        <View style={{flexDirection: 'row', alignItems: 'center', margin: 10}}>
+                            <CheckBox
+                                disabled={false}
+                                tintColors={{true: '#fff', false: 'white'}}
+                                value={this.state.tosAccept}
+                                onValueChange={(newValue) => this.setState({tosAccept: newValue})}
+                            />
+                            <Text
+                                style={{color: '#fff'}}
+                            >{' I Accept the '}</Text>
+                            <Text
+                                style={{color: this.props.theme.linkColor}}
+                                onPress={this.onShowTos}
+                            >{'Terms of Service'}</Text>
+                        </View>
                         {proceed}
                     </KeyboardAwareScrollView>
                 </TouchableWithoutFeedback>

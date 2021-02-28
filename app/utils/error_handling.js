@@ -5,11 +5,12 @@ import {Alert} from 'react-native';
 import {setJSExceptionHandler, setNativeExceptionHandler} from 'react-native-exception-handler';
 
 import {dismissAllModals} from '@actions/navigation';
-import {purgeOfflineStore} from '@actions/views/root';
+import {purgeStoreAndExit} from '@actions/views/root';
 import {close as closeWebSocket} from '@actions/websocket';
 import {DEFAULT_LOCALE, getTranslations} from '@i18n';
 import {Client4} from '@mm-redux/client';
 import {logError} from '@mm-redux/actions/errors';
+
 import {t} from '@utils/i18n';
 import {
     captureException,
@@ -55,14 +56,14 @@ class JavascriptAndNativeErrorHandler {
 
             Alert.alert(
                 translations[t('mobile.error_handler.title')],
-                translations[t('mobile.error_handler.description')] + `\n\n${e.message}\n\n${e.stack}`,
+                translations[t('mobile.error_handler.description')],
                 [{
                     text: translations[t('mobile.error_handler.button')],
                     onPress: async () => {
                         await dismissAllModals();
 
                         // purge the store
-                        dispatch(purgeOfflineStore());
+                        dispatch(purgeStoreAndExit());
                     },
                 }],
                 {cancelable: false},

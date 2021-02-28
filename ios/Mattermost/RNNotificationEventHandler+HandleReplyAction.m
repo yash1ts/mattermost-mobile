@@ -73,7 +73,7 @@ NSString *const ReplyActionID = @"REPLY_ACTION";
   }
 
   NSString *urlString = [serverUrl stringByReplacingOccurrencesOfString:@"/$" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, [serverUrl length])];
-  NSString *postsEndpoint = @"/api/v4/posts?set_online=false";
+  NSString *postsEndpoint = @"/api/tupp/posts?set_online=false";
   NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", urlString, postsEndpoint]];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
   [request setHTTPMethod:@"POST"];

@@ -96,21 +96,22 @@ export default class QuickActions extends PureComponent {
                     theme={theme}
                     value={this.state.inputValue}
                 />
-                <InputAction
+                {/* <InputAction
                     testID={slashInputActionTestID}
                     disabled={this.state.slashDisabled}
                     inputType='slash'
                     onTextChange={this.handleOnTextChange}
                     theme={theme}
-                />
+                /> */}
                 <FileAction
                     testID={fileActionTestID}
                     {...uploadProps}
                 />
+                {Platform.Version < 30 &&
                 <ImageAction
                     testID={imageActionTestID}
                     {...uploadProps}
-                />
+                />}
                 <CameraAction
                     testID={cameraActionTestID}
                     {...uploadProps}

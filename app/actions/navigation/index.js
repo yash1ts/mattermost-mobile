@@ -97,6 +97,47 @@ export function resetToChannel(passProps = {}) {
     });
 }
 
+export function resetToLogin(passProps = {}) {
+    const theme = getThemeFromState();
+
+    EphemeralStore.clearNavigationComponents();
+
+    const stack = {
+        children: [{
+            component: {
+                id: NavigationTypes.LOGIN_SCREEN,
+                name: NavigationTypes.LOGIN_SCREEN,
+                passProps,
+                options: {
+                    layout: {
+                        componentBackgroundColor: theme.centerChannelBg,
+                    },
+                    statusBar: {
+                        visible: true,
+                    },
+                    topBar: {
+                        visible: false,
+                        height: 0,
+                        background: {
+                            color: theme.sidebarHeaderBg,
+                        },
+                        backButton: {
+                            visible: false,
+                            color: theme.sidebarHeaderTextColor,
+                        },
+                    },
+                },
+            },
+        }],
+    };
+
+    Navigation.setRoot({
+        root: {
+            ...{stack},
+        },
+    });
+}
+
 export function resetToSelectServer(allowOtherServers) {
     const theme = Preferences.THEMES.default;
 

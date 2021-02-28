@@ -108,7 +108,9 @@ export function makeFilterPostsAndAddSeparators() {
                     addedNewMessagesIndicator = true;
                 }
 
-                out.push(post.id);
+                if (out.length === 0 || post.id !== out[out.length - 1]) {
+                    out.push(post.id);
+                }
             }
 
             // Flip it back to newest to oldest

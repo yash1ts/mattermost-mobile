@@ -31,6 +31,7 @@ import {getDimensions} from 'app/selectors/device';
 import PostOptions from './post_options';
 import {THREAD} from '@constants/screen';
 import {setReplyPopup} from '@mm-redux/actions/reply_popup';
+import {getUserIdFromChannelName} from '@mm-redux/utils/channel_utils';
 
 export function makeMapStateToProps() {
     const getReactionsForPostSelector = makeGetReactionsForPost();
@@ -40,6 +41,7 @@ export function makeMapStateToProps() {
         const channel = getChannel(state, post.channel_id) || {};
         const config = getConfig(state);
         const license = getLicense(state);
+
         const currentUserId = getCurrentUserId(state);
         const currentTeamId = getCurrentTeamId(state);
         const currentChannelId = getCurrentChannelId(state);
@@ -51,7 +53,7 @@ export function makeMapStateToProps() {
         let canMarkAsUnread = true;
         let canAddReaction = true;
         let canReply = true;
-        let canCopyPermalink = true;
+        let canCopyPermalink = false;
         let canCopyText = false;
         let canEdit = false;
         let canEditUntil = -1;

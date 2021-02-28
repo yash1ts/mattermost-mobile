@@ -43,7 +43,7 @@ class WebSocketClient {
             this.stop = false;
         }
 
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             if (this.conn) {
                 resolve();
                 return;

@@ -96,7 +96,7 @@ export function buildChannelWideMentionMessage(formatMessage, membersCount, isTi
             formatMessage(
                 {
                     id: 'mobile.post_textbox.entire_channel.message.with_t',
-                    defaultMessage: 'By using @all or @channel you are about to send notifications to {totalMembers, number} {totalMembers, plural, one {person} other {people}} in {timezones, number} {timezones, plural, one {timezone} other {timezones}}. Are you sure you want to do this?',
+                    defaultMessage: 'By using @all or @community you are about to send notifications to {totalMembers, number} {totalMembers, plural, one {person} other {people}} in {timezones, number} {timezones, plural, one {timezone} other {timezones}}. Are you sure you want to do this?',
                 },
                 {
                     totalMembers: membersCount - 1,
@@ -109,7 +109,7 @@ export function buildChannelWideMentionMessage(formatMessage, membersCount, isTi
             formatMessage(
                 {
                     id: 'mobile.post_textbox.entire_channel.message',
-                    defaultMessage: 'By using @all or @channel you are about to send notifications to {totalMembers, number} {totalMembers, plural, one {person} other {people}}. Are you sure you want to do this?',
+                    defaultMessage: 'By using @all or @community you are about to send notifications to {totalMembers, number} {totalMembers, plural, one {person} other {people}}. Are you sure you want to do this?',
                 },
                 {
                     totalMembers: membersCount - 1,

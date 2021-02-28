@@ -5,4 +5,6 @@ export default {
     CHANNEL: 'channel',
     PERMALINK: 'permalink',
     OTHER: 'other',
+    VERIFY_EMAIL: 'verify',
+    CHANGE_PASSWORD: 'change_pass',
 };

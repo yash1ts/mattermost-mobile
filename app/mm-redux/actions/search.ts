@@ -207,7 +207,7 @@ export function getRecentMentions(): ActionFunc {
         let posts;
         try {
             const termKeys = getCurrentUserMentionKeys(state).filter(({key}) => {
-                return key !== '@channel' && key !== '@all' && key !== '@here';
+                return key !== '@community' && key !== '@all' && key !== '@here';
             });
 
             const terms = termKeys.map(({key}) => key).join(' ').trim() + ' ';

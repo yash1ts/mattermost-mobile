@@ -19,5 +19,6 @@ const NavigationTypes = keyMirror({
 });
 
 NavigationTypes.CHANNEL_SCREEN = 'Channel';
+NavigationTypes.LOGIN_SCREEN = 'Login';
 
 export default NavigationTypes;

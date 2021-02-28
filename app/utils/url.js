@@ -116,18 +116,27 @@ export function matchDeepLink(url, serverURL, siteURL) {
     const urlBaseWithoutProtocol = removeProtocol(urlBase);
 
     const linkRoot = `(?:${escapeRegex(urlBaseWithoutProtocol)})`;
-
-    match = new RegExp(linkRoot + '\\/([^\\/]+)\\/channels\\/(\\S+)').exec(urlToMatch);
+    match = new RegExp('\\/api\\/invite\\?team=([^\\/]+)&&community=([\\S]+)').exec(urlToMatch);
 
     if (match) {
         return {type: DeepLinkTypes.CHANNEL, teamName: match[1], channelName: match[2]};
     }
 
-    match = new RegExp(linkRoot + '\\/([^\\/]+)\\/pl\\/(\\w+)').exec(urlToMatch);
+    // match = new RegExp(linkRoot + '\\/([^\\/]+)\\/pl\\/(\\w+)').exec(urlToMatch);
+    // if (match) {
+    //     return {type: DeepLinkTypes.PERMALINK, teamName: match[1], postId: match[2]};
+    // }
+
+    match = new RegExp('\\/do_verify_email\\?token=([A-Za-z0-9]+)&email=([A-Za-z0-9@.]+)').exec(urlToMatch);
     if (match) {
-        return {type: DeepLinkTypes.PERMALINK, teamName: match[1], postId: match[2]};
+        return {type: DeepLinkTypes.VERIFY_EMAIL, token: match[1]};
     }
 
+    match = new RegExp('\\/reset_password_complete\\?token=([A-Za-z0-9]+)').exec(urlToMatch);
+
+    if (match) {
+        return {type: DeepLinkTypes.CHANGE_PASSWORD, token: match[1]};
+    }
     return null;
 }
 

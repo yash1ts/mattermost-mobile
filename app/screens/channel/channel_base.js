@@ -43,6 +43,7 @@ export default class ChannelBase extends PureComponent {
         theme: PropTypes.object.isRequired,
         showTermsOfService: PropTypes.bool,
         skipMetrics: PropTypes.bool,
+        isChannelAdmin: PropTypes.bool,
     };
 
     static contextTypes = {
@@ -175,7 +176,7 @@ export default class ChannelBase extends PureComponent {
 
     goToChannelInfo = preventDoubleTap(() => {
         const {intl} = this.context;
-        const {theme} = this.props;
+        const {theme, isChannelAdmin} = this.props;
         const screen = 'ChannelInfo';
         const title = intl.formatMessage({id: 'mobile.routes.channelInfo', defaultMessage: 'Info'});
         CompassIcon.getImageSource('close', 24, theme.sidebarHeaderTextColor).then((source) => {
@@ -191,7 +192,7 @@ export default class ChannelBase extends PureComponent {
 
             Keyboard.dismiss();
 
-            showModal(screen, title, null, options);
+            showModal(screen, title, {isChannelAdmin}, options);
         });
     }, 1000);
 
@@ -291,7 +292,7 @@ export default class ChannelBase extends PureComponent {
         const {intl} = this.context;
         const {isSupportedServer, isSystemAdmin, theme} = this.props;
         const screen = 'TermsOfService';
-        const title = intl.formatMessage({id: 'mobile.tos_link', defaultMessage: 'Terms of Service'});
+        const title = intl.formatMessage({id: 'mobile.tos_link', defaultMessage: 'Community Policy'});
         CompassIcon.getImageSource('close', 24, theme.sidebarHeaderTextColor).then((closeButton) => {
             const passProps = {
                 closeButton,

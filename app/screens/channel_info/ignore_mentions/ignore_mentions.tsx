@@ -34,7 +34,7 @@ const IgnoreMentions = ({channelId, ignore, updateChannelNotifyProps, userId, te
         <ChannelInfoRow
             testID={testID}
             action={handleIgnoreChannelMentions}
-            defaultMessage='Ignore @channel, @here, @all'
+            defaultMessage='Ignore @community, @here, @all'
             detail={ignore}
             icon='at'
             textId={t('channel_notifications.ignoreChannelMentions.settings')}

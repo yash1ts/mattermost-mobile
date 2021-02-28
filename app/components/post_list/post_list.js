@@ -104,7 +104,7 @@ export default class PostList extends PureComponent {
         this.scrolledToHighlighted = false;
         this.itemHeights = new Array(props.postIds.length + 5).fill(70);
         this.animatedOpacity = new Animated.Value(1);
-        this.animateLoading = Boolean(this.props.highlightPostId);
+        this.animateLoading = Boolean(this.props.highlightPostId) && props.postIds.length > 10;
         this.state = {
             scrollToBottom: false,
         };
@@ -559,7 +559,7 @@ export default class PostList extends PureComponent {
         return (
             <>
                 <Animated.View
-                    pointerEvents={ this.animateLoading ? 'none' : 'auto'}
+                    pointerEvents={this.animateLoading ? 'none' : 'auto'}
                     style={{flex: 1, opacity: this.animatedOpacity}}
                 >
                     <FlatList

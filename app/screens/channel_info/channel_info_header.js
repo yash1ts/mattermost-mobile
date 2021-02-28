@@ -43,6 +43,7 @@ export default class ChannelInfoHeader extends React.PureComponent {
         hasGuests: PropTypes.bool.isRequired,
         isGroupConstrained: PropTypes.bool,
         timeZone: PropTypes.string,
+        isChannelAdmin: PropTypes.bool,
     };
 
     static contextTypes = {
@@ -141,6 +142,7 @@ export default class ChannelInfoHeader extends React.PureComponent {
             isBot,
             isGroupConstrained,
             timeZone,
+            isChannelAdmin,
         } = this.props;
 
         const style = getStyleSheet(theme);
@@ -149,6 +151,8 @@ export default class ChannelInfoHeader extends React.PureComponent {
         const baseTextStyle = Platform.OS === 'ios' ?
             {...style.detail, lineHeight: 20} :
             style.detail;
+
+        const isDirectMessage = type === General.DM_CHANNEL;
 
         return (
             <View style={style.container}>
@@ -170,6 +174,12 @@ export default class ChannelInfoHeader extends React.PureComponent {
                     >
                         {displayName}
                     </Text>
+                    <Text
+                        ellipsizeMode='tail'
+                        numberOfLines={1}
+                        style={style.channelName}
+                    >
+                        {isChannelAdmin ? '(Community Admin)' : '' }</Text>
                 </View>
                 {this.renderHasGuestText(style)}
                 {purpose.length > 0 &&
@@ -191,7 +201,7 @@ export default class ChannelInfoHeader extends React.PureComponent {
                         </TouchableHighlight>
                     </View>
                 }
-                {header.length > 0 &&
+                {!isDirectMessage && header.length > 0 &&
                     <View style={style.section}>
                         <TouchableHighlight
                             underlayColor={changeOpacity(theme.centerChannelColor, 0.1)}

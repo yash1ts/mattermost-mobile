@@ -45,12 +45,14 @@ function mapStateToProps(state, ownProps) {
         const data = selectOpenGraphData(ownProps.metadata, link);
         openGraphData = data?.data;
     }
+    let youtubeMetadata;
 
     return {
         ...getDimensions(state),
         googleDeveloperKey: config.GoogleDeveloperKey,
         link,
         expandedLink,
+        youtubeMetadata,
         openGraphData,
         showLinkPreviews: previewsEnabled && config.EnableLinkPreviews === 'true' && !removeLinkPreview,
         theme: getTheme(state),

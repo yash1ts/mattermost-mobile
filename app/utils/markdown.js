@@ -74,7 +74,7 @@ export const getMarkdownTextStyles = makeStyleSheetFromTheme((theme) => {
         },
         code: {
             alignSelf: 'center',
-            backgroundColor: changeOpacity(theme.centerChannelColor, 0.07),
+            backgroundColor: changeOpacity('#fff', 0.25),
             fontFamily: codeFont,
         },
         codeBlock: {

@@ -2,7 +2,7 @@
 // See LICENSE.txt for license information.
 
 import React from 'react';
-import {Animated, View} from 'react-native';
+import {Animated, View, Text} from 'react-native';
 
 import KeyboardLayout from '@components/layout/keyboard_layout';
 import Loading from '@components/loading';
@@ -18,14 +18,37 @@ import ThreadBase from './thread_base';
 export default class ThreadAndroid extends ThreadBase {
     render() {
         const {
-            channelId,
             myMember,
             postIds,
-            rootId,
-            channelIsArchived,
             theme,
             highlightPostId,
+            channelId,
+            rootId,
+            channelIsArchived,
         } = this.props;
+
+        const {isBlockedByMe, isBlockedByOther} = this.props;
+        let element;
+        if ((!isBlockedByMe && !isBlockedByOther)) {
+            element = (
+                <PostDraft
+                    testID='thread.post_draft'
+                    ref={this.postDraft}
+                    channelId={channelId}
+                    channelIsArchived={channelIsArchived}
+                    rootId={rootId}
+                    screenId={this.props.componentId}
+                    registerTypingAnimation={this.registerTypingAnimation}
+                />
+            );
+        } else {
+            const message = isBlockedByMe ? 'You have blocked this User' : 'You have been blocked by this User';
+            element = (<View style={{marginVertical: 10}}>
+                <View style={{backgroundColor: theme.sidebarHeaderBg, borderRadius: 5, alignSelf: 'center'}}>
+                    <Text style={{color: '#fffa', padding: 8}}>{message}</Text>
+                </View>
+            </View>);
+        }
 
         let content;
         if (this.hasRootPost()) {
@@ -48,15 +71,7 @@ export default class ThreadAndroid extends ThreadBase {
                             location={THREAD}
                         />
                     </Animated.View>
-                    <PostDraft
-                        testID='thread.post_draft'
-                        ref={this.postDraft}
-                        channelId={channelId}
-                        channelIsArchived={channelIsArchived}
-                        rootId={rootId}
-                        screenId={this.props.componentId}
-                        registerTypingAnimation={this.registerTypingAnimation}
-                    />
+                    {element}
                 </>
             );
         } else {

@@ -238,14 +238,14 @@ export default class Autocomplete extends PureComponent {
                         value={value || ''}
                         nestedScrollEnabled={this.props.nestedScrollEnabled}
                     />
-                    <SlashSuggestion
+                    {/* <SlashSuggestion
                         {...this.props}
                         maxListHeight={maxListHeight}
                         onChangeText={this.onChangeText}
                         onResultCountChange={this.handleCommandCountChange}
                         value={value || ''}
                         nestedScrollEnabled={this.props.nestedScrollEnabled}
-                    />
+                    /> */}
                     {(this.props.isSearch && this.props.enableDateSuggestion) &&
                     <DateSuggestion
                         {...this.props}

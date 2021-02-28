@@ -169,9 +169,7 @@ export default class NotificationSettings extends PureComponent {
             });
         }
 
-        if (this.shouldSaveAutoResponder(notifyProps)) {
-            this.props.actions.updateMe({notify_props: notifyProps});
-        }
+        this.props.actions.updateMe({notify_props: notifyProps});
     };
 
     render() {
@@ -179,7 +177,7 @@ export default class NotificationSettings extends PureComponent {
         const style = getStyleSheet(theme);
         const showArrow = Platform.OS === 'ios';
 
-        const showEmailSeparator = enableAutoResponder;
+        // const showEmailSeparator = enableAutoResponder;
         let autoResponder;
         if (enableAutoResponder) {
             autoResponder = (
@@ -226,7 +224,7 @@ export default class NotificationSettings extends PureComponent {
                         showArrow={showArrow}
                         theme={theme}
                     />
-                    <SettingsItem
+                    {/* <SettingsItem
                         defaultMessage='Email'
                         i18nId={t('mobile.notification_settings.email')}
                         iconName='email-outline'
@@ -234,7 +232,7 @@ export default class NotificationSettings extends PureComponent {
                         separator={showEmailSeparator}
                         showArrow={showArrow}
                         theme={theme}
-                    />
+                    /> */}
                     {autoResponder}
                     <View style={style.divider}/>
                 </ScrollView>

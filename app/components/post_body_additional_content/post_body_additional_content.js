@@ -9,6 +9,7 @@ import {
     Platform,
     StatusBar,
     View,
+    StyleSheet,
 } from 'react-native';
 import {YouTubeStandaloneAndroid, YouTubeStandaloneIOS} from 'react-native-youtube';
 import {intlShape} from 'react-intl';
@@ -23,6 +24,9 @@ import {generateId} from '@utils/file';
 import {calculateDimensions, getViewPortWidth, openGalleryAtIndex} from '@utils/images';
 import {getYouTubeVideoId, isImageLink, isYoutubeLink} from '@utils/url';
 import {WebView} from 'react-native-webview';
+import ProgressiveImage from '@components/progressive_image';
+import {Text} from 'react-native-elements';
+import {youtubePlayButton} from '@utils/general';
 const MAX_YOUTUBE_IMAGE_HEIGHT = 202;
 const MAX_YOUTUBE_IMAGE_WIDTH = 360;
 const MAX_IMAGE_HEIGHT = 150;
@@ -403,6 +407,50 @@ export default class PostBodyAdditionalContent extends ImageViewPort {
         const dimensions = calculateDimensions(
             MAX_YOUTUBE_IMAGE_HEIGHT,
             MAX_YOUTUBE_IMAGE_WIDTH,
+            getViewPortWidth(this.props.isReplyPost, this.hasPermanentSidebar()) - 10,
+        );
+
+        let imgUrl;
+        if (this.props.metadata?.images) {
+            imgUrl = Object.keys(this.props.metadata.images)[0];
+        }
+
+        if (!imgUrl) {
+            // Fallback to default YouTube thumbnail if available
+            imgUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+        }
+
+        return (
+            <TouchableWithFeedback
+                style={[styles.imageContainer, {height: dimensions.height + 50, marginRight: 14, backgroundColor: '#8883', borderRadius: 5, padding: 5, overflow: 'hidden'}]}
+                onPress={this.playYouTubeVideo}
+                type={'opacity'}
+            >
+                <Text style={{color: this.props.theme.centerChannelColor, marginBottom: 5}}>{this.props.openGraphData.title}</Text>
+                <ProgressiveImage
+                    isBackgroundImage={true}
+                    imageUri={imgUrl}
+                    style={[dimensions]}
+                    resizeMode='cover'
+                    onError={this.handleLinkLoadError}
+                >
+                    <TouchableWithFeedback
+                        style={styles.playButton}
+                        onPress={this.playYouTubeVideo}
+                        type={'opacity'}
+                    >
+                        {youtubePlayButton()}
+                    </TouchableWithFeedback>
+                </ProgressiveImage>
+            </TouchableWithFeedback>
+        );
+    }
+
+    renderWebYouTubeVideo = (link) => {
+        const videoId = getYouTubeVideoId(link);
+        const dimensions = calculateDimensions(
+            MAX_YOUTUBE_IMAGE_HEIGHT,
+            MAX_YOUTUBE_IMAGE_WIDTH,
             getViewPortWidth(this.props.isReplyPost, this.hasPermanentSidebar()),
         );
 
@@ -491,22 +539,21 @@ export default class PostBodyAdditionalContent extends ImageViewPort {
     }
 }
 
-// const styles = StyleSheet.create({
-//     imageContainer: {
-//         alignItems: 'flex-start',
-//         justifyContent: 'flex-start',
-//         marginBottom: 6,
-//         marginTop: 10,
-//     },
-//     image: {
-//         alignItems: 'center',
-//         borderRadius: 3,
-//         justifyContent: 'center',
-//         marginVertical: 1,
-//     },
-//     playButton: {
-//         flex: 1,
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//     },
-// });
+const styles = StyleSheet.create({
+    imageContainer: {
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        marginBottom: 6,
+        marginTop: 10,
+    },
+    image: {
+        alignItems: 'center',
+        borderRadius: 3,
+        justifyContent: 'center',
+    },
+    playButton: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});

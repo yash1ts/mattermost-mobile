@@ -36,11 +36,17 @@ export default class Leave extends PureComponent<LeaveProps> {
 
     alertAndHandleYesAction = (title: FormattedMsg, message: FormattedMsg, onPressAction: () => void) => {
         const {formatMessage} = this.context.intl;
-        const {displayName, isPublic} = this.props;
+        const {displayName, isPublic, isDirectMessage} = this.props;
 
         // eslint-disable-next-line multiline-ternary
-        const term = isPublic ? formatMessage({id: 'mobile.channel_info.publicChannel', defaultMessage: 'Public Channel'}) :
+        let term;
+        if (isDirectMessage) {
+            term = formatMessage({id: 'mobile.channel_info.directMessage', defaultMessage: 'Direct Message'});
+        } else if (isPublic) {
+            term = formatMessage({id: 'mobile.channel_info.publicChannel', defaultMessage: 'Public Channel'});
+        } else {
             formatMessage({id: 'mobile.channel_info.privateChannel', defaultMessage: 'Private Channel'});
+        }
 
         Alert.alert(
             formatMessage(title, {term}),
@@ -65,15 +71,25 @@ export default class Leave extends PureComponent<LeaveProps> {
         const channel = Object.assign({}, currentChannel, {isCurrent: true}, {isFavorite});
         const {closeDMChannel, closeGMChannel} = this.props;
 
-        if (isDirectMessage) {
-            closeDMChannel(channel).then(() => {
-                close(true);
-            });
-        } else {
-            closeGMChannel(channel).then(() => {
-                close(true);
-            });
-        }
+        const title = {id: t('mobile.channel_info.alertTitleCloseChannel'), defaultMessage: 'Close {term}'};
+        const message = {
+            id: t('mobile.channel_info.alertMessageCloseChannel'),
+            defaultMessage: 'Are you sure you want to close the {term}?',
+        };
+
+        const onPressAction = () => {
+            if (isDirectMessage) {
+                closeDMChannel(channel).then(() => {
+                    close(true);
+                });
+            } else {
+                closeGMChannel(channel).then(() => {
+                    close(true);
+                });
+            }
+        };
+
+        this.alertAndHandleYesAction(title, message, onPressAction);
     });
 
     handleLeave = preventDoubleTap(() => {

@@ -8,6 +8,7 @@ const initial = {
     message: '',
     user_name: '',
     root_id: '',
+    post_id: '',
 };
 
 export default function replyPopup(state:ReplyPopup = initial, action:GenericAction) {

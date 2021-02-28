@@ -9,11 +9,14 @@ import {
     Dimensions,
     InteractionManager,
     Keyboard,
+    Linking,
+    Platform,
     StyleSheet,
     TextInput,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import logo from '@utils/logo';
 
 import Button from 'react-native-button';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
@@ -31,7 +34,7 @@ import tracker from '@utils/time_tracker';
 import mattermostManaged from 'app/mattermost_managed';
 import {GlobalStyles} from 'app/styles';
 import telemetry from 'app/telemetry';
-import {logo} from '@utils/general';
+import InputPassword from '@components/input_password/input_password';
 
 export const mfaExpectedErrors = ['mfa.validate_token.authenticate.app_error', 'ent.mfa.validate_token.authenticate.app_error'];
 
@@ -40,6 +43,7 @@ export default class Login extends PureComponent {
         actions: PropTypes.shape({
             scheduleExpiredNotification: PropTypes.func.isRequired,
             login: PropTypes.func.isRequired,
+            clearErrors: PropTypes.func.isRequired,
         }).isRequired,
         config: PropTypes.object.isRequired,
         license: PropTypes.object.isRequired,
@@ -165,6 +169,14 @@ export default class Login extends PureComponent {
         goToScreen(screen, title);
     }
 
+    verifyEmail = () => {
+        const {intl} = this.context;
+        const screen = 'Verification';
+        const title = intl.formatMessage({id: 'verification_form.title', defaultMessage: 'Verify Email'});
+
+        goToScreen(screen, title);
+    }
+
     getLoginErrorMessage = (error) => {
         return (
             this.getServerErrorForLogin(error) ||
@@ -222,6 +234,16 @@ export default class Login extends PureComponent {
         if (this.passwordRef.current) {
             this.passwordRef.current.focus();
         }
+    };
+
+    errorEmailBody = () => {
+        const {config} = this.props;
+        const contents = [
+            'Please share a description of the problem:\n\n',
+            `Server Version: ${config.Version} (Build ${config.BuildNumber})`,
+            `App Platform: ${Platform.OS}`,
+        ];
+        return contents.join('\n');
     };
 
     preSignIn = preventDoubleTap(() => {
@@ -319,6 +341,20 @@ export default class Login extends PureComponent {
         goToScreen(screen, title);
     }
 
+    onContact = () => {
+        const {config} = this.props;
+        const recipient = config.SupportEmail;
+        const subject = `Problem with ${config.SiteName} React Native app`;
+        const mailTo = `mailto:${recipient}?subject=${subject}&body=${this.errorEmailBody()}`;
+
+        Linking.canOpenURL(mailTo).then((supported) => {
+            if (supported) {
+                Linking.openURL(mailTo);
+                this.props.actions.clearErrors();
+            }
+        });
+    }
+
     render() {
         const {isLoading} = this.state;
 
@@ -326,8 +362,10 @@ export default class Login extends PureComponent {
         if (isLoading) {
             proceed = (
                 <ActivityIndicator
+                    style={{margin: 20}}
                     animating={true}
-                    size='small'
+                    size='large'
+                    color='#00f'
                 />
             );
         } else {
@@ -374,6 +412,21 @@ export default class Login extends PureComponent {
                 </Button>
             );
         }
+        let verifyEmail;
+        if (this.props.config.EnableSignInWithEmail === 'true' || this.props.config.EnableSignInWithUsername === 'true') {
+            verifyEmail = (
+                <Button
+                    onPress={this.verifyEmail}
+                    containerStyle={[style.forgotPasswordBtn]}
+                >
+                    <FormattedText
+                        id='login.verify_email'
+                        defaultMessage='Verify Email'
+                        style={style.forgotPasswordTxt}
+                    />
+                </Button>
+            );
+        }
 
         let signup;
         if (this.props.config.EnableSignInWithEmail === 'true' || this.props.config.EnableSignInWithUsername === 'true') {
@@ -384,12 +437,25 @@ export default class Login extends PureComponent {
                 >
                     <FormattedText
                         id='signup.text'
-                        defaultMessage='Register'
+                        defaultMessage='Create a new Account'
                         style={style.signUpTxt}
                     />
                 </Button>
             );
         }
+
+        const contact = (
+            <Button
+                onPress={this.onContact}
+                containerStyle={[style.signUpBtn, {alignSelf: 'flex-end'}]}
+            >
+                <FormattedText
+                    id='contact.text'
+                    defaultMessage='Having trouble? Contact us'
+                    style={style.signUpTxt}
+                />
+            </Button>
+        );
 
         return (
             <SafeAreaView style={style.container}>
@@ -405,12 +471,14 @@ export default class Login extends PureComponent {
                         keyboardShouldPersistTaps='handled'
                         enableOnAndroid={true}
                     >
-                        {logo()}
+                        <View style={{margin: 20}}>
+                            {logo()}
+                        </View>
                         <View testID='login.screen'>
                             <FormattedText
                                 style={GlobalStyles.subheader}
                                 id='web.root.signup_info'
-                                defaultMessage='All team communication in one place, searchable and accessible anywhere'
+                                defaultMessage='Join and create communities'
                             />
                         </View>
                         <ErrorText
@@ -433,24 +501,24 @@ export default class Login extends PureComponent {
                             style={GlobalStyles.inputBox}
                             underlineColorAndroid='transparent'
                         />
-                        <TextInput
+                        <InputPassword
                             testID='login.password.input'
-                            autoCapitalize='none'
-                            autoCorrect={false}
                             disableFullscreenUI={true}
                             onChangeText={this.handlePasswordChange}
                             onSubmitEditing={this.preSignIn}
-                            style={GlobalStyles.inputBox}
                             placeholder={this.context.intl.formatMessage({id: 'login.password', defaultMessage: 'Password'})}
                             placeholderTextColor={changeOpacity('#fff', 0.5)}
-                            ref={this.passwordRef}
+                            reference={this.passwordRef}
                             returnKeyType='go'
-                            secureTextEntry={true}
                             underlineColorAndroid='transparent'
                         />
                         {proceed}
                         {forgotPassword}
+                        {verifyEmail}
                         {signup}
+                        <View style={style.contact}>
+                            {contact}
+                        </View>
                     </KeyboardAwareScrollView>
                 </TouchableWithoutFeedback>
             </SafeAreaView>
@@ -468,6 +536,7 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 15,
         paddingVertical: 50,
+        flex: 1,
     },
     forgotPasswordBtn: {
         borderColor: 'transparent',
@@ -482,5 +551,9 @@ const style = StyleSheet.create({
     },
     signUpTxt: {
         color: '#2389D7',
+    },
+    contact: {
+        flex: 1,
+        flexDirection: 'row',
     },
 });

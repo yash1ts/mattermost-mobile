@@ -41,7 +41,7 @@ import {isValidUrl, stripTrailingSlashes} from '@utils/url';
 import mattermostBucket from 'app/mattermost_bucket';
 import {GlobalStyles} from 'app/styles';
 import telemetry from 'app/telemetry';
-import {logo} from '@utils/general';
+import logo from '@utils/logo';
 
 export default class SelectServer extends PureComponent {
     static propTypes = {
@@ -77,7 +77,7 @@ export default class SelectServer extends PureComponent {
 
         this.state = {
             connected: false,
-            connecting: (!props.allowOtherServers && props.serverUrl),
+            connecting: (!props.allowOtherServers && props.serverUrl && !props.deepLinkURL),
             error: null,
         };
 
@@ -98,7 +98,7 @@ export default class SelectServer extends PureComponent {
         this.navigationEventListener = Navigation.events().bindComponent(this);
 
         const {allowOtherServers, serverUrl} = this.props;
-        if (!allowOtherServers && serverUrl) {
+        if (!allowOtherServers && serverUrl && !this.props.deepLinkURL) {
             // If the app is managed or AutoSelectServerUrl is true in the Config, the server url is set and the user can't change it
             // we automatically trigger the ping to move to the next screen
             this.handleConnect();
@@ -136,7 +136,6 @@ export default class SelectServer extends PureComponent {
         if (Platform.OS === 'android') {
             Keyboard.removeListener('keyboardDidHide', this.handleAndroidKeyboard);
         }
-
         this.certificateListener.remove();
         this.sslProblemListener.remove();
 
@@ -249,6 +248,7 @@ export default class SelectServer extends PureComponent {
     handleLoginOptions = async (props = this.props) => {
         const {formatMessage} = this.context.intl;
         const {config, license} = props;
+        const deepLinkURL = this.state.deepLinkURL;
         const samlEnabled = config.EnableSaml === 'true' && license.IsLicensed === 'true' && license.SAML === 'true';
         const gitlabEnabled = config.EnableSignUpWithGitLab === 'true';
         const o365Enabled = config.EnableSignUpWithOffice365 === 'true' && license.IsLicensed === 'true' && license.Office365OAuth === 'true';
@@ -279,10 +279,10 @@ export default class SelectServer extends PureComponent {
             }
 
             setTimeout(() => {
-                this.goToNextScreen(screen, title);
+                this.goToNextScreen(screen, title, {deepLinkURL});
             }, 350);
         } else {
-            this.goToNextScreen(screen, title);
+            this.goToNextScreen(screen, title, {deepLinkURL});
         }
     };
 
@@ -502,7 +502,9 @@ export default class SelectServer extends PureComponent {
                         accessible={false}
                     >
                         <View style={[GlobalStyles.container, GlobalStyles.signupContainer]}>
-                            {logo()}
+                            <View style={{margin: 20}}>
+                                {logo()}
+                            </View>
 
                             {/* <View testID='select_server.header.text'>
                                 <FormattedText

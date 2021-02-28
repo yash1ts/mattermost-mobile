@@ -39,6 +39,8 @@ import {getChannelReachable} from '@selectors/channel';
 import telemetry from '@telemetry';
 import {isDirectChannelVisible, isGroupChannelVisible, getChannelSinceValue} from '@utils/channels';
 import {isPendingPost} from '@utils/general';
+import {forceLogoutIfNecessary} from './user';
+import {logError} from '@mm-redux/actions/errors';
 
 const MAX_RETRIES = 3;
 
@@ -487,6 +489,83 @@ export function leaveChannel(channel, reset = false) {
         }
 
         await dispatch(serviceLeaveChannel(channel.id));
+    };
+}
+
+export function blockDMChannel(channel) {
+    return async (dispatch, getState) => {
+        dispatch({type: ChannelTypes.UPDATE_CHANNEL_REQUEST, data: null});
+
+        let updated;
+
+        const state = getState();
+        let header = channel.header;
+        if (!header.includes(getCurrentUserId(state))) {
+            header += `${getCurrentUserId(state)} `;
+        }
+        const patch = {...channel, header};
+
+        try {
+            updated = await Client4.patchChannel(channel.id, patch);
+        } catch (error) {
+            forceLogoutIfNecessary(error, dispatch, getState);
+
+            dispatch(batchActions([
+                {type: ChannelTypes.UPDATE_CHANNEL_FAILURE, error},
+                logError(error),
+            ]));
+            return {error};
+        }
+
+        dispatch(batchActions([
+            {
+                type: ChannelTypes.RECEIVED_CHANNEL,
+                data: updated,
+            },
+            {
+                type: ChannelTypes.UPDATE_CHANNEL_SUCCESS,
+            },
+        ]));
+
+        return {data: updated};
+    };
+}
+export function unblockDMChannel(channel) {
+    return async (dispatch, getState) => {
+        dispatch({type: ChannelTypes.UPDATE_CHANNEL_REQUEST, data: null});
+
+        let updated;
+
+        const state = getState();
+        let header = channel.header;
+        if (header.includes(getCurrentUserId(state))) {
+            header = header.replace(`${getCurrentUserId(state)} `, '');
+        }
+        const patch = {...channel, header};
+
+        try {
+            updated = await Client4.patchChannel(channel.id, patch);
+        } catch (error) {
+            forceLogoutIfNecessary(error, dispatch, getState);
+
+            dispatch(batchActions([
+                {type: ChannelTypes.UPDATE_CHANNEL_FAILURE, error},
+                logError(error),
+            ]));
+            return {error};
+        }
+
+        dispatch(batchActions([
+            {
+                type: ChannelTypes.RECEIVED_CHANNEL,
+                data: updated,
+            },
+            {
+                type: ChannelTypes.UPDATE_CHANNEL_SUCCESS,
+            },
+        ]));
+
+        return {data: updated};
     };
 }
 

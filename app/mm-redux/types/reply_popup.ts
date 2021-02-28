@@ -3,5 +3,6 @@
 export type ReplyPopup = {
     message: string,
     root_id:string,
+    post_id:string,
     user_name:string,
 };

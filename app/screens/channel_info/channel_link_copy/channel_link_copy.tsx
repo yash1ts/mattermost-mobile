@@ -9,13 +9,11 @@ import ChannelInfoRow from '@screens/channel_info/channel_info_row';
 import Separator from '@screens/channel_info/separator';
 import {t} from '@utils/i18n';
 import {preventDoubleTap} from '@utils/tap';
-import {General} from '@mm-redux/constants';
 import {Platform, ToastAndroid} from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 interface ChannelLinkProps {
     testID?: string;
     channelUrl:string;
-    currentChannel:any;
     theme: Theme;
 }
 
@@ -32,23 +30,19 @@ export default class ChannelLinkCopy extends PureComponent<ChannelLinkProps> {
     });
 
     render() {
-        const {currentChannel, testID, theme} = this.props;
-        if (currentChannel?.type === General.OPEN_CHANNEL) {
-            return (
-                <>
-                    <Separator theme={theme}/>
-                    <ChannelInfoRow
-                        testID={testID}
-                        action={this.copy}
-                        defaultMessage='Copy Channel Link'
-                        icon='content-copy'
-                        textId={t('channel_header.copy')}
-                        theme={theme}
-                    />
-                </>
-            );
-        }
-
-        return null;
+        const {testID, theme} = this.props;
+        return (
+            <>
+                <Separator theme={theme}/>
+                <ChannelInfoRow
+                    testID={testID}
+                    action={this.copy}
+                    defaultMessage='Copy Channel Link'
+                    icon='content-copy'
+                    textId={t('channel_header.copy')}
+                    theme={theme}
+                />
+            </>
+        );
     }
 }

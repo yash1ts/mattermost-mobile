@@ -14,6 +14,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "171820757878-bh6rmkmuu6ktlnds8savaffn5ftqhl39.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tupp.app",
+            "certificate_hash": "626d8e2c636004ef7842f09eb6cf3ed8cf187c09"
+          }
+        },
+        {
+          "client_id": "171820757878-l1fg72ii46eo9hcpv089b8e4aqn88k3n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tupp.app",
+            "certificate_hash": "8a67907de089b62c1181a9e10c57c1945d43faaf"
+          }
+        },
+        {
+          "client_id": "171820757878-n20346u36qjmteab4be7hf3nm6opooam.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tupp.app",
+            "certificate_hash": "7c751b77bb1ca28664f3635ad72e89e7eda4b9e4"
+          }
+        },
+        {
           "client_id": "171820757878-n1d22dp0jv50403a2438p02s05ir5nnf.apps.googleusercontent.com",
           "client_type": 3
         }

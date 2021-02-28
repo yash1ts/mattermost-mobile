@@ -79,7 +79,7 @@ export function formatReactionValue(value) {
         ext = 'M';
     } else if (value >= 1000) {
         num = value / 1000;
-        num = num.toFixed(2);
+        num = num.toFixed(1);
         ext = 'K';
     } else {
         num = value;

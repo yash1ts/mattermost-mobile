@@ -43,8 +43,8 @@ export default class Client4 {
     clusterId = '';
     token = '';
     csrf = '';
-    url = '';
-    urlVersion = '/api/v4';
+    url = 'https://prod.tupp.club';
+    urlVersion = '/api/tupp';
     userAgent: string|null = null;
     enableLogging = false;
     defaultHeaders: {[x: string]: string} = {};
@@ -509,8 +509,16 @@ export default class Client4 {
     }
 
     getTermsOfService = async () => {
+        cosnole.log('getting');
         return this.doFetch(
             `${this.getBaseRoute()}/terms_of_service`,
+            {method: 'get'},
+        );
+    }
+
+    getPolicies = async () => {
+        return this.doFetch(
+            `${this.getBaseRoute()}/policies`,
             {method: 'get'},
         );
     }

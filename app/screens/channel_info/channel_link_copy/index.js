@@ -4,15 +4,17 @@
 import {connect} from 'react-redux';
 
 import {getCurrentChannel} from '@mm-redux/selectors/entities/channels';
-import {Client4} from '@mm-redux/client';
 import ChannelLinkCopy from './channel_link_copy';
+import {getCurrentTeam} from '@mm-redux/selectors/entities/teams';
+import {getConfig} from '@mm-redux/selectors/entities/general';
 
 function mapStateToProps(state) {
     const currentChannel = getCurrentChannel(state);
-    const channelUrl = Client4.getChannelRoute(currentChannel?.id);
+    const currentTeam = getCurrentTeam(state);
+    const config = getConfig(state);
+    const channelUrl = `${config.SiteURL}/api/invite?team=${currentTeam.name}&&community=${currentChannel.name}`;
     return {
         channelUrl,
-        currentChannel,
     };
 }
 

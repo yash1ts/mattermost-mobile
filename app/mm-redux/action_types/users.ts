@@ -15,6 +15,8 @@ export default keyMirror({
     LOGOUT_REQUEST: null,
     LOGOUT_FAILURE: null,
 
+    CHANGE_PASSWORD_SUCCESS: null,
+
     REVOKE_ALL_USER_SESSIONS_SUCCESS: null,
     REVOKE_SESSIONS_FOR_ALL_USERS_SUCCESS: null,
 

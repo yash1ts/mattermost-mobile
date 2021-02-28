@@ -88,7 +88,7 @@ public class NotificationReplyBroadcastReceiver extends BroadcastReceiver {
         String json = buildReplyPost(channelId, rootId, message.toString());
         RequestBody body = RequestBody.create(JSON, json);
 
-        String postsEndpoint = "/api/v4/posts?set_online=false";
+        String postsEndpoint = "/api/tupp/posts?set_online=false";
         String url = String.format("%s%s", serverUrl.replaceAll("/$", ""), postsEndpoint);
         Log.i("ReactNative", String.format("Reply URL=%s", url));
         Request request = new Request.Builder()

@@ -11,6 +11,9 @@ import {makeGetChannel, getMyCurrentChannelMembership} from '@mm-redux/selectors
 import {makeGetPostIdsForThread} from '@mm-redux/selectors/entities/posts';
 
 import Thread from './thread';
+import {General} from '@mm-redux/constants';
+import {getCurrentUserId} from '@mm-redux/selectors/entities/users';
+import {getUserIdFromChannelName} from '@mm-redux/utils/channel_utils';
 
 function makeMapStateToProps() {
     const getPostIdsForThread = makeGetPostIdsForThread();
@@ -18,6 +21,16 @@ function makeMapStateToProps() {
 
     return function mapStateToProps(state, ownProps) {
         const channel = getChannel(state, {id: ownProps.channelId});
+        const currentUserId = getCurrentUserId(state);
+
+        let isBlockedByMe = false;
+        let isBlockedByOther = false;
+        if (channel) {
+            if (channel.type === General.DM_CHANNEL) {
+                isBlockedByMe = channel.header.includes(currentUserId);
+                isBlockedByOther = channel.header.includes(getUserIdFromChannelName(currentUserId, channel.name));
+            }
+        }
 
         return {
             channelId: ownProps.channelId,
@@ -29,6 +42,8 @@ function makeMapStateToProps() {
             theme: getTheme(state),
             channelIsArchived: channel ? channel.delete_at !== 0 : false,
             threadLoadingStatus: state.requests.posts.getPostThread,
+            isBlockedByMe,
+            isBlockedByOther,
         };
     };
 }

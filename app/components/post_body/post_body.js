@@ -43,6 +43,7 @@ export default class PostBody extends PureComponent {
     static propTypes = {
         actions: PropTypes.shape({
             setReplyPopup: PropTypes.func.isRequired,
+            addReaction: PropTypes.func.isRequired,
         }).isRequired,
         canDelete: PropTypes.bool,
         channelIsReadOnly: PropTypes.bool.isRequired,
@@ -85,6 +86,7 @@ export default class PostBody extends PureComponent {
         currentUserId: PropTypes.string,
         commentedOnPost: PropTypes.object,
         enableSwipe: PropTypes.bool,
+        isBlocked: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -182,13 +184,14 @@ export default class PostBody extends PureComponent {
             location,
             displayName,
             enableSwipe,
+            isBlocked,
         } = this.props;
 
         if (isSystemMessage && (!canDelete || hasBeenDeleted)) {
             return;
         }
 
-        if (isPending || isFailed || isPostEphemeral) {
+        if (isBlocked || isPending || isFailed || isPostEphemeral) {
             return;
         }
 
@@ -323,7 +326,12 @@ export default class PostBody extends PureComponent {
             isSearchResult,
             post,
             showLongPost,
+            isSystemMessage,
         } = this.props;
+
+        if (!hasReactions && !isSearchResult && !showLongPost && !isSystemMessage) {
+            this.props.actions.addReaction(post.id, 'mattermost');
+        }
 
         if (!hasReactions || isSearchResult || showLongPost) {
             return null;
@@ -555,9 +563,9 @@ export default class PostBody extends PureComponent {
 
         const postContainerStyle = {...style.postContainerStyle};
         if (currentUserId === post.user_id) {
-            postContainerStyle.backgroundColor = '#449aff99';
+            postContainerStyle.backgroundColor = theme.myPostColor;
         } else {
-            postContainerStyle.backgroundColor = '#5555D688';
+            postContainerStyle.backgroundColor = theme.othersPostColor;
         }
         if (mergeMessage) {
             postContainerStyle.borderTopStartRadius = 5;

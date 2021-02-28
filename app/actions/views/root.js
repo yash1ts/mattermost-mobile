@@ -17,6 +17,7 @@ import initialState from '@store/initial_state';
 import {getStateForReset} from '@store/utils';
 
 import {markAsViewedAndReadBatch} from './channel';
+import { BackHandler } from 'react-native';
 
 export function startDataCleanup() {
     return async (dispatch, getState) => {
@@ -149,6 +150,19 @@ export function purgeOfflineStore() {
         });
 
         EventEmitter.emit(NavigationTypes.RESTART_APP);
+    };
+}
+
+export function purgeStoreAndExit() {
+    return (dispatch, getState) => {
+        const currentState = getState();
+
+        dispatch({
+            type: General.OFFLINE_STORE_PURGE,
+            data: getStateForReset(initialState, currentState),
+        });
+
+        BackHandler.exitApp();
     };
 }
 

@@ -21,6 +21,8 @@ import SettingsItem from '@screens/settings/settings_item';
 import {t} from '@utils/i18n';
 import {preventDoubleTap} from '@utils/tap';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
+import {NavigationTypes} from '@constants/';
+import EventEmitter from '@mm-redux/utils/event_emitter';
 
 class Settings extends PureComponent {
     static propTypes = {
@@ -80,11 +82,11 @@ class Settings extends PureComponent {
     };
 
     goToAbout = preventDoubleTap(() => {
-        const {intl, config} = this.props;
-        const screen = 'About';
-        const title = intl.formatMessage({id: 'about.title', defaultMessage: 'About {appTitle}'}, {appTitle: config.SiteName || 'Mattermost'});
-
-        goToScreen(screen, title);
+        EventEmitter.emit(NavigationTypes.NAVIGATION_SHOW_OVERLAY);
+        const passProps = {
+            type: 'privacy',
+        };
+        goToScreen('Policies', 'Privacy Policy', passProps);
     });
 
     goToNotifications = preventDoubleTap(() => {
@@ -238,17 +240,17 @@ class Settings extends PureComponent {
                             separator={true}
                         />
                     }
-                    {/* <SettingsItem
+                    <SettingsItem
                         testID='general_settings.about.action'
-                        defaultMessage='About {appTitle}'
-                        messageValues={{appTitle: config.SiteName || 'Mattermost'}}
-                        i18nId={t('about.title')}
+                        defaultMessage='{appTitle} Privacy Policy'
+                        messageValues={{appTitle: 'Tupp'}}
+                        i18nId={t('privacy_policy.title')}
                         iconName='information-outline'
                         onPress={this.goToAbout}
                         separator={false}
                         showArrow={showArrow}
                         theme={theme}
-                    /> */}
+                    />
                     <View style={middleDividerStyle}/>
                     {/* {showHelp &&
                         <SettingsItem

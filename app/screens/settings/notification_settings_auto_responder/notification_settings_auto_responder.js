@@ -24,6 +24,8 @@ import {t} from 'app/utils/i18n';
 
 import Section from 'app/screens/settings/section';
 import SectionItem from 'app/screens/settings/section_item';
+import {popTopScreen, setButtons} from '@actions/navigation';
+import {Navigation} from 'react-native-navigation';
 
 export default class NotificationSettingsAutoResponder extends PureComponent {
     static propTypes = {
@@ -31,6 +33,7 @@ export default class NotificationSettingsAutoResponder extends PureComponent {
         onBack: PropTypes.func.isRequired,
         theme: PropTypes.object.isRequired,
         currentUserStatus: PropTypes.string.isRequired,
+        componentId: PropTypes.string.isRequired,
     };
 
     static contextTypes = {
@@ -60,10 +63,23 @@ export default class NotificationSettingsAutoResponder extends PureComponent {
             auto_responder_active: autoResponderActive,
             auto_responder_message: notifyProps.auto_responder_message || autoResponderDefault,
         };
+
+        this.saveButton = {
+            color: props.theme.sidebarHeaderTextColor,
+            enabled: true,
+            id: 'save-autoresponder',
+            showAsAction: 'always',
+            text: 'Save',
+        };
+
+        setButtons(props.componentId, {
+            rightButtons: [this.saveButton],
+        });
     }
 
     componentWillUnmount() {
         this.saveUserNotifyProps();
+        this.navigationEventListener.remove();
     }
 
     componentDidMount() {
@@ -74,6 +90,14 @@ export default class NotificationSettingsAutoResponder extends PureComponent {
                 }
             });
         }, 500);
+
+        this.navigationEventListener = Navigation.events().registerNavigationButtonPressedListener(
+            ({buttonId}) => {
+                if (buttonId === this.saveButton.id) {
+                    popTopScreen();
+                }
+            },
+        );
     }
 
     saveUserNotifyProps = () => {

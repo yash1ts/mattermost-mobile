@@ -31,6 +31,8 @@ import Pinned from './pinned';
 import Separator from './separator';
 import ChannelLinkShare from './channel_link_share';
 import ChannelLinkCopy from './channel_link_copy';
+import Block from './block';
+import {General} from '@mm-redux/constants';
 
 export default class ChannelInfo extends PureComponent {
     static propTypes = {
@@ -51,6 +53,9 @@ export default class ChannelInfo extends PureComponent {
         isDirectMessage: PropTypes.bool.isRequired,
         status: PropTypes.string,
         theme: PropTypes.object.isRequired,
+        isBlockedByOther: PropTypes.bool,
+        isBlockedByMe: PropTypes.bool,
+        isChannelAdmin: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -98,7 +103,8 @@ export default class ChannelInfo extends PureComponent {
     };
 
     actionsRows = (channelIsArchived) => {
-        const {currentChannel, currentUserId, isDirectMessage, theme} = this.props;
+        const {currentChannel, currentUserId, isDirectMessage, theme, isChannelAdmin} = this.props;
+        const isPublic = currentChannel?.type === General.OPEN_CHANNEL;
 
         if (channelIsArchived) {
             return (
@@ -151,22 +157,30 @@ export default class ChannelInfo extends PureComponent {
                     testID='channel_info.add_members.action'
                     theme={theme}
                 />
-                <ConvertPrivate
-                    testID='channel_info.convert_private.action'
-                    theme={theme}
-                />
+                { isChannelAdmin &&
+                    <ConvertPrivate
+                        testID='channel_info.convert_private.action'
+                        theme={theme}
+                    />
+                }
+                {!isDirectMessage && (isChannelAdmin) &&
                 <EditChannel
                     testID='channel_info.edit_channel.action'
                     theme={theme}
                 />
+                }
+                {(isPublic || isChannelAdmin) &&
                 <ChannelLinkShare
                     testID='channel_info.edit_channel.action'
                     theme={theme}
                 />
+                }
+                {(isPublic || isChannelAdmin) &&
                 <ChannelLinkCopy
                     testID='channel_info.edit_channel.action'
                     theme={theme}
                 />
+                }
             </>
         );
     };
@@ -181,6 +195,10 @@ export default class ChannelInfo extends PureComponent {
             theme,
             isBot,
             isTeammateGuest,
+            isBlockedByMe,
+            isBlockedByOther,
+            isDirectMessage,
+            isChannelAdmin,
         } = this.props;
 
         const style = getStyleSheet(theme);
@@ -210,6 +228,7 @@ export default class ChannelInfo extends PureComponent {
                         type={currentChannel.type}
                         isArchived={channelIsArchived}
                         isBot={isBot}
+                        isChannelAdmin={isChannelAdmin}
                         isTeammateGuest={isTeammateGuest}
                         hasGuests={currentChannelGuestCount > 0}
                         isGroupConstrained={currentChannel.group_constrained}
@@ -219,10 +238,19 @@ export default class ChannelInfo extends PureComponent {
                         {this.actionsRows(channelIsArchived)}
                     </View>
                     <View style={style.footer}>
+                        {!isChannelAdmin &&
                         <Leave
                             close={this.close}
                             theme={theme}
                         />
+                        }
+                        {isDirectMessage &&
+                        <Block
+                            theme={theme}
+                            isBlockedByMe={isBlockedByMe}
+                            isBlockedByOther={isBlockedByOther}
+                        />
+                        }
                         {/* <Archive
                             close={this.close}
                             theme={theme}

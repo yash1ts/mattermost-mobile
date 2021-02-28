@@ -10,11 +10,11 @@ import UIKit
     }
 
     private func buildUploadURL(baseURL: String, channelId: String, fileName: String?) -> URL? {
-        let urlComponent = NSURLComponents(string: "\(baseURL)/api/v4/files")
+        let urlComponent = NSURLComponents(string: "\(baseURL)/api/tupp/files")
         let queryChannel = URLQueryItem(name: "channel_id", value: channelId)
         let queryFile = URLQueryItem(name: "filename", value: fileName)
 
-        urlComponent?.path = "/api/v4/files"
+        urlComponent?.path = "/api/tupp/files"
         urlComponent?.queryItems = [queryChannel, queryFile]
         print("URL TO UPLOAD \(urlComponent?.string ?? "NOT DEFINED")")
         return urlComponent?.url

@@ -336,12 +336,14 @@ export default class List extends PureComponent {
         const anchor = (id === 'sidebar.types.recent' || id === 'mobile.channel_list.channels');
 
         return (
-            <View style={styles.titleContainer}>
-                <Text style={styles.title}>
-                    {intl.formatMessage({id, defaultMessage}).toUpperCase()}
-                </Text>
-                <View style={styles.separatorContainer}/>
-                {action && this.renderSectionAction(styles, action, anchor, id)}
+            <View style={styles.titleBg}>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>
+                        {intl.formatMessage({id, defaultMessage}).toUpperCase()}
+                    </Text>
+                    <View style={styles.separatorContainer}/>
+                    {action && this.renderSectionAction(styles, action, anchor, id)}
+                </View>
             </View>
         );
     };

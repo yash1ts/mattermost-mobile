@@ -396,7 +396,7 @@ export default class EditProfile extends PureComponent {
         if (currentUser.auth_service === '') {
             helpText = formatMessage({
                 id: 'user.settings.general.emailCantUpdate',
-                defaultMessage: 'Email must be updated using a web client or desktop application.',
+                defaultMessage: 'Cannot update',
             });
         } else {
             switch (currentUser.auth_service) {

@@ -66,7 +66,7 @@ export default class PostAddChannelMember extends React.PureComponent {
                     const message = formatMessage(
                         {
                             id: 'api.channel.add_member.added',
-                            defaultMessage: '{addedUsername} added to the channel by {username}.',
+                            defaultMessage: '{addedUsername} added to the community by {username}.',
                         },
                         {
                             username: currentUser.username,
@@ -147,10 +147,10 @@ export default class PostAddChannelMember extends React.PureComponent {
         let linkText;
         if (channelType === General.PRIVATE_CHANNEL) {
             linkId = t('post_body.check_for_out_of_channel_mentions.link.private');
-            linkText = 'add them to this private channel';
+            linkText = 'add them to this private community';
         } else if (channelType === General.OPEN_CHANNEL) {
             linkId = t('post_body.check_for_out_of_channel_mentions.link.public');
-            linkText = 'add them to the channel';
+            linkText = 'add them to the community';
         }
 
         let outOfChannelMessageID;
@@ -158,10 +158,10 @@ export default class PostAddChannelMember extends React.PureComponent {
         const outOfChannelAtMentions = this.generateAtMentions(usernames, baseTextStyle);
         if (usernames.length === 1) {
             outOfChannelMessageID = t('post_body.check_for_out_of_channel_mentions.message.one');
-            outOfChannelMessageText = 'was mentioned but is not in the channel. Would you like to ';
+            outOfChannelMessageText = 'was mentioned but is not in the community. Would you like to ';
         } else if (usernames.length > 1) {
             outOfChannelMessageID = t('post_body.check_for_out_of_channel_mentions.message.multiple');
-            outOfChannelMessageText = 'were mentioned but they are not in the channel. Would you like to ';
+            outOfChannelMessageText = 'were mentioned but they are not in the community. Would you like to ';
         }
 
         let outOfGroupsMessageID;
@@ -169,7 +169,7 @@ export default class PostAddChannelMember extends React.PureComponent {
         const outOfGroupsAtMentions = this.generateAtMentions(noGroupsUsernames, baseTextStyle);
         if (noGroupsUsernames?.length) {
             outOfGroupsMessageID = t('post_body.check_for_out_of_channel_groups_mentions.message');
-            outOfGroupsMessageText = 'did not get notified by this mention because they are not in the channel. They are also not a member of the groups linked to this channel.';
+            outOfGroupsMessageText = 'did not get notified by this mention because they are not in the community. They are also not a member of the groups linked to this community.';
         }
 
         let outOfChannelMessage = null;

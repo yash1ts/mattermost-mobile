@@ -3,13 +3,12 @@
 
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {Platform, ScrollView, Text, View} from 'react-native';
+import {Platform, ScrollView, View} from 'react-native';
 import {intlShape} from 'react-intl';
 import HWKeyboardEvent from 'react-native-hw-keyboard-event';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import Autocomplete from '@components/autocomplete';
-import CompassIcon from '@components/compass_icon';
 import PostInput from '@components/post_draft/post_input';
 import QuickActions from '@components/post_draft/quick_actions';
 import SendAction from '@components/post_draft/send_action';
@@ -22,7 +21,7 @@ import EphemeralStore from '@store/ephemeral_store';
 import * as DraftUtils from '@utils/draft';
 import {confirmOutOfOfficeDisabled} from '@utils/status';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import ReplyPopup from '../reply_popup/reply_popup';
 const AUTOCOMPLETE_MARGIN = 20;
 const AUTOCOMPLETE_MAX_HEIGHT = 200;
 const HW_SHIFT_ENTER_TEXT = Platform.OS === 'ios' ? '\n' : '';
@@ -63,6 +62,7 @@ export default class DraftInput extends PureComponent {
         addRecentUsedEmojisInMessage: PropTypes.func.isRequired,
         replyPopup: PropTypes.object,
         setReplyPopup: PropTypes.func.isRequired,
+        isDirectMessage: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -95,6 +95,7 @@ export default class DraftInput extends PureComponent {
     }
 
     componentDidMount() {
+        this.closeReplyPopup();
         const {getChannelMemberCountsByGroup, channelId, isTimezoneEnabled, useGroupMentions, value} = this.props;
 
         HWKeyboardEvent.onHWKeyPressed(this.handleHardwareEnterPress);
@@ -138,6 +139,7 @@ export default class DraftInput extends PureComponent {
     }
 
     componentWillUnmount() {
+        this.closeReplyPopup();
         HWKeyboardEvent.removeOnHWKeyPressed();
     }
 
@@ -152,20 +154,20 @@ export default class DraftInput extends PureComponent {
 
         if (files.length) {
             const loadingComplete = !this.isFileLoading();
-            return loadingComplete;
+            return loadingComplete && messageLength > 0;
         }
 
         return messageLength > 0;
     };
 
     doSubmitMessage = (message = null, rootId) => {
-        const {createPost, currentUserId, channelId, files, handleClearFiles, replyPopup} = this.props;
+        const {createPost, currentUserId, channelId, files, handleClearFiles, replyPopup, isDirectMessage} = this.props;
         let value = message;
         if (!value) {
             value = this.input.current?.getValue() || '';
         }
         const postFiles = files.filter((f) => !f.failed);
-        if (replyPopup?.user_name) {
+        if (replyPopup?.user_name && !isDirectMessage) {
             value = `@${replyPopup.user_name} ${value}`;
         }
         const post = {
@@ -175,6 +177,7 @@ export default class DraftInput extends PureComponent {
             parent_id: rootId,
             props: {
                 reply_user_name: replyPopup?.user_name,
+                reply_post_id: replyPopup?.post_id,
                 reply_message: replyPopup?.message},
             message: value,
         };
@@ -336,9 +339,10 @@ export default class DraftInput extends PureComponent {
         const toAllOrChannel = DraftUtils.textContainsAtAllAtChannel(value);
         const groupMentions = (!toAllOrChannel && notificationsToGroups) ? DraftUtils.groupsMentionedInText(groupsWithAllowReference, value) : [];
 
-        if (value.indexOf('/') === 0) {
-            this.sendCommand(value);
-        } else if (notificationsToChannel && membersCount > NOTIFY_ALL_MEMBERS && toAllOrChannel) {
+        // if (value.indexOf('/') === 0) {
+        //     this.sendCommand(value);
+        // }
+        if (notificationsToChannel && membersCount > NOTIFY_ALL_MEMBERS && toAllOrChannel) {
             this.showSendToAllOrChannelAlert(membersCount, value);
         } else if (groupMentions.length > 0) {
             const {groupMentionsSet, memberNotifyCount, channelTimezoneCount} = DraftUtils.mapGroupMentions(channelMemberCountsByGroup, groupMentions);
@@ -396,7 +400,6 @@ export default class DraftInput extends PureComponent {
     updateCanSubmit = () => {
         const {canSubmit} = this.state;
         const enabled = this.isSendButtonEnabled();
-
         if (canSubmit !== enabled) {
             this.setState({canSubmit: enabled});
         }
@@ -415,23 +418,6 @@ export default class DraftInput extends PureComponent {
 
         setStatus({user_id: currentUserId, status});
     };
-
-    renderReplyPopup = (style, replyPopup) => (
-        <View style={style.replyContainer}>
-            <View style={style.replyHeader}>
-                <Text style={style.replyText}>{replyPopup.user_name + ':'} </Text>
-                <TouchableOpacity
-                    onPress={this.closeReplyPopup}
-                >
-                    <CompassIcon
-                        name='close'
-                        color='grey'
-                        style={style.closeButton}
-                    />
-                </TouchableOpacity>
-            </View>
-            <Text style={style.replyText}>{replyPopup.message}</Text>
-        </View>)
 
     render() {
         const {
@@ -459,8 +445,11 @@ export default class DraftInput extends PureComponent {
                     theme={theme}
                     registerTypingAnimation={registerTypingAnimation}
                 />
-
-                {(replyPopup.user_name) && this.renderReplyPopup(style, replyPopup)}
+                <ReplyPopup
+                    theme={theme}
+                    replyPopup={replyPopup}
+                    closeReplyPopup={this.closeReplyPopup}
+                />
 
                 <SafeAreaView
                     edges={['left', 'right']}
@@ -547,25 +536,6 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
                 android: 2,
             }),
         },
-        replyHeader: {
-            flexDirection: 'row', justifyContent: 'space-between',
-        },
-        replyText: {
-            color: 'grey',
-        },
-        replyContainer: {
-            backgroundColor: theme.centerChannelBg,
-            borderWidth: 2,
-            borderColor: theme.sidebarHeaderBg,
-            borderRadius: 5,
-            position: 'absolute',
-            left: 8,
-            right: 8,
-            bottom: 82,
-            zIndex: 2,
-            paddingHorizontal: 10,
-            paddingVertical: 8,
-        },
         inputContainer: {
             flex: 1,
             flexDirection: 'column',
@@ -586,8 +556,9 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             justifyContent: 'center',
             paddingBottom: 2,
             backgroundColor: theme.sidebarHeaderBg,
-            borderTopWidth: 1,
             borderTopColor: changeOpacity(theme.centerChannelColor, 0.20),
+            borderTopRightRadius: 10,
+            borderTopLeftRadius: 10,
         },
     };
 });
