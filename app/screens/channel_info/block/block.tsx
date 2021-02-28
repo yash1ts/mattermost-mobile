@@ -18,10 +18,6 @@ interface BlockProps {
     canLeave: boolean;
     currentChannel: Channel;
     displayName: string;
-<<<<<<< HEAD
-=======
-    leaveChannel: (channel: Channel, reset: boolean) => Promise<ActionResult>;
->>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
     blockDMChannel: (channel: Channel) => Promise<ActionResult>;
     unblockDMChannel: (channel: Channel) => Promise<ActionResult>;
     isDirectMessage: boolean;

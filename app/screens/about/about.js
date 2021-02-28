@@ -18,11 +18,7 @@ import FormattedText from '@components/formatted_text';
 import StatusBar from '@components/status_bar';
 import AboutLinks from '@constants/about_links';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
-<<<<<<< HEAD
 import logo from '@utils/logo';
-=======
-import {logo} from '@utils/general';
->>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
 
 const MATTERMOST_BUNDLE_IDS = ['com.tupp.app'];
 

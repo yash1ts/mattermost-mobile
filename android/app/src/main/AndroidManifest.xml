@@ -42,14 +42,7 @@
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
-<<<<<<< HEAD
             <data android:host="prod.tupp.club" />
-=======
-            <data android:host="www.tupp.club" />
-            <data android:pathPrefix=""/>
-            <data android:pathPattern=".*/communities/.*"/>
-            <data android: pathPattern=".*/pl/.*"/>
->>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
           <data android:scheme="https" />
         </intent-filter>
       </activity>

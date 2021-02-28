@@ -58,10 +58,7 @@ export default class ChannelInfo extends PureComponent {
         theme: PropTypes.object.isRequired,
         isBlockedByOther: PropTypes.bool,
         isBlockedByMe: PropTypes.bool,
-<<<<<<< HEAD
         isChannelAdmin: PropTypes.bool,
-=======
->>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
     };
 
     static defaultProps = {
