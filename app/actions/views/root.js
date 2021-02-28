@@ -17,7 +17,7 @@ import initialState from '@store/initial_state';
 import {getStateForReset} from '@store/utils';
 
 import {markAsViewedAndReadBatch} from './channel';
-import { BackHandler } from 'react-native';
+import {BackHandler} from 'react-native';
 
 export function startDataCleanup() {
     return async (dispatch, getState) => {

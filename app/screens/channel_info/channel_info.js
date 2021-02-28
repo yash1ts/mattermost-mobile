@@ -32,7 +32,10 @@ import Separator from './separator';
 import ChannelLinkShare from './channel_link_share';
 import ChannelLinkCopy from './channel_link_copy';
 import Block from './block';
+<<<<<<< HEAD
 import {General} from '@mm-redux/constants';
+=======
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
 
 export default class ChannelInfo extends PureComponent {
     static propTypes = {
@@ -55,7 +58,10 @@ export default class ChannelInfo extends PureComponent {
         theme: PropTypes.object.isRequired,
         isBlockedByOther: PropTypes.bool,
         isBlockedByMe: PropTypes.bool,
+<<<<<<< HEAD
         isChannelAdmin: PropTypes.bool,
+=======
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
     };
 
     static defaultProps = {
@@ -157,6 +163,7 @@ export default class ChannelInfo extends PureComponent {
                     testID='channel_info.add_members.action'
                     theme={theme}
                 />
+<<<<<<< HEAD
                 { isChannelAdmin &&
                     <ConvertPrivate
                         testID='channel_info.convert_private.action'
@@ -170,6 +177,17 @@ export default class ChannelInfo extends PureComponent {
                 />
                 }
                 {(isPublic || isChannelAdmin) &&
+=======
+                <ConvertPrivate
+                    testID='channel_info.convert_private.action'
+                    theme={theme}
+                />
+                {!isDirectMessage &&
+                <EditChannel
+                    testID='channel_info.edit_channel.action'
+                    theme={theme}
+                />}
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
                 <ChannelLinkShare
                     testID='channel_info.edit_channel.action'
                     theme={theme}
@@ -197,8 +215,11 @@ export default class ChannelInfo extends PureComponent {
             isTeammateGuest,
             isBlockedByMe,
             isBlockedByOther,
+<<<<<<< HEAD
             isDirectMessage,
             isChannelAdmin,
+=======
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
         } = this.props;
 
         const style = getStyleSheet(theme);
@@ -222,7 +243,7 @@ export default class ChannelInfo extends PureComponent {
                         header={currentChannel.header}
                         memberCount={currentChannelMemberCount}
                         onPermalinkPress={this.handlePermalinkPress}
-                        purpose={currentChannel.purpose}
+                        purpose={''}
                         status={status}
                         theme={theme}
                         type={currentChannel.type}
@@ -243,14 +264,20 @@ export default class ChannelInfo extends PureComponent {
                             close={this.close}
                             theme={theme}
                         />
+<<<<<<< HEAD
                         }
                         {isDirectMessage &&
+=======
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
                         <Block
                             theme={theme}
                             isBlockedByMe={isBlockedByMe}
                             isBlockedByOther={isBlockedByOther}
                         />
+<<<<<<< HEAD
                         }
+=======
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
                         {/* <Archive
                             close={this.close}
                             theme={theme}

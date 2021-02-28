@@ -31,7 +31,7 @@ import {hasEmojisOnly} from 'app/utils/emoji_utils';
 import PostBody from './post_body';
 import {bindActionCreators} from 'redux';
 import {addReaction} from '@mm-redux/actions/posts';
-import { getUserIdFromChannelName } from '@mm-redux/utils/channel_utils';
+import {getUserIdFromChannelName} from '@mm-redux/utils/channel_utils';
 
 const POST_TIMEOUT = 20000;
 

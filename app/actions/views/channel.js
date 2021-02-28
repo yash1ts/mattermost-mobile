@@ -11,6 +11,7 @@ import {
     getChannelByNameAndTeamName,
     joinChannel,
     leaveChannel as serviceLeaveChannel,
+    updateChannelHeader,
 } from '@mm-redux/actions/channels';
 import {savePreferences} from '@mm-redux/actions/preferences';
 import {getLicense} from '@mm-redux/selectors/entities/general';
@@ -494,15 +495,19 @@ export function leaveChannel(channel, reset = false) {
 
 export function blockDMChannel(channel) {
     return async (dispatch, getState) => {
+<<<<<<< HEAD
         dispatch({type: ChannelTypes.UPDATE_CHANNEL_REQUEST, data: null});
 
         let updated;
 
+=======
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
         const state = getState();
         let header = channel.header;
         if (!header.includes(getCurrentUserId(state))) {
             header += `${getCurrentUserId(state)} `;
         }
+<<<<<<< HEAD
         const patch = {...channel, header};
 
         try {
@@ -528,19 +533,26 @@ export function blockDMChannel(channel) {
         ]));
 
         return {data: updated};
+=======
+        await dispatch(updateChannelHeader(channel.id, header));
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
     };
 }
 export function unblockDMChannel(channel) {
     return async (dispatch, getState) => {
+<<<<<<< HEAD
         dispatch({type: ChannelTypes.UPDATE_CHANNEL_REQUEST, data: null});
 
         let updated;
 
+=======
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
         const state = getState();
         let header = channel.header;
         if (header.includes(getCurrentUserId(state))) {
             header = header.replace(`${getCurrentUserId(state)} `, '');
         }
+<<<<<<< HEAD
         const patch = {...channel, header};
 
         try {
@@ -566,6 +578,9 @@ export function unblockDMChannel(channel) {
         ]));
 
         return {data: updated};
+=======
+        await dispatch(updateChannelHeader(channel.id, header));
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
     };
 }
 

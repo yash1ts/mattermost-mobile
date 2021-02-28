@@ -18,6 +18,10 @@ interface BlockProps {
     canLeave: boolean;
     currentChannel: Channel;
     displayName: string;
+<<<<<<< HEAD
+=======
+    leaveChannel: (channel: Channel, reset: boolean) => Promise<ActionResult>;
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
     blockDMChannel: (channel: Channel) => Promise<ActionResult>;
     unblockDMChannel: (channel: Channel) => Promise<ActionResult>;
     isDirectMessage: boolean;
@@ -63,7 +67,11 @@ export default class Block extends PureComponent<BlockProps> {
         const title = {id: t('mobile.channel_info.alertTitleBlockChannel'), defaultMessage: 'Block Direct Message'};
         const message = {
             id: t('mobile.channel_info.alertMessageBlockChannel'),
+<<<<<<< HEAD
             defaultMessage: 'Are you sure you want to block {name}?',
+=======
+            defaultMessage: 'Are you sure you want to block the this Direct Message?',
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
         };
         const onPressAction = () => {
             this.props.blockDMChannel(this.props.currentChannel);
@@ -74,8 +82,13 @@ export default class Block extends PureComponent<BlockProps> {
     handleUnblock = preventDoubleTap(() => {
         const title = {id: t('mobile.channel_info.alertTitleUnblockChannel'), defaultMessage: 'Unblock Direct Message'};
         const message = {
+<<<<<<< HEAD
             id: t('mobile.channel_info.alertMessageUnBlockChannel'),
             defaultMessage: 'Are you sure you want to unblock {name}?',
+=======
+            id: t('mobile.channel_info.alertMessageLeaveChannel'),
+            defaultMessage: 'Are you sure you want to unblock the Direct Message?',
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
         };
         const onPressAction = () => {
             this.props.unblockDMChannel(this.props.currentChannel);

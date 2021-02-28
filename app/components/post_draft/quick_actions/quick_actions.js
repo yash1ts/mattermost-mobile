@@ -71,7 +71,8 @@ export default class QuickActions extends PureComponent {
             theme,
         } = this.props;
         const atInputActionTestID = `${testID}.at_input_action`;
-        const slashInputActionTestID = `${testID}.slash_input_action`;
+
+        // const slashInputActionTestID = `${testID}.slash_input_action`;
         const fileActionTestID = `${testID}.file_action`;
         const imageActionTestID = `${testID}.image_action`;
         const cameraActionTestID = `${testID}.camera_action`;

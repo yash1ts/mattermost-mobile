@@ -189,9 +189,9 @@ class PushNotifications {
         completion();
     }
 
-    onNotificationReceivedBackground = (notification: NotificationWithData, completion: (response: NotificationCompletion) => void) => {
+    onNotificationReceivedBackground = (notification: NotificationWithData, completion: (response: NotificationBackgroundFetchResult) => void) => {
         this.handleNotification(notification);
-        completion({alert: true, sound: true, badge: false});
+        completion(NotificationBackgroundFetchResult.NO_DATA);
     };
 
     onNotificationReceivedForeground = (notification: NotificationWithData, completion: (response: NotificationCompletion) => void) => {

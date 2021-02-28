@@ -32,8 +32,11 @@ function mapStateToProps(state) {
     const currentChannel = getCurrentChannel(state);
     let isBlockedByMe = false;
     let isBlockedByOther = false;
+<<<<<<< HEAD
     const isChannelAdmin = checkIsChannelAdmin(roles);
 
+=======
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
     if (currentChannel) {
         if (currentChannel.type === General.DM_CHANNEL) {
             isBlockedByMe = currentChannel.header.includes(currentUserId);
@@ -60,7 +63,10 @@ function mapStateToProps(state) {
         theme: getTheme(state),
         isBlockedByOther,
         isBlockedByMe,
+<<<<<<< HEAD
         isChannelAdmin,
+=======
+>>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
         showTermsOfService: shouldShowTermsOfService(state),
     };
 }

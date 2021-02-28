@@ -18,7 +18,6 @@ import EventEmitter from '@mm-redux/utils/event_emitter';
 import AtMention from './at_mention';
 import ChannelMention from './channel_mention';
 import EmojiSuggestion from './emoji_suggestion';
-import SlashSuggestion from './slash_suggestion';
 import DateSuggestion from './date_suggestion';
 
 export default class Autocomplete extends PureComponent {
