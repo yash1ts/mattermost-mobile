@@ -39,10 +39,10 @@ const ThemeTile = (props) => {
     const fullWidth = isLandscape ? deviceWidth - 40 : deviceWidth;
     const layoutStyle = {
         container: {
-            width: (fullWidth / tilesPerLine) - tilePadding,
+            width: (fullWidth),
         },
         thumbnail: {
-            width: (fullWidth / tilesPerLine) - (tilePadding + 20),
+            width: (fullWidth) - (tilePadding + 20),
         },
     };
 
@@ -51,25 +51,13 @@ const ThemeTile = (props) => {
             style={[style.container, layoutStyle.container]}
             onPress={() => action(actionValue)}
         >
-            <View style={[style.imageWrapper, layoutStyle.thumbnail]}>
-                {imageSrc && (
-                    <Image
-                        source={imageSrc}
-                        style={[
-                            style.thumbnail,
-                            layoutStyle.thumbnail,
-                            selected ? style.selectedThumbnail : null,
-                        ]}
-                    />
-                )}
-                {selected && (
-                    <CompassIcon
-                        name='check-circle'
-                        size={31.2}
-                        style={style.check}
-                    />
-                )}
-            </View>
+            {selected && (
+                <CompassIcon
+                    name='check-circle'
+                    size={30}
+                    style={style.check}
+                />
+            )}
             {labelComponent}
         </TouchableOpacity>
     );
@@ -99,6 +87,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             flexDirection: 'column',
             padding: tilePadding,
             marginTop: 8,
+            marginBottom: 8,
         },
         imageWrapper: {
             position: 'relative',
@@ -114,7 +103,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         check: {
             position: 'absolute',
             right: 10,
-            bottom: 10,
+            bottom: 5,
             color: theme.buttonBg,
         },
         label: {

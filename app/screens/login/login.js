@@ -13,7 +13,6 @@ import {
     Platform,
     StyleSheet,
     TextInput,
-    TouchableWithoutFeedback,
     View,
 } from 'react-native';
 import logo from '@utils/logo';
@@ -447,7 +446,7 @@ export default class Login extends PureComponent {
         const contact = (
             <Button
                 onPress={this.onContact}
-                containerStyle={[style.signUpBtn, {alignSelf: 'flex-end'}]}
+                containerStyle={[style.signUpBtn, {alignSelf: 'center', marginBottom: 10}]}
             >
                 <FormattedText
                     id='contact.text'
@@ -458,69 +457,62 @@ export default class Login extends PureComponent {
         );
 
         return (
-            <SafeAreaView style={style.container}>
+            <SafeAreaView style={[style.container, {justifyContent: 'space-between'}]}>
                 <StatusBar/>
-                <TouchableWithoutFeedback
-                    onPress={this.blur}
-                    accessible={false}
+                <KeyboardAwareScrollView
+                    ref={this.scrollRef}
+                    style={style.container}
+                    contentContainerStyle={style.innerContainer}
+                    keyboardShouldPersistTaps='handled'
+                    enableOnAndroid={true}
                 >
-                    <KeyboardAwareScrollView
-                        ref={this.scrollRef}
-                        style={style.container}
-                        contentContainerStyle={style.innerContainer}
-                        keyboardShouldPersistTaps='handled'
-                        enableOnAndroid={true}
-                    >
-                        <View style={{margin: 20}}>
-                            {logo()}
-                        </View>
-                        <View testID='login.screen'>
-                            <FormattedText
-                                style={GlobalStyles.subheader}
-                                id='web.root.signup_info'
-                                defaultMessage='Join and create communities'
-                            />
-                        </View>
-                        <ErrorText
-                            testID='login.error.text'
-                            error={this.state.error}
+                    <View style={{margin: 20}}>
+                        {logo()}
+                    </View>
+                    <View testID='login.screen'>
+                        <FormattedText
+                            style={GlobalStyles.subheader}
+                            id='web.root.signup_info'
+                            defaultMessage='Join and create communities'
                         />
-                        <TextInput
-                            testID='login.username.input'
-                            autoCapitalize='none'
-                            autoCorrect={false}
-                            blurOnSubmit={false}
-                            disableFullscreenUI={true}
-                            keyboardType='email-address'
-                            onChangeText={this.handleLoginChange}
-                            onSubmitEditing={this.passwordFocus}
-                            placeholder={this.createLoginPlaceholder()}
-                            placeholderTextColor={changeOpacity('#fff', 0.5)}
-                            ref={this.loginRef}
-                            returnKeyType='next'
-                            style={GlobalStyles.inputBox}
-                            underlineColorAndroid='transparent'
-                        />
-                        <InputPassword
-                            testID='login.password.input'
-                            disableFullscreenUI={true}
-                            onChangeText={this.handlePasswordChange}
-                            onSubmitEditing={this.preSignIn}
-                            placeholder={this.context.intl.formatMessage({id: 'login.password', defaultMessage: 'Password'})}
-                            placeholderTextColor={changeOpacity('#fff', 0.5)}
-                            reference={this.passwordRef}
-                            returnKeyType='go'
-                            underlineColorAndroid='transparent'
-                        />
-                        {proceed}
-                        {forgotPassword}
-                        {verifyEmail}
-                        {signup}
-                        <View style={style.contact}>
-                            {contact}
-                        </View>
-                    </KeyboardAwareScrollView>
-                </TouchableWithoutFeedback>
+                    </View>
+                    <ErrorText
+                        testID='login.error.text'
+                        error={this.state.error}
+                    />
+                    <TextInput
+                        testID='login.username.input'
+                        autoCapitalize='none'
+                        autoCorrect={false}
+                        blurOnSubmit={false}
+                        disableFullscreenUI={true}
+                        keyboardType='email-address'
+                        onChangeText={this.handleLoginChange}
+                        onSubmitEditing={this.passwordFocus}
+                        placeholder={this.createLoginPlaceholder()}
+                        placeholderTextColor={changeOpacity('#fff', 0.5)}
+                        ref={this.loginRef}
+                        returnKeyType='next'
+                        style={GlobalStyles.inputBox}
+                        underlineColorAndroid='transparent'
+                    />
+                    <InputPassword
+                        testID='login.password.input'
+                        disableFullscreenUI={true}
+                        onChangeText={this.handlePasswordChange}
+                        onSubmitEditing={this.preSignIn}
+                        placeholder={this.context.intl.formatMessage({id: 'login.password', defaultMessage: 'Password'})}
+                        placeholderTextColor={changeOpacity('#fff', 0.5)}
+                        reference={this.passwordRef}
+                        returnKeyType='go'
+                        underlineColorAndroid='transparent'
+                    />
+                    {proceed}
+                    {forgotPassword}
+                    {verifyEmail}
+                    {signup}
+                </KeyboardAwareScrollView>
+                {contact}
             </SafeAreaView>
         );
     }
@@ -551,9 +543,5 @@ const style = StyleSheet.create({
     },
     signUpTxt: {
         color: '#2389D7',
-    },
-    contact: {
-        flex: 1,
-        flexDirection: 'row',
     },
 });

@@ -103,6 +103,12 @@ export function isEmail(email: string): boolean {
     return (/^[^ ,@]+@[^ ,@]+$/).test(email);
 }
 
+export function isPassword(password: string): boolean {
+    //Minimum eight characters, at least one uppercase letter, one lowercase letter and one number
+
+    return (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/).test(password);
+}
+
 export function buildQueryString(parameters: Dictionary<any>): string {
     const keys = Object.keys(parameters);
     if (keys.length === 0) {

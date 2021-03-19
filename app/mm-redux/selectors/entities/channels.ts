@@ -118,6 +118,9 @@ export function makeGetChannel(): (b: GlobalState, a: {
         if (channel) {
             return completeDirectChannelInfo(users, teammateNameDisplay!, channel);
         }
+        if (!channel) {
+            return Object.values(allChannels)[0];
+        }
 
         return channel;
     });

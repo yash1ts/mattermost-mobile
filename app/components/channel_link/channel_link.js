@@ -53,7 +53,7 @@ export default class ChannelLink extends React.PureComponent {
     handlePress = async () => {
         let {channel} = this.state;
 
-        if (!channel.id && channel.display_name) {
+        if (!channel?.id && channel && channel.display_name) {
             const {
                 actions,
                 channelName,
@@ -73,7 +73,7 @@ export default class ChannelLink extends React.PureComponent {
             }
         }
 
-        if (channel.id) {
+        if (channel) {
             const {handleSelectChannel} = this.props.actions;
             handleSelectChannel(channel.id);
 

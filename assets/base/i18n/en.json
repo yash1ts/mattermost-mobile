@@ -128,7 +128,7 @@
   "login.noEmailUsername": "Please enter your email or username",
   "login.noEmailUsernameLdapUsername": "Please enter your email, username or {ldapUsername}",
   "login.noLdapUsername": "Please enter your {ldapUsername}",
-  "login.noPassword": "Please enter your password",
+  "login.noPassword": "Please enter a password with minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character",
   "login.noUsername": "Please enter your username",
   "login.noUsernameLdapUsername": "Please enter your username or {ldapUsername}",
   "login.or": "or",

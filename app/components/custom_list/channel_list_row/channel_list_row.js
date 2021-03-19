@@ -28,7 +28,7 @@ export default class ChannelListRow extends React.PureComponent {
 
     render() {
         const style = getStyleFromTheme(this.props.theme);
-        const {channelStats, isArchived, channel} = this.props;
+        const {isArchived, channel} = this.props;
         let purpose;
         if (this.props.channel.purpose) {
             purpose = (
@@ -49,34 +49,33 @@ export default class ChannelListRow extends React.PureComponent {
                 selectable={this.props.selectable}
                 selected={this.props.selected}
             >
-                <View style={{flexDirection: 'column', paddingLeft: 15, flex: 1}}>
-                    <View style={style.container}>
-                        <View style={style.titleContainer}>
+                <View style={{flexDirection: 'column', paddingLeft: 15, flex: 1, paddingBottom: 5, paddingTop: 5, minHeight: 50}}>
+                    <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                        <View style={style.container}>
+
                             <CompassIcon
                                 name={isArchived ? 'archive-outline' : 'radiobox-marked'}
                                 style={style.icon}
                             />
-                            <Text style={style.displayName}>
+                            <Text
+                                style={style.displayName}
+                                multiline={true}
+                            >
                                 {channel.display_name}
                             </Text>
+
                         </View>
                         <View style={style.detailContainer}>
-                            <CompassIcon
-                                name={'account-multiple-outline'}
-                                style={style.icon}
-                            />
-                            <Text style={style.displayStats}>
-                                {channelStats ? formatReactionValue(channelStats.member_count) : 1}
-                            </Text>
                             <CompassIcon
                                 name={'message-text-outline'}
                                 style={style.icon}
                             />
                             {channel &&
-                                <Text style={style.displayStats}>
-                                    {formatReactionValue(channel.total_msg_count)}
-                                </Text>}
+                            <Text style={style.displayStats}>
+                                {formatReactionValue(channel.total_msg_count)}
+                            </Text>}
                         </View>
+
                     </View>
                     {purpose}
                 </View>
@@ -93,14 +92,13 @@ const getStyleFromTheme = makeStyleSheetFromTheme((theme) => {
         },
         detailContainer: {
             flexDirection: 'row',
-            marginTop: 2,
             alignItems: 'center',
-
         },
         displayName: {
             fontSize: 16,
             color: theme.centerChannelColor,
             marginLeft: 5,
+            paddingRight: 20,
 
         },
         displayStats: {
@@ -116,10 +114,9 @@ const getStyleFromTheme = makeStyleSheetFromTheme((theme) => {
         container: {
             flexDirection: 'row',
             flex: 1,
-            justifyContent: 'space-between',
         },
         purpose: {
-            marginTop: 10,
+            marginTop: 5,
             fontSize: 13,
             color: changeOpacity(theme.centerChannelColor, 0.6),
         },

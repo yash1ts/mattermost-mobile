@@ -16,7 +16,8 @@ import Theme from './theme';
 
 const mapStateToProps = (state) => ({
     allowedThemes: getAllowedThemes(state),
-    customTheme: getCustomTheme(state),
+
+    // customTheme: getCustomTheme(state),
     isLandscape: isLandscape(state),
     isTablet: isTablet(state),
     teamId: getCurrentTeamId(state),

@@ -426,7 +426,7 @@ export default class PostBodyAdditionalContent extends ImageViewPort {
                 onPress={this.playYouTubeVideo}
                 type={'opacity'}
             >
-                <Text style={{color: this.props.theme.centerChannelColor, marginBottom: 5}}>{this.props.openGraphData.title}</Text>
+                <Text style={{color: this.props.theme.centerChannelColor, marginBottom: 5}}>{this.props.openGraphData?.title || ''}</Text>
                 <ProgressiveImage
                     isBackgroundImage={true}
                     imageUri={imgUrl}

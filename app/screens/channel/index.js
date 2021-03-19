@@ -60,10 +60,7 @@ function mapStateToProps(state) {
         theme: getTheme(state),
         isBlockedByOther,
         isBlockedByMe,
-<<<<<<< HEAD
         isChannelAdmin,
-=======
->>>>>>> 66e35a8a74d7b6378443c760b3d1dd9d0c41d838
         showTermsOfService: shouldShowTermsOfService(state),
     };
 }

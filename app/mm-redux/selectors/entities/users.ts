@@ -386,7 +386,8 @@ export const shouldShowTermsOfService: (a: GlobalState) => boolean = createSelec
         // const featureEnabled = license.IsLicensed === 'true' && config.EnableCustomTermsOfService === 'true';
         // const reacceptanceTime = parseInt(config.CustomTermsOfServiceReAcceptancePeriod!, 10) * 1000 * 60 * 60 * 24;
         // const timeElapsed = new Date().getTime() - acceptedAt;
-        return Boolean(user && !accepted);
+        // return Boolean(user && !accepted);
+        return false;
     },
 );
 

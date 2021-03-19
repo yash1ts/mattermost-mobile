@@ -126,7 +126,7 @@ export default class Theme extends React.PureComponent {
                     <View style={style.tilesContainer}>
                         {this.renderAllowedThemeTiles()}
                     </View>
-                    {customTheme &&
+                    {/* {customTheme &&
                         <SafeAreaView
                             edges={['left', 'right']}
                             style={style.container}
@@ -138,7 +138,7 @@ export default class Theme extends React.PureComponent {
                                 {this.renderCustomThemeRow({item: customTheme})}
                             </Section>
                         </SafeAreaView>
-                    }
+                    } */}
                 </View>
             </View>
         );
@@ -153,11 +153,11 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         wrapper: {
             backgroundColor: changeOpacity(theme.centerChannelColor, 0.06),
             flex: 1,
-            paddingTop: 35,
+            paddingTop: 0,
         },
         tilesContainer: {
-            marginBottom: 30,
-            flexDirection: 'row',
+            marginBottom: 0,
+            flexDirection: 'column',
             flexWrap: 'wrap',
             justifyContent: 'center',
             backgroundColor: theme.centerChannelBg,

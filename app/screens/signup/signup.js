@@ -29,6 +29,7 @@ import {goToScreen} from '@actions/navigation';
 import CheckBox from '@react-native-community/checkbox';
 import EventEmitter from '@mm-redux/utils/event_emitter';
 import {NavigationTypes} from '@constants/';
+import {isPassword} from '@mm-redux/utils/helpers';
 
 export const mfaExpectedErrors = ['mfa.validate_token.authenticate.app_error', 'ent.mfa.validate_token.authenticate.app_error'];
 
@@ -106,13 +107,13 @@ export default class Signup extends PureComponent {
                 return;
             }
 
-            if (!this.password) {
+            if (!this.password || !isPassword(this.password)) {
                 this.setState({
                     isLoading: false,
                     error: {
                         intl: {
                             id: t('login.noPassword'),
-                            defaultMessage: 'Please enter your password',
+                            defaultMessage: 'Please enter a password with minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character',
                         },
                     },
                 });
@@ -124,7 +125,7 @@ export default class Signup extends PureComponent {
                     error: {
                         intl: {
                             id: t('signup.noTos'),
-                            defaultMessage: 'Please Read and Accept the Terms of Service',
+                            defaultMessage: 'Please read and accept the Terms of service',
                         },
                     },
                 });

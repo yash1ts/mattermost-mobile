@@ -45,7 +45,7 @@ export default class Leave extends PureComponent<LeaveProps> {
         } else if (isPublic) {
             term = formatMessage({id: 'mobile.channel_info.publicChannel', defaultMessage: 'Public Channel'});
         } else {
-            formatMessage({id: 'mobile.channel_info.privateChannel', defaultMessage: 'Private Channel'});
+            term = formatMessage({id: 'mobile.channel_info.privateChannel', defaultMessage: 'Private Channel'});
         }
 
         Alert.alert(

@@ -246,6 +246,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
             flex: 1,
             flexDirection: 'row',
             marginTop: 10,
+            marginRight: 10,
             borderWidth: 1,
             borderColor: changeOpacity(theme.centerChannelColor, 0.4),
             borderRadius: 5,

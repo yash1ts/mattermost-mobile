@@ -65,8 +65,10 @@ public class RealPathUtil {
                     contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
                 } else if ("audio".equals(type)) {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                } // document
+                if(contentUri == null) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 }
-
                 final String selection = "_id=?";
                 final String[] selectionArgs = new String[] {
                         split[1]
@@ -96,20 +98,25 @@ public class RealPathUtil {
         File tmpFile;
         String fileName = null;
 
+        if (uri == null || uri.isRelative()) {
+            return null;
+        }
+
         // Try and get the filename from the Uri
         try {
             Cursor returnCursor =
                     context.getContentResolver().query(uri, null, null, null, null);
             int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             returnCursor.moveToFirst();
-            fileName = returnCursor.getString(nameIndex);
+            fileName = sanitizeFilename(returnCursor.getString(nameIndex));
+
         } catch (Exception e) {
             // just continue to get the filename with the last segment of the path
         }
 
         try {
-            if (fileName == null) {
-                fileName = uri.getLastPathSegment().toString().trim();
+            if (TextUtils.isEmpty(fileName)) {
+                fileName = sanitizeFilename(uri.getLastPathSegment().toString().trim());
             }
 
 
@@ -229,5 +236,14 @@ public class RealPathUtil {
                 deleteRecursive(child);
 
         fileOrDirectory.delete();
+    }
+
+    private static String sanitizeFilename(String filename) {
+        if (filename == null) {
+            return null;
+        }
+
+        File f = new File(filename);
+        return f.getName();
     }
 }

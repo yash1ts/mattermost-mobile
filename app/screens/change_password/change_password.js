@@ -28,6 +28,7 @@ import {Client4} from '@mm-redux/client';
 import {dismissModal, setButtons} from '@actions/navigation';
 import CompassIcon from '@components/compass_icon';
 import {Navigation} from 'react-native-navigation';
+import {isPassword} from '@mm-redux/utils/helpers';
 
 export default class ChangePassword extends PureComponent {
     static propTypes = {
@@ -80,9 +81,10 @@ export default class ChangePassword extends PureComponent {
             error: '',
             isLoading: true,
         });
-        if (this.password.length < 8) {
+        if (!this.password || !isPassword(this.password)) {
             this.setState({
-                error: 'Please enter a better password',
+                error: 'Enter a password with minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character',
+                isLoading: false,
             });
             return;
         }

@@ -160,6 +160,12 @@ class Settings extends PureComponent {
         });
     });
 
+    openFAQ = preventDoubleTap(() => {
+        const screen = 'ExpandedAnnouncementBanner';
+
+        goToScreen(screen, 'FAQs', {bannerText: require('./faq').default});
+    });
+
     render() {
         const {theme} = this.props;
         const style = getStyleSheet(theme);
@@ -264,6 +270,17 @@ class Settings extends PureComponent {
                             isLink={true}
                         />
                     } */}
+                    <SettingsItem
+                        testID='general_settings.report.action'
+                        defaultMessage='FAQs'
+                        i18nId={t('sidebar_right_menu.faq')}
+                        onPress={this.openFAQ}
+                        showArrow={false}
+                        theme={theme}
+                        separator={false}
+                        isLink={true}
+                    />
+                    <View style={style.divider}/>
                     <SettingsItem
                         testID='general_settings.report.action'
                         defaultMessage='Report a Problem'

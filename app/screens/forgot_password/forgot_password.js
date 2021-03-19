@@ -58,6 +58,7 @@ export default class ForgotPassword extends PureComponent {
             const {formatMessage} = this.context.intl;
             this.setState({
                 error: formatMessage({id: 'password_send.error', defaultMessage: 'Please enter a valid email address.'}),
+                isLoading: false,
             });
             return;
         }

@@ -65,6 +65,7 @@ export default class FileQuickAction extends PureComponent {
                     if (newUri.filePath) {
                         res.uri = newUri.filePath;
                     } else {
+                        Alert.alert('Flie not accessible', 'Sorry the file was not accessible, you can always go to the file location and use share option to share here.');
                         return;
                     }
                 }

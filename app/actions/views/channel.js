@@ -488,7 +488,6 @@ export function leaveChannel(channel, reset = false) {
         if (channel.id === currentChannelId || reset) {
             await dispatch(selectDefaultChannel(currentTeamId));
         }
-
         await dispatch(serviceLeaveChannel(channel.id));
     };
 }
